@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
+import 'package:shared_accommodation_management_app/pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)
       ),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
