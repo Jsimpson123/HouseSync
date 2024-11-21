@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "774503890675",
+    "project_id": "housesync-firebase-20966",
+    "storage_bucket": "housesync-firebase-20966.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774503890675:android:14ae8bdefdf2f772924186",
+        "android_client_info": {
+          "package_name": "com.example.shared_accommodation_management_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTZFictCbgOd52wekaobVXBJ7n2-9A27o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,14 +14,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false, //Stop overflow when keyboard opens
-      appBar: AppBar(title: Text("Login")),
       body: createLoginPageBody(),
     );
   }
 
-  Column createLoginPageBody() {
-    return Column(
-      children: [
+  SingleChildScrollView createLoginPageBody() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
         Padding(
           padding: const EdgeInsets.only(),
           child: Center(
@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
         },
             child: const Text("Create Account", style: TextStyle(fontSize: 25)))
       ],
+    )
     );
   }
 }

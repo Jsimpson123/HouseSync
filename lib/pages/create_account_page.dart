@@ -13,13 +13,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false, //Stop overflow when keyboard opens
-      appBar: AppBar(title: Text("Login")),
       body: createRegisterPageBody(),
     );
   }
 
-  Column createRegisterPageBody() {
-    return Column(
+  SingleChildScrollView createRegisterPageBody() {
+    return SingleChildScrollView(
+      child: Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(),
@@ -94,6 +94,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             )
         )
       ],
+    )
     );
   }
 }
