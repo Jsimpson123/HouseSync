@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
+import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 
 class CreateAccountPage extends StatefulWidget {
+  const CreateAccountPage({super.key});
+
   @override
   State<CreateAccountPage> createState() {
     return _CreateAccountPageState();
@@ -9,6 +13,24 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
+
+  //FirebaseAuthFunctionality instance
+  final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
+
+  //Setting up the TextEditingControllers
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  //Prevents memory leaks
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +62,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           height: 25,
         ),
         TextField(
+          controller: _usernameController,
             decoration: InputDecoration(
               hintText: "User Name",
               filled: true,
@@ -54,6 +77,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields
         const SizedBox(height: 25),
         TextField(
+          controller: _emailController,
             decoration: InputDecoration(
               hintText: "Email",
               filled: true,
@@ -68,6 +92,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields
         const SizedBox(height: 25),
         TextField(
+          controller: _passwordController,
             decoration: InputDecoration(
               hintText: "Password",
               filled: true,
@@ -83,7 +108,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         const SizedBox(height: 25),
         ElevatedButton(
             onPressed: () {
-              print("object");
+              _signUp();
             },
             child: Text("Register Now"),
             style: ButtonStyle(
@@ -96,5 +121,23 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       ],
     )
     );
+  }
+
+  void _signUp() async {
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    if(user != null) {
+      print("User was successfully created");
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => HomePage()
+        )
+      );
+    } else {
+      print("An error occured");
+    }
   }
 }

@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/pages/create_account_page.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
+
+import '../user_auth/firebase_auth_functionality.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,6 +13,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  //FirebaseAuthFunctionality instance
+  final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
+
+  //Setting up the TextEditingControllers
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  //Prevents memory leaks
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
           height: 25,
         ),
         TextField(
+          controller: _emailController,
             decoration: InputDecoration(
           hintText: "Email",
           filled: true,
@@ -56,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
         TextField(
+          controller: _passwordController,
             decoration: InputDecoration(
           hintText: "Password",
           filled: true,
@@ -71,11 +92,7 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 25),
         ElevatedButton(
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(
-                builder: (context) => HomePage()
-            )
-            );
+            _signIn();
           },
           child: Text("Login"),
           style: ButtonStyle(
@@ -101,5 +118,22 @@ class _LoginPageState extends State<LoginPage> {
       ],
     )
     );
+  }
+
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    if(user != null) {
+      print("User was successfully signed in");
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => HomePage()
+      )
+      );
+    } else {
+      print("An error occured");
+    }
   }
 }
