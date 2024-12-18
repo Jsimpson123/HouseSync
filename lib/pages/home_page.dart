@@ -17,7 +17,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int index = 0;
-  List<Widget> pages = [HomePage(),ChoresPage(),FinancePage(),ShoppingPage(),MedicalPage()];
+  List<Widget> pages = [
+    HomePage(),
+    ChoresPage(),
+    FinancePage(),
+    ShoppingPage(),
+    MedicalPage()
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,29 +34,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BottomNavigationBar setBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: index,
-        onTap: (newIndex) { // when an item is clicked
-          setState(() {
-            index = newIndex; // update the index
-          });
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => pages[index],
-              )
-          );
-        },
-      type: BottomNavigationBarType.fixed,
-      items: [
-        BottomNavigationBarItem(icon: Icon(Icons.accessible_forward_sharp), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.ac_unit_rounded), label: "Chores"),
-        BottomNavigationBarItem(icon: Icon(Icons.abc), label: "Finance"),
-        BottomNavigationBarItem(icon: Icon(Icons.access_alarms_sharp), label: "Shopping"),
-        BottomNavigationBarItem(icon: Icon(Icons.reddit_rounded), label: "Medical")
-      ],
-    );
+  PopScope setBottomNavigationBar() {
+    return PopScope(
+        canPop: false, //Ensures that the built-in back button doesn't return to the wrong page
+        child: BottomNavigationBar(
+          currentIndex: index,
+          onTap: (newIndex) { // when an item is clicked
+            setState(() {
+              index = newIndex; // update the index
+            });
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => pages[index],
+                )
+            );
+          },
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_box_rounded), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.monetization_on), label: "Finance"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart), label: "Shopping"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.health_and_safety), label: "Medical")
+          ],
+        ));
   }
 }
 
