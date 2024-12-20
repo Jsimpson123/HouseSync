@@ -13,7 +13,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   //FirebaseAuthFunctionality instance
   final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
 
@@ -39,8 +38,8 @@ class _LoginPageState extends State<LoginPage> {
 
   SingleChildScrollView createLoginPageBody() {
     return SingleChildScrollView(
-      child: Column(
-        children: [
+        child: Column(
+      children: [
         Padding(
           padding: const EdgeInsets.only(),
           child: Center(
@@ -55,69 +54,72 @@ class _LoginPageState extends State<LoginPage> {
           height: 10,
         ),
         const Center(child: Text("Welcome", style: TextStyle(fontSize: 50))),
-        const Center(child: Text("Sign into your account", style: TextStyle(fontSize: 25))),
+        const Center(
+            child:
+                Text("Sign into your account", style: TextStyle(fontSize: 25))),
         //Spacing between the logo and TextFields
         const SizedBox(
           height: 25,
         ),
         TextField(
-          controller: _emailController,
+            controller: _emailController,
             decoration: InputDecoration(
-          hintText: "Email",
-          filled: true,
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: const BorderSide(color: Colors.green, width: 2.0)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(width: 2.0),
-          ),
-        )),
+              hintText: "Email",
+              filled: true,
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide:
+                      const BorderSide(color: Colors.green, width: 2.0)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(width: 2.0),
+              ),
+            )),
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
         TextField(
-          controller: _passwordController,
+            controller: _passwordController,
             decoration: InputDecoration(
-          hintText: "Password",
-          filled: true,
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: const BorderSide(color: Colors.green, width: 2.0)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(width: 2.0),
-          ),
-        )),
+              hintText: "Password",
+              filled: true,
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide:
+                      const BorderSide(color: Colors.green, width: 2.0)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(width: 2.0),
+              ),
+            )),
         //Spacing between the TextFields
         const SizedBox(height: 25),
         ElevatedButton(
-          onPressed: () {
-            _signIn();
-          },
-          child: Text("Login"),
-          style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all<Color>(Colors.blue[800]!),
-              foregroundColor: WidgetStateProperty.resolveWith((state) => Colors.white),
-              textStyle: WidgetStateProperty.all<TextStyle>(TextStyle(fontSize: 30)),
-              minimumSize: WidgetStateProperty.all<Size>(Size(200,100))
-          )
-        ),
+            onPressed: () {
+              _signIn();
+            },
+            child: Text("Login"),
+            style: ButtonStyle(
+                backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.blue[800]!),
+                foregroundColor:
+                    WidgetStateProperty.resolveWith((state) => Colors.white),
+                textStyle:
+                    WidgetStateProperty.all<TextStyle>(TextStyle(fontSize: 30)),
+                minimumSize: WidgetStateProperty.all<Size>(Size(200, 100)))),
         //Spacing between the login button and create account text
         const SizedBox(height: 50),
 
-        const Center(child: Text("Don't have an account?", style: TextStyle(fontSize: 25))),
+        const Center(
+            child:
+                Text("Don't have an account?", style: TextStyle(fontSize: 25))),
         TextButton(
             onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(
-              builder: (context) => CreateAccountPage()
-              )
-          );
-        },
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CreateAccountPage()));
+            },
             child: const Text("Create Account", style: TextStyle(fontSize: 25)))
       ],
-    )
-    );
+    ));
   }
 
   void _signIn() async {
@@ -126,12 +128,10 @@ class _LoginPageState extends State<LoginPage> {
 
     User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-    if(user != null) {
+    if (user != null) {
       print("User was successfully signed in");
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => HomePage()
-      )
-      );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     } else {
       print("An error occured");
     }
