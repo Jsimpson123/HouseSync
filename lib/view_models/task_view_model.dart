@@ -16,6 +16,11 @@ class TaskViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTask(int taskIndex) {
+    tasks.removeAt(taskIndex);
+    notifyListeners();
+  }
+
   bool getTaskValue(int taskIndex) {
     return tasks[taskIndex].complete;
   }
