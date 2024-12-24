@@ -13,8 +13,11 @@ void main() async {
     // name: "HouseSync-Firebase",
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ChangeNotifierProvider(
-      create: (context) => TaskViewModel(), child: const MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) => TaskViewModel(),
+    )
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

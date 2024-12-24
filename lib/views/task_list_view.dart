@@ -17,6 +17,7 @@ class TaskListView extends StatelessWidget {
             },
             itemCount: viewModel.numTasks,
             itemBuilder: (context, index) {
+            final task = viewModel.tasks[index];
               return Dismissible( //Makes tasks dismissible via swiping
                 key: UniqueKey(),
                 onDismissed: (direction) {
@@ -41,9 +42,9 @@ class TaskListView extends StatelessWidget {
                       side: BorderSide(width: 2, color: viewModel.colour3),
                       checkColor: viewModel.colour1,
                       activeColor: viewModel.colour3,
-                      value: viewModel.getTaskValue(index),
-                      onChanged: (value) {
-                        viewModel.setTaskValue(index, value!);
+                      value: task.isCompleted,
+                      onChanged: (bool? value) {
+                        viewModel.setTaskValue(task);
                       }
                     ),
                     title: Text(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/features/appbar_display.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/views/add_task_view.dart';
 import 'package:shared_accommodation_management_app/views/task_list_view.dart';
 
+import '../view_models/task_view_model.dart';
 import 'finance_page.dart';
 import 'home_page.dart';
 import 'medical_page.dart';
@@ -18,6 +20,12 @@ class ChoresPage extends StatefulWidget {
 }
 
 class _ChoresPageState extends State<ChoresPage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<TaskViewModel>(context, listen: false).loadTasks();
+  }
+
   int index = 1;
   List<Widget> pages = [
     HomePage(),

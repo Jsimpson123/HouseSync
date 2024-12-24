@@ -27,7 +27,7 @@ class AddTaskBottomSheetView extends StatelessWidget {
                     controller: enteredTaskNameController,
                     onSubmitted: (value) {
                       if (enteredTaskNameController.text.isNotEmpty) {
-                        Task newTask = Task(enteredTaskNameController.text, false);
+                        Task newTask = Task.newTask(enteredTaskNameController.text);
                         viewModel.addTask(newTask);
                         enteredTaskNameController.clear();
                       }
