@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/features/appbar_display.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/views/add_task_view.dart';
+import 'package:shared_accommodation_management_app/views/header_view.dart';
+import 'package:shared_accommodation_management_app/views/task_info_view.dart';
 import 'package:shared_accommodation_management_app/views/task_list_view.dart';
 
 import '../view_models/task_view_model.dart';
@@ -43,9 +45,9 @@ class _ChoresPageState extends State<ChoresPage> {
           bottom: false,
           child: Column(
             children: [
-              Expanded(flex: 1, child: Container(color: Colors.red)),
-              Expanded(flex: 1, child: Container(color: Colors.green)),
-              Expanded(flex: 7, child: TaskListView())
+              Expanded(flex: 2, child: HeaderView()),
+              Expanded(flex: 2, child: TaskInfoView()),
+              Expanded(flex: 6, child: TaskListView())
             ],
           )),
       floatingActionButton: AddTaskView(),

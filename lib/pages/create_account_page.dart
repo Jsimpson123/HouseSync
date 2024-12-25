@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_accommodation_management_app/models/user_model.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 
@@ -108,7 +110,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         const SizedBox(height: 25),
         ElevatedButton(
             onPressed: () {
-              _signUp();
+              registerUser(_usernameController.text, _emailController.text, _passwordController.text);
             },
             child: Text("Register Now"),
             style: ButtonStyle(
@@ -123,21 +125,44 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  void _signUp() async {
-    String username = _usernameController.text;
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  // void _signUp() async {
+  //   String username = _usernameController.text;
+  //   String email = _emailController.text;
+  //   String password = _passwordController.text;
+  //
+  //   User? user = await _auth.signUpWithEmailAndPassword(email, password);
+  //
+  //   if(user != null) {
+  //     print("User was successfully created");
+  //     Navigator.push(context, MaterialPageRoute(
+  //         builder: (context) => HomePage()
+  //       )
+  //     );
+  //   } else {
+  //     print("An error occured");
+  //   }
+  // }
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+  Future<void> registerUser(String username, String email, String password) async {
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password);
 
-    if(user != null) {
-      print("User was successfully created");
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => HomePage()
-        )
-      );
-    } else {
-      print("An error occured");
-    }
+    String? userId = userCredential.user?.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'username': username,
+      'email': email
+    });
+
+    if(username.isNotEmpty && userCredential.user?.email != null && password.isNotEmpty) {
+          print("User was successfully created");
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => HomePage()
+            )
+          );
+        } else {
+          print("An error occured");
+        }
   }
 }
