@@ -53,6 +53,26 @@ class TaskViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteAllTasks() async {
+    final snapshot = await _firestore.collection('tasks').get();
+    _tasks.clear();
+    for (var doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
+    notifyListeners();
+  }
+
+  Future<void> deleteAllCompletedTasks() async {
+    final collection = await _firestore.collection('tasks');
+    final snapshot = await collection.where('isCompleted', isEqualTo: true).get();
+
+      _tasks.removeWhere((task) => task.isCompleted);
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+      notifyListeners();
+    }
+
   bool getTaskValue(int taskIndex) {
     return _tasks[taskIndex].isCompleted;
   }
