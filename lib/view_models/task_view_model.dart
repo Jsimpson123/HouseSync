@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/task_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_accommodation_management_app/models/user_model.dart';
 
 class TaskViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -39,8 +38,6 @@ class TaskViewModel extends ChangeNotifier {
       'title': newTask.title,
       'isCompleted': newTask.isCompleted
     });
-
-    // newTask.taskId = docRef.id;
 
     _tasks.add(newTask);
     notifyListeners();
@@ -93,6 +90,7 @@ class TaskViewModel extends ChangeNotifier {
 
   Future <String?> returnCurrentUsername () async {
     final user = FirebaseAuth.instance.currentUser;
+
     if (user != null) {
       try {
         final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);

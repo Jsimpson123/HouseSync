@@ -16,7 +16,7 @@ class AddTaskBottomSheetView extends StatelessWidget {
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfields
           child: Container(
-              height: 200,
+              height: 100,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -34,13 +34,13 @@ class AddTaskBottomSheetView extends StatelessWidget {
                       Navigator.of(context).pop(); //Makes bottom task bar disappear
                     }
                   ),
-                  const SizedBox(height: 15),
-                  TextField(
-                    decoration: const InputDecoration(
-                        hintText: "Task Description",
-                        border: OutlineInputBorder()),
-                    controller: enteredTaskDescController,
-                  )
+                  // const SizedBox(height: 15),
+                  // TextField(
+                  //   decoration: const InputDecoration(
+                  //       hintText: "Task Description",
+                  //       border: OutlineInputBorder()),
+                  //   controller: enteredTaskDescController,
+                  // )
                 ],
               )));
     });

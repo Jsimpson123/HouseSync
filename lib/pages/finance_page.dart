@@ -17,40 +17,60 @@ class FinancePage extends StatefulWidget {
 
 class _FinancePageState extends State<FinancePage> {
   int index = 2;
-  List<Widget> pages = [HomePage(),ChoresPage(),FinancePage(),ShoppingPage(),MedicalPage()];
+  List<Widget> pages = [
+    HomePage(),
+    ChoresPage(),
+    FinancePage(),
+    ShoppingPage(),
+    MedicalPage()
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarDisplay(),
-      body: Center(child: Text('Finance')),
+      body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+                Expanded(flex: 2, child: Container(color: Colors.red)),
+              Expanded(flex: 2, child: Container(color: Colors.green)),
+              Expanded(flex: 6, child: Container(color: Colors.blue))
+            ],
+          )),
+      // floatingActionButton: AddTaskView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }
 
   PopScope setBottomNavigationBar() {
     return PopScope(
-        canPop: false, //Ensures that the built-in back button doesn't return to the wrong page
+        canPop: false,
+        //Ensures that the built-in back button doesn't return to the wrong page
         child: BottomNavigationBar(
-      currentIndex: index,
-      onTap: (newIndex) {
-        setState(() {
-          index = newIndex;
-        });
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => pages[index],
-            )
-        );
-      },
-      type: BottomNavigationBarType.fixed,
-      items: [
-        BottomNavigationBarItem(icon: Icon(Icons.account_box_rounded), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
-        BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Finance"),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Shopping"),
-        BottomNavigationBarItem(icon: Icon(Icons.health_and_safety), label: "Medical")
-      ],
-    ));
+          currentIndex: index,
+          onTap: (newIndex) {
+            setState(() {
+              index = newIndex;
+            });
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => pages[index],
+                ));
+          },
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_box_rounded), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.monetization_on), label: "Finance"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart), label: "Shopping"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.health_and_safety), label: "Medical")
+          ],
+        ));
   }
 }

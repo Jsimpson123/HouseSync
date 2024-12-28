@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_accommodation_management_app/features/appbar_display.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
-import 'package:shared_accommodation_management_app/views/add_task_view.dart';
-import 'package:shared_accommodation_management_app/views/header_view.dart';
-import 'package:shared_accommodation_management_app/views/task_info_view.dart';
-import 'package:shared_accommodation_management_app/views/task_list_view.dart';
+import 'package:shared_accommodation_management_app/views/chores_page_views/header_view.dart';
+import 'package:shared_accommodation_management_app/views/chores_page_views/task_list_view.dart';
 
 import '../view_models/task_view_model.dart';
+import '../views/chores_page_views/add_task_view.dart';
+import '../views/chores_page_views/task_info_view.dart';
 import 'finance_page.dart';
 import 'home_page.dart';
 import 'medical_page.dart';
 
 class ChoresPage extends StatefulWidget {
-  // late final Widget body;
-
   @override
   State<ChoresPage> createState() {
     return _ChoresPageState();
@@ -40,7 +37,6 @@ class _ChoresPageState extends State<ChoresPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBarDisplay(),
       body: SafeArea(
           bottom: false,
           child: Column(
