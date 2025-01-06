@@ -6,6 +6,8 @@ import 'package:shared_accommodation_management_app/pages/create_account_page.da
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
+import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 
 void main() async {
@@ -16,8 +18,14 @@ void main() async {
   );
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
-      create: (context) => TaskViewModel(),
-    )
+      create: (context) => TaskViewModel()
+    ),
+    ChangeNotifierProvider(
+        create: (context) => HomeViewModel()
+    ),
+    ChangeNotifierProvider(
+        create: (context) => GroupViewModel()
+    ),
   ], child: const MyApp()));
 }
 

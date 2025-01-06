@@ -103,6 +103,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         const SizedBox(height: 25),
         TextField(
             controller: _passwordController,
+            obscureText: true,
             decoration: InputDecoration(
               hintText: "Password",
               filled: true,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
-import 'package:shared_accommodation_management_app/views/chores_page_views/header_view.dart';
+import 'package:shared_accommodation_management_app/views/chores_page_views/chores_header_view.dart';
 import 'package:shared_accommodation_management_app/views/chores_page_views/task_list_view.dart';
 
 import '../view_models/task_view_model.dart';
@@ -41,7 +41,7 @@ class _ChoresPageState extends State<ChoresPage> {
           bottom: false,
           child: Column(
             children: [
-              Expanded(flex: 2, child: HeaderView()),
+              Expanded(flex: 2, child: ChoresHeaderView()),
               Expanded(flex: 2, child: TaskInfoView()),
               Expanded(flex: 6, child: TaskListView())
             ],

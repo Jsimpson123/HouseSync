@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
-import 'bottom_sheets/delete_task_bottom_sheet_view.dart';
+import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
+import 'package:shared_accommodation_management_app/views/home_page_views/side_bar.dart';
 
-class HeaderView extends StatelessWidget {
-  const HeaderView({super.key});
+import '../../view_models/home_view_model.dart';
+import '../../view_models/task_view_model.dart';
+import 'bottom_sheets/create_group_bottom_sheet_view.dart';
+
+class HomeHeaderView extends StatelessWidget {
+  const HomeHeaderView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
+    return Consumer<HomeViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
           Expanded(
@@ -20,7 +24,7 @@ class HeaderView extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Align(
-                        alignment: Alignment.bottomLeft,
+                        alignment: Alignment.topLeft,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: Text("Welcome",
@@ -42,7 +46,7 @@ class HeaderView extends StatelessWidget {
                             return Expanded(
                               flex: 2,
                               child: Align(
-                                alignment: Alignment.bottomLeft,
+                                alignment: Alignment.topLeft,
                                 child: FittedBox(
                                   fit: BoxFit.fitHeight,
                                   child: Text("${snapshot.data}",
@@ -54,17 +58,22 @@ class HeaderView extends StatelessWidget {
                               ),
                             );
                           }
-                        })
+                        }),
                   ],
                 ),
               )),
-          // Delete Icon
-          Expanded(
-              flex: 1,
-              child: InkWell( onTap: () {
-                viewModel.displayBottomSheet(DeleteTaskBottomSheetView(), context);
-              },
-              child: Icon(Icons.delete, size: 40,))),
+      // Expanded(
+      //     flex: 3,
+      //     child: Align(
+      //       alignment: Alignment.centerRight,
+      //       // child: Drawer(
+      //         child: InkWell( onTap: () {
+      //           viewModel.displayBottomSheet(CreateGroupBottomSheetView(), context);
+      //
+      //         },
+      //             child: Icon(Icons.group_add_outlined, size: 80,)),
+      //       // ),
+      //     )),
         ],
       );
     });

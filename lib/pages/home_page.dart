@@ -3,7 +3,9 @@ import 'package:shared_accommodation_management_app/features/appbar_display.dart
 import 'package:shared_accommodation_management_app/pages/chores_page.dart';
 import 'package:shared_accommodation_management_app/pages/finance_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
+import 'package:shared_accommodation_management_app/views/home_page_views/group_functions_view.dart';
 
+import '../views/home_page_views/home_header_view.dart';
 import 'medical_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,11 +27,28 @@ class _HomePageState extends State<HomePage> {
     MedicalPage()
   ];
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBarDisplay(),
+  //     body: Center(child: Text('Home')),
+  //     bottomNavigationBar: setBottomNavigationBar(),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarDisplay(),
-      body: Center(child: Text('Home')),
+      body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(flex: 2, child: HomeHeaderView()),
+              Expanded(flex: 2, child: GroupFunctionsView()),
+              Expanded(flex: 6, child: Container(color: Colors.red))
+            ],
+          )),
+      // floatingActionButton: AddTaskView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }
