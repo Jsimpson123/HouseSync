@@ -17,10 +17,6 @@ class TaskViewModel extends ChangeNotifier {
   int get numTasks => _tasks.length;
   int get numTasksRemaining => _tasks.where((task) => !task.isCompleted).length;
 
-  // TaskViewModel() {
-  //   fetchTasks();
-  // }
-
   Future <void> loadTasks() async {
     final snapshot = await _firestore.collection('tasks').get();
     _tasks.clear();

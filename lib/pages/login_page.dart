@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/pages/create_account_page.dart';
+import 'package:shared_accommodation_management_app/pages/create_or_join_group_page.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 
+import '../global/common/toast.dart';
 import '../user_auth/firebase_auth_functionality.dart';
 
 class LoginPage extends StatefulWidget {
@@ -124,15 +127,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _signIn() async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
     String email = _emailController.text;
     String password = _passwordController.text;
 
     User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-    if (user != null) {
-      print("User was successfully signed in");
+    final userDoc = await _firestore.collection('users').doc(user?.uid).get(); //Gets the userId from the users collection
+    //Checks if the current user is already in a group and displays the Home page if they are
+    if (userDoc.exists && userDoc.data()?['groupId'] != null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
+    }
+    else if (user != null) {
+      print("User was successfully signed in");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
     } else {
       print("An error occured");
     }

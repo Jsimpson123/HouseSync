@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               Expanded(flex: 2, child: HomeHeaderView()),
-              Expanded(flex: 2, child: GroupFunctionsView()),
+              Expanded(flex: 2, child: Container(color: Colors.green)),
               Expanded(flex: 6, child: Container(color: Colors.red))
             ],
           )),

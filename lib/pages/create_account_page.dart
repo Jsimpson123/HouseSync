@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
+import 'package:shared_accommodation_management_app/pages/create_or_join_group_page.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
@@ -151,7 +152,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 print("User was successfully created");
 
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                    MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
               }
             },
             child: Text("Register Now"),

@@ -4,20 +4,22 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
+import '../../../pages/home_page.dart';
+
 class CreateGroupBottomSheetView extends StatelessWidget {
   const CreateGroupBottomSheetView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController enteredGroupNameController = TextEditingController();
-    final TextEditingController enteredTaskDescController = TextEditingController();
+    final TextEditingController enteredGroupNameController =
+        TextEditingController();
 
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
       return Padding(
           padding: EdgeInsets.only(
               bottom: MediaQuery.of(context)
                   .viewInsets
-                  .bottom), //Ensures the keyboard doesn't cover the textfields
+                  .bottom), //Ensures the keyboard doesn't cover the textfield
           child: Container(
               height: 100,
               padding: const EdgeInsets.all(16.0),
@@ -30,29 +32,22 @@ class CreateGroupBottomSheetView extends StatelessWidget {
                       controller: enteredGroupNameController,
                       onSubmitted: (value) {
                         if (enteredGroupNameController.text.isNotEmpty) {
-                          Group newGroup = Group.newGroup(enteredGroupNameController.text);
+                          Group newGroup =
+                              Group.newGroup(enteredGroupNameController.text);
                           User? user = FirebaseAuth.instance.currentUser;
-                          viewModel.createGroup(user!.uid, newGroup.name, viewModel.generateRandomGroupJoinCode());
+                          viewModel.createGroup(user!.uid, newGroup.name,
+                              viewModel.generateRandomGroupJoinCode());
                           enteredGroupNameController.clear();
                         }
-                        Navigator.of(context).pop(); //Makes bottom task bar disappear
-                      }
-                  ),
-                  SizedBox(width: 15),
+                        Navigator.of(context)
+                            .pop(); //Makes bottom task bar disappear
 
-                  //TODO: Replace the commented code with the ability to click a button to invite other users
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       viewModel.deleteAllCompletedTasks();
-                  //     },
-                  //     style: ElevatedButton.styleFrom(
-                  //         foregroundColor: viewModel.colour1,
-                  //         backgroundColor: viewModel.colour3,
-                  //         textStyle:
-                  //         TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                  //         shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(20))),
-                  //     child: Text("Delete Completed"))
+                        //Upon creating a group, it brings the user to the Home page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage()));
+                      }),
                 ],
               )));
     });

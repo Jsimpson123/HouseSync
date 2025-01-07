@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
+import '../../../pages/home_page.dart';
+
 class JoinGroupBottomSheetView extends StatelessWidget {
   const JoinGroupBottomSheetView({super.key});
 
@@ -35,6 +37,12 @@ class JoinGroupBottomSheetView extends StatelessWidget {
                           enteredGroupCodeController.clear();
                         }
                         Navigator.of(context).pop(); //Makes bottom task bar disappear
+
+                        //Upon joining a group, it brings the user to the Home page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage()));
                       }
                   ),
                   SizedBox(width: 15),

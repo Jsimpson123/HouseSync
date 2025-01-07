@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
@@ -72,6 +73,28 @@ class GroupViewModel extends ChangeNotifier {
     }
   }
 
+  Future <String?> returnGroupCode (String userId) async {
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final groupId = userDoc.data()?['groupId'];
+
+    if (groupId!=null) {
+      try {
+        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final docSnapshot = await groupDoc.get();
+        final data = docSnapshot.data();
+
+        if (data != null) {
+          return data['groupCode'] as String?;
+        }
+      } catch (e) {
+        print("Error retrieving group code: $e");
+      }
+      notifyListeners();
+    }
+    return null;
+  }
+
+  //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

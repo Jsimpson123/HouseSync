@@ -16,7 +16,7 @@ class GroupFunctionsView extends StatelessWidget {
         margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
         child: Row(
           children: [
-            //Total Tasks
+            //Create group
             Expanded(
               flex: 1,
               child: InkWell(
@@ -50,7 +50,7 @@ class GroupFunctionsView extends StatelessWidget {
 
             SizedBox(width: 20),
 
-            //Remaining Tasks
+            //Join group
             Expanded(
               flex: 1,
               child: InkWell(

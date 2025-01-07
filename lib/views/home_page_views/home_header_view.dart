@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/side_bar.dart';
 
@@ -8,10 +10,13 @@ import '../../view_models/task_view_model.dart';
 import 'bottom_sheets/create_group_bottom_sheet_view.dart';
 
 class HomeHeaderView extends StatelessWidget {
-  const HomeHeaderView({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    GroupViewModel groupViewModel = GroupViewModel();
+    User? user = FirebaseAuth.instance.currentUser;
+
     return Consumer<HomeViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
@@ -24,7 +29,7 @@ class HomeHeaderView extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Align(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.bottomLeft,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: Text("Welcome",
@@ -46,7 +51,7 @@ class HomeHeaderView extends StatelessWidget {
                             return Expanded(
                               flex: 2,
                               child: Align(
-                                alignment: Alignment.topLeft,
+                                alignment: Alignment.bottomLeft,
                                 child: FittedBox(
                                   fit: BoxFit.fitHeight,
                                   child: Text("${snapshot.data}",
@@ -62,18 +67,30 @@ class HomeHeaderView extends StatelessWidget {
                   ],
                 ),
               )),
-      // Expanded(
-      //     flex: 3,
-      //     child: Align(
-      //       alignment: Alignment.centerRight,
-      //       // child: Drawer(
-      //         child: InkWell( onTap: () {
-      //           viewModel.displayBottomSheet(CreateGroupBottomSheetView(), context);
-      //
-      //         },
-      //             child: Icon(Icons.group_add_outlined, size: 80,)),
-      //       // ),
-      //     )),
+          FutureBuilder<String?>(
+              future: groupViewModel.returnGroupCode(user!.uid),
+              builder: (BuildContext context,
+                  AsyncSnapshot<String?> snapshot) {
+                if ("${snapshot.data}" == "null") {
+                  return const Text(
+                      ""); //Due to a delay in the group code loading
+                } else {
+                  return Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text("Group Code: \n${snapshot.data}",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: viewModel.colour4)),
+                      ),
+                    ),
+                  );
+                }
+              }),
         ],
       );
     });
