@@ -6,9 +6,14 @@ import 'package:shared_accommodation_management_app/view_models/group_view_model
 
 import '../../../pages/home_page.dart';
 
-class CreateGroupBottomSheetView extends StatelessWidget {
-  const CreateGroupBottomSheetView({super.key});
+class CreateGroupBottomSheetView extends StatefulWidget {
+  @override
+  State<CreateGroupBottomSheetView> createState() {
+    return _CreateGroupBottomSheetView();
+  }
+}
 
+class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController enteredGroupNameController =
@@ -30,26 +35,37 @@ class CreateGroupBottomSheetView extends StatelessWidget {
                       decoration: const InputDecoration(
                           hintText: "Group Name", border: OutlineInputBorder()),
                       controller: enteredGroupNameController,
-                      onSubmitted: (value) {
+                      onSubmitted: (value) async {
                         if (enteredGroupNameController.text.isNotEmpty) {
                           Group newGroup =
                               Group.newGroup(enteredGroupNameController.text);
                           User? user = FirebaseAuth.instance.currentUser;
-                          viewModel.createGroup(user!.uid, newGroup.name,
+                          bool groupCreated = await viewModel.createGroup(user!.uid, newGroup.name,
                               viewModel.generateRandomGroupJoinCode());
                           enteredGroupNameController.clear();
+
+                        setState(() {
+                          if (groupCreated) {
+                            //Executes only one time after the layout is completed
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                            //Upon creating a group, it brings the user to the Home page
+                            navigateToHome(context);
+                            });
+                          }
+                        });
                         }
                         Navigator.of(context)
                             .pop(); //Makes bottom task bar disappear
-
-                        //Upon creating a group, it brings the user to the Home page
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePage()));
                       }),
                 ],
               )));
     });
+  }
+
+  void navigateToHome(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage()));
   }
 }
