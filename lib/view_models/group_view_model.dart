@@ -27,7 +27,7 @@ class GroupViewModel extends ChangeNotifier {
     return List.generate(6, (index) => alphanumeric[random.nextInt(alphanumeric.length)]).join();
   }
 
-  Future<void> createGroup(String userId, String groupName, String groupCode) async {
+  Future<bool> createGroup(String userId, String groupName, String groupCode) async {
     final userDoc = await _firestore.collection('users').doc(userId).get(); //Gets the userId from the users collection
     //Checks if the current user is already in a group and throws an exception if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
@@ -48,9 +48,10 @@ class GroupViewModel extends ChangeNotifier {
     });
 
     notifyListeners();
+    return true;
   }
 
-  Future<void> joinGroupViaCode(String userId, String inviteCode) async {
+  Future<bool> joinGroupViaCode(String userId, String inviteCode) async {
     //Query to search the groups collection for a document that has the same groupCode as the users entered one
     final query = await _firestore.collection('groups')
         .where('groupCode', isEqualTo: inviteCode)
@@ -70,12 +71,16 @@ class GroupViewModel extends ChangeNotifier {
       await _firestore.collection('groups').doc(groupId).update({
         'members': FieldValue.arrayUnion([userId])
       });
+
+      return true;
+    } else {
+      return false;
     }
   }
 
   Future <String?> returnGroupCode (String userId) async {
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    final groupId = userDoc.data()?['groupId'];
+    final groupId = await userDoc.data()?['groupId'];
 
     if (groupId!=null) {
       try {
