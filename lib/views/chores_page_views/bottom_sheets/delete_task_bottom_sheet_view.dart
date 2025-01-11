@@ -12,7 +12,8 @@ class DeleteTaskBottomSheetView extends StatelessWidget{
         height: 150,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [ElevatedButton(
+          children: [
+            ElevatedButton(
               onPressed: () {
                 viewModel.deleteAllTasks();
               },

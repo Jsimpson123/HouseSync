@@ -20,6 +20,12 @@ class HomeHeaderView extends StatelessWidget {
     return Consumer<HomeViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
           Expanded(
               flex: 2,
               child: Container(

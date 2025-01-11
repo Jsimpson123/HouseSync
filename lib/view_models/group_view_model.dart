@@ -78,6 +78,44 @@ class GroupViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> leaveGroup(String userId) async {
+    final userDoc = await _firestore.collection('users')
+        .doc(userId)
+        .get(); //Gets the userId from the users collection
+
+    final groupId = await userDoc.data()?['groupId'];
+
+    //Checks if the current user is already in a group and removes them if they are
+    if (userDoc.exists && groupId != null) {
+      final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+      final docSnapshot = await groupDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        await _firestore.collection('users')
+            .doc(userId).update(
+          {
+            'groupId': FieldValue.delete()
+          }
+        );
+      }
+
+      List members = docSnapshot.get('members');
+
+      if (members.contains(userId) == true) {
+        groupDoc.update({
+
+          "members": FieldValue.arrayRemove([userId])
+        });
+      }
+
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future <String?> returnGroupCode (String userId) async {
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final groupId = await userDoc.data()?['groupId'];
@@ -90,6 +128,27 @@ class GroupViewModel extends ChangeNotifier {
 
         if (data != null) {
           return data['groupCode'] as String?;
+        }
+      } catch (e) {
+        print("Error retrieving group code: $e");
+      }
+      notifyListeners();
+    }
+    return null;
+  }
+
+  Future <String?> returnGroupName (String userId) async {
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    if (groupId!=null) {
+      try {
+        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final docSnapshot = await groupDoc.get();
+        final data = docSnapshot.data();
+
+        if (data != null) {
+          return data['name'] as String?;
         }
       } catch (e) {
         print("Error retrieving group code: $e");
