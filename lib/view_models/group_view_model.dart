@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
+import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
 class GroupViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,6 +14,7 @@ class GroupViewModel extends ChangeNotifier {
   Group? _currentGroup;
 
   List<Group> get groups => List.unmodifiable(_groups);
+
   Group? get currentGroup => _currentGroup;
 
   Color colour1 = Colors.grey.shade50;
@@ -24,11 +26,16 @@ class GroupViewModel extends ChangeNotifier {
     String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     final Random random = Random();
 
-    return List.generate(6, (index) => alphanumeric[random.nextInt(alphanumeric.length)]).join();
+    return List.generate(
+        6, (index) => alphanumeric[random.nextInt(alphanumeric.length)]).join();
   }
 
-  Future<bool> createGroup(String userId, String groupName, String groupCode) async {
-    final userDoc = await _firestore.collection('users').doc(userId).get(); //Gets the userId from the users collection
+  Future<bool> createGroup(
+      String userId, String groupName, String groupCode) async {
+    final userDoc = await _firestore
+        .collection('users')
+        .doc(userId)
+        .get(); //Gets the userId from the users collection
     //Checks if the current user is already in a group and throws an exception if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
       throw Exception("User is already in a group");
@@ -43,9 +50,10 @@ class GroupViewModel extends ChangeNotifier {
     });
 
     //Adds the current user to the group
-    await _firestore.collection('users').doc(userId).update({
-      'groupId': groupRef.id
-    });
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .update({'groupId': groupRef.id});
 
     notifyListeners();
     return true;
@@ -53,19 +61,21 @@ class GroupViewModel extends ChangeNotifier {
 
   Future<bool> joinGroupViaCode(String userId, String inviteCode) async {
     //Query to search the groups collection for a document that has the same groupCode as the users entered one
-    final query = await _firestore.collection('groups')
+    final query = await _firestore
+        .collection('groups')
         .where('groupCode', isEqualTo: inviteCode)
         .get();
 
     //Checks that at least one group exists
-    if(query.docs.isNotEmpty) {
+    if (query.docs.isNotEmpty) {
       //Finds the first document with matching codes id
       final groupId = query.docs.first.id;
 
       //Updates the users groupId
-      await _firestore.collection('users').doc(userId).update({
-        'groupId': groupId
-      });
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({'groupId': groupId});
 
       //Updates the members field of the group with the new member
       await _firestore.collection('groups').doc(groupId).update({
@@ -79,7 +89,8 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<bool> leaveGroup(String userId) async {
-    final userDoc = await _firestore.collection('users')
+    final userDoc = await _firestore
+        .collection('users')
         .doc(userId)
         .get(); //Gets the userId from the users collection
 
@@ -87,24 +98,22 @@ class GroupViewModel extends ChangeNotifier {
 
     //Checks if the current user is already in a group and removes them if they are
     if (userDoc.exists && groupId != null) {
-      final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+      final groupDoc =
+          FirebaseFirestore.instance.collection('groups').doc(groupId);
       final docSnapshot = await groupDoc.get();
       final data = docSnapshot.data();
 
       if (data != null) {
-        await _firestore.collection('users')
-            .doc(userId).update(
-          {
-            'groupId': FieldValue.delete()
-          }
-        );
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .update({'groupId': FieldValue.delete()});
       }
 
       List members = docSnapshot.get('members');
 
       if (members.contains(userId) == true) {
         groupDoc.update({
-
           "members": FieldValue.arrayRemove([userId])
         });
       }
@@ -116,13 +125,15 @@ class GroupViewModel extends ChangeNotifier {
     }
   }
 
-  Future <String?> returnGroupCode (String userId) async {
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  Future<String?> returnGroupCode(String userId) async {
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final groupId = await userDoc.data()?['groupId'];
 
-    if (groupId!=null) {
+    if (groupId != null) {
       try {
-        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final groupDoc =
+            FirebaseFirestore.instance.collection('groups').doc(groupId);
         final docSnapshot = await groupDoc.get();
         final data = docSnapshot.data();
 
@@ -137,13 +148,15 @@ class GroupViewModel extends ChangeNotifier {
     return null;
   }
 
-  Future <String?> returnGroupName (String userId) async {
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  Future<String?> returnGroupName(String userId) async {
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final groupId = await userDoc.data()?['groupId'];
 
-    if (groupId!=null) {
+    if (groupId != null) {
       try {
-        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final groupDoc =
+            FirebaseFirestore.instance.collection('groups').doc(groupId);
         final docSnapshot = await groupDoc.get();
         final data = docSnapshot.data();
 
@@ -152,6 +165,53 @@ class GroupViewModel extends ChangeNotifier {
         }
       } catch (e) {
         print("Error retrieving group code: $e");
+      }
+      notifyListeners();
+    }
+    return null;
+  }
+
+  Future<String?> returnGroupMembers(String userId) async {
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    if (groupId != null) {
+      try {
+        final groupDoc =
+            FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final docSnapshot = await groupDoc.get();
+        final data = docSnapshot.data();
+
+        if (data != null) {
+          List<dynamic> groupMembersIds = data['members'];
+          List<String> groupMembersNames = [];
+
+          UserViewModel userViewModel = UserViewModel();
+
+          for (int i = 0; i < groupMembersIds.length; i++) {
+            final groupUserDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(groupMembersIds[i])
+                .get();
+
+              final groupMemberName = await groupUserDoc.data()?['username'];
+
+              groupMembersNames.add(groupMemberName);
+            }
+
+          // if (groupMembersNames.contains(userViewModel.returnCurrentUsername().toString())) {
+          //   groupMembersNames.remove(userViewModel.returnCurrentUsername().toString());
+          // }
+
+          String groupMembersNamesFormatted = groupMembersNames
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", "");
+          return groupMembersNamesFormatted.toString();
+        }
+      } catch (e) {
+        print("Error retrieving group members: $e");
       }
       notifyListeners();
     }

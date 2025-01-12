@@ -20,18 +20,20 @@ class GroupDetailsBottomSheetView extends StatelessWidget{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
+            //Group name
             FutureBuilder<String?>(
                 future: viewModel.returnGroupName(user!.uid),
                 builder: (BuildContext context,
                     AsyncSnapshot<String?> snapshot) {
                   if ("${snapshot.data}" == "null") {
                     return const Text(
-                        ""); //Due to a delay in the username loading
+                        ""); //Due to a delay in the data loading
                   } else {
                     return Expanded(
                       flex: 2,
                       child: Align(
-                        alignment: Alignment.bottomLeft,
+                        alignment: Alignment.center,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: Text("${snapshot.data}",
@@ -45,7 +47,37 @@ class GroupDetailsBottomSheetView extends StatelessWidget{
                   }
                 }),
 
+            Divider(),
+
+            //Group members
+            FutureBuilder<String?>(
+                future: viewModel.returnGroupMembers(user!.uid),
+                builder: (BuildContext context,
+                    AsyncSnapshot<String?> snapshot) {
+                  if ("${snapshot.data}" == "null") {
+                    return const Text(
+                        ""); //Due to a delay in the data loading
+                  } else {
+                    return Expanded(
+                      flex: 2,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Text("Group Members: ${snapshot.data}",
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: viewModel.colour4)),
+                        ),
+                      ),
+                    );
+                  }
+                }),
+
             SizedBox(width: 15),
+
+            //Leave group button
             ElevatedButton(
                 onPressed: () {
                   viewModel.leaveGroup(user!.uid);

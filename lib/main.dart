@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
+import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,7 @@ void main() async {
       create: (context) => TaskViewModel()
     ),
     ChangeNotifierProvider(
-        create: (context) => HomeViewModel()
+        create: (context) => UserViewModel()
     ),
     ChangeNotifierProvider(
         create: (context) => GroupViewModel()

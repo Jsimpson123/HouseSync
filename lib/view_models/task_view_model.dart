@@ -41,8 +41,38 @@ class TaskViewModel extends ChangeNotifier {
 
   Future<void> deleteTask(int taskIndex) async {
     final task = _tasks[taskIndex];
+
+    final userDoc = await _firestore
+        .collection('users')
+        .doc()
+        .get();
+
+    if (userDoc.exists && userDoc.data()?['assignedTasks'] != null) {
+      //Updates the assignedTasks field by removing the taskId
+      await _firestore.collection('users').doc(userDoc.id).update({
+        'assignedTasks': FieldValue.arrayRemove([task.taskId])
+      });
+    }
+
     await _firestore.collection('tasks').doc(task.taskId).delete();
     _tasks.removeAt(taskIndex);
+
+    // final userDoc = await _firestore
+    //     .collection('users')
+    //     .doc()
+    //     .get(); //Gets the userId from the users collection
+    //
+    // final userDoc2 =
+    // FirebaseFirestore.instance.collection('users').doc(userDoc.id);
+    //
+    // List userTasks = userDoc.get('assignedTasks');
+    //
+    // if (userTasks.contains(task.taskId) == true) {
+    //   userDoc2.update({
+    //     "assignedTasks": FieldValue.arrayRemove([task.taskId])
+    //   });
+    // }
+
     notifyListeners();
   }
 
@@ -102,6 +132,56 @@ class TaskViewModel extends ChangeNotifier {
     }
     return null;
   }
+
+  Future <bool> assignCurrentUserToTask (String userId, String taskId) async {
+
+    //Updates the tasks assigned user
+    await _firestore
+        .collection('tasks')
+        .doc(taskId)
+        .update({'assignedUser': userId});
+
+    //Updates the assignedTasks field of the user with the new task
+    await _firestore.collection('users').doc(userId).update({
+      'assignedTasks': FieldValue.arrayUnion([taskId])
+    });
+
+      notifyListeners();
+      return true;
+  }
+
+  Future <bool> unAssignCurrentUserFromTask (String userId, String taskId) async {
+
+    //Deletes the tasks assigned user
+    await _firestore
+        .collection('tasks')
+        .doc(taskId)
+        .update({'assignedUser': FieldValue.delete()});
+
+    //Updates the assignedTasks field by removing the taskId
+    await _firestore.collection('users').doc(userId).update({
+      'assignedTasks': FieldValue.arrayRemove([taskId])
+    });
+
+    notifyListeners();
+    return true;
+  }
+
+  Future <String?> returnAssignedTaskUser (String taskId) async {
+      try {
+        final taskDoc = FirebaseFirestore.instance.collection('tasks').doc(taskId);
+        final docSnapshot = await taskDoc.get();
+        final data = docSnapshot.data();
+
+        if (data != null) {
+          return data['assignedUser'] as String?;
+        }
+      } catch (e) {
+        print("Error retrieving username: $e");
+      }
+      return null;
+    }
+
 
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(

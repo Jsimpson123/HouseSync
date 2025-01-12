@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
+import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/side_bar.dart';
 
 import '../../view_models/home_view_model.dart';
@@ -17,7 +18,7 @@ class HomeHeaderView extends StatelessWidget {
     GroupViewModel groupViewModel = GroupViewModel();
     User? user = FirebaseAuth.instance.currentUser;
 
-    return Consumer<HomeViewModel>(builder: (context, viewModel, child) {
+    return Consumer<UserViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
           IconButton(

@@ -7,6 +7,7 @@ import 'package:shared_accommodation_management_app/view_models/home_view_model.
 import 'package:shared_accommodation_management_app/views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/group_functions_view.dart';
 
+import '../view_models/user_view_model.dart';
 import '../views/home_page_views/home_header_view.dart';
 import 'medical_page.dart';
 
@@ -18,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HomeViewModel homeViewModel = HomeViewModel();
+  UserViewModel homeViewModel = UserViewModel();
   int index = 0;
   List<Widget> pages = [
     HomePage(),
@@ -39,14 +40,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    HomeViewModel homeViewModel = HomeViewModel();
+    UserViewModel userViewModel = UserViewModel();
 
     return Scaffold(
       drawer: Drawer(
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: homeViewModel.colour2),
+              decoration: BoxDecoration(color: userViewModel.colour2),
 
               //User icon
               currentAccountPicture: const Expanded(
@@ -56,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
               //Username
               accountName: FutureBuilder<String?>(
-                  future: homeViewModel.returnCurrentUsername(),
+                  future: userViewModel.returnCurrentUsername(),
                   builder:
                       (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: homeViewModel.colour4)),
+                                  color: userViewModel.colour4)),
                         ),
                       );
                     }
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
 
               //Email
               accountEmail: FutureBuilder<String?>(
-                  future: homeViewModel.returnCurrentEmail(),
+                  future: userViewModel.returnCurrentEmail(),
                   builder:
                       (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
@@ -92,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: homeViewModel.colour4)),
+                                  color: userViewModel.colour4)),
                         ),
                       );
                     }
@@ -100,7 +101,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: Text("Group"),
-              onTap: () => homeViewModel.displayBottomSheet(
+              onTap: () => userViewModel.displayBottomSheet(
                   GroupDetailsBottomSheetView(), context),
             ),
             ListTile(title: Text("Settings")),
