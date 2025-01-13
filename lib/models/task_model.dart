@@ -12,7 +12,7 @@ class Task {
   //Constructor for a new task
   Task.newTask(this.title)
   : taskId = '',
-  assignedUser = '',
+  assignedUser = null,
   isCompleted = false;
 
   //Method that converts Task to a map for database storage

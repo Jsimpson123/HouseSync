@@ -93,7 +93,7 @@ class _TaskListViewState extends State<TaskListView> {
                     subtitle: task.assignedUser != null
                         ? FutureBuilder<String?>(
                             //If true
-                            future: userViewModel.returnCurrentUsername(),
+                            future: viewModel.returnAssignedTaskUsername(task.taskId),
                             builder: (BuildContext context,
                                 AsyncSnapshot<String?> snapshot) {
                               if ("${snapshot.data}" == "null") {

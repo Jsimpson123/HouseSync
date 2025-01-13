@@ -82,6 +82,12 @@ class TaskViewModel extends ChangeNotifier {
     for (var doc in snapshot.docs) {
       await doc.reference.delete();
     }
+
+    final userSnapshot = await _firestore.collection('users').get();
+    for (var doc in userSnapshot.docs) {
+      await doc.reference.update({'assignedTasks': FieldValue.delete()});
+    }
+
     notifyListeners();
   }
 
@@ -89,9 +95,20 @@ class TaskViewModel extends ChangeNotifier {
     final collection = await _firestore.collection('tasks');
     final snapshot = await collection.where('isCompleted', isEqualTo: true).get();
 
+    List<String> completedTasksIds = [];
+
       _tasks.removeWhere((task) => task.isCompleted);
       for (var doc in snapshot.docs) {
+        completedTasksIds.add(doc.id);
         await doc.reference.delete();
+      }
+
+      //Clears completed tasks from users 'assignedTasks' list when deleted
+      if (completedTasksIds.isNotEmpty) {
+        final userSnapshot = await _firestore.collection('users').get();
+        for (var doc in userSnapshot.docs) {
+          await doc.reference.update({'assignedTasks': FieldValue.arrayRemove(completedTasksIds)});
+        }
       }
       notifyListeners();
     }
@@ -167,7 +184,7 @@ class TaskViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future <String?> returnAssignedTaskUser (String taskId) async {
+  Future <String?> returnAssignedTaskUserId (String taskId) async {
       try {
         final taskDoc = FirebaseFirestore.instance.collection('tasks').doc(taskId);
         final docSnapshot = await taskDoc.get();
@@ -181,6 +198,33 @@ class TaskViewModel extends ChangeNotifier {
       }
       return null;
     }
+
+  Future <String?> returnAssignedTaskUsername (String taskId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('tasks').doc(taskId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        String? userId = data['assignedUser'] as String?;
+
+        if (userId!.isNotEmpty) {
+          final query = await _firestore
+              .collection('users')
+              .where('userId', isEqualTo: userId)
+              .get();
+
+          if (query.docs.isNotEmpty) {
+            final userDoc = query.docs.first;
+            return userDoc.data()['username'] as String?;
+          }
+        }
+      }
+    } catch (e) {
+      print("Error retrieving username: $e");
+    }
+    return null;
+  }
 
 
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
