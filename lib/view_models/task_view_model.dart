@@ -18,8 +18,23 @@ class TaskViewModel extends ChangeNotifier {
   int get numTasksRemaining => _tasks.where((task) => !task.isCompleted).length;
 
   Future <void> loadTasks() async {
-    final snapshot = await _firestore.collection('tasks').get();
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    final userDoc =
+    await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    final taskGroupQuery = FirebaseFirestore.instance
+        .collection('tasks')
+        .where('groupId', isEqualTo: groupId)
+        .get();
+
+
+    final snapshot = await taskGroupQuery;
     _tasks.clear();
+
+
     for (var doc in snapshot.docs) {
       _tasks.add(Task.fromMap(doc.id, doc.data()));
     }
@@ -29,31 +44,37 @@ class TaskViewModel extends ChangeNotifier {
   Future<void> addTask(Task newTask) async {
     newTask.generateId();
 
-    await _firestore.collection('tasks').doc(newTask.taskId).set({
-      'taskId': newTask.taskId,
-      'title': newTask.title,
-      'isCompleted': newTask.isCompleted
-    });
+    User? user = FirebaseAuth.instance.currentUser;
 
-    _tasks.add(newTask);
-    notifyListeners();
-  }
+    final userDoc =
+    await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+        await _firestore.collection('tasks').doc(newTask.taskId).set({
+          'taskId': newTask.taskId,
+          'title': newTask.title,
+          'isCompleted': newTask.isCompleted,
+          'groupId': groupId
+        });
+
+        _tasks.add(newTask);
+        notifyListeners();
+    }
 
   Future<void> deleteTask(int taskIndex) async {
     final task = _tasks[taskIndex];
 
-    final userDoc = await _firestore
+    final userQuery = await _firestore
         .collection('users')
-        .doc()
+        .where('assignedTasks', arrayContains: task.taskId)
         .get();
 
-    if (userDoc.exists && userDoc.data()?['assignedTasks'] != null) {
+    for (var doc in userQuery.docs) {
       //Updates the assignedTasks field by removing the taskId
-      await _firestore.collection('users').doc(userDoc.id).update({
+      await doc.reference.update({
         'assignedTasks': FieldValue.arrayRemove([task.taskId])
       });
     }
-
     await _firestore.collection('tasks').doc(task.taskId).delete();
     _tasks.removeAt(taskIndex);
 
@@ -214,10 +235,10 @@ class TaskViewModel extends ChangeNotifier {
               .where('userId', isEqualTo: userId)
               .get();
 
-          if (query.docs.isNotEmpty) {
+          // if (query.docs.isNotEmpty) {
             final userDoc = query.docs.first;
             return userDoc.data()['username'] as String?;
-          }
+          // }
         }
       }
     } catch (e) {
@@ -225,7 +246,6 @@ class TaskViewModel extends ChangeNotifier {
     }
     return null;
   }
-
 
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(

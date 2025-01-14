@@ -187,8 +187,6 @@ class GroupViewModel extends ChangeNotifier {
           List<dynamic> groupMembersIds = data['members'];
           List<String> groupMembersNames = [];
 
-          UserViewModel userViewModel = UserViewModel();
-
           for (int i = 0; i < groupMembersIds.length; i++) {
             final groupUserDoc = await FirebaseFirestore.instance
                 .collection('users')

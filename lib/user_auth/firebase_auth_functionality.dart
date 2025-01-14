@@ -35,7 +35,10 @@ class FirebaseAuthFunctionality {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .set({'username': user.username, 'email': user.email});
+            .set({
+          'userId': userId,
+          'username': user.username,
+          'email': user.email});
       }
 
       if (user.username.isEmpty) {
