@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
+import 'add_task_view.dart';
 import 'bottom_sheets/delete_task_bottom_sheet_view.dart';
 
 class ChoresHeaderView extends StatelessWidget {

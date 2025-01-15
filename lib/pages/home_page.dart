@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/features/appbar_display.dart';
 import 'package:shared_accommodation_management_app/pages/chores_page.dart';
 import 'package:shared_accommodation_management_app/pages/finance_page.dart';
+import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
@@ -104,8 +106,15 @@ class _HomePageState extends State<HomePage> {
               onTap: () => userViewModel.displayBottomSheet(
                   GroupDetailsBottomSheetView(), context),
             ),
-            ListTile(title: Text("Settings")),
-            ListTile(title: Text("Logout")),
+      ListTile(title: Text("Settings")),
+
+            ListTile(
+              title: Text("Logout"),
+              onTap: () async => await FirebaseAuth.instance.signOut()
+                  .then((value) =>
+                  Navigator.of(context)
+                      .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()),(route) => false))
+            ),
           ],
         ),
       ),
