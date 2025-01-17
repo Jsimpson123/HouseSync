@@ -5,17 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
+import 'package:shared_accommodation_management_app/models/user_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
 class GroupViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<Group> _groups = <Group>[];
-  Group? _currentGroup;
+  List<String> _members = <String>[];
+
+  List<String> get members => _members;
 
   List<Group> get groups => List.unmodifiable(_groups);
-
-  Group? get currentGroup => _currentGroup;
 
   Color colour1 = Colors.grey.shade50;
   Color colour2 = Colors.grey.shade200;
@@ -214,6 +215,45 @@ class GroupViewModel extends ChangeNotifier {
       notifyListeners();
     }
     return null;
+  }
+
+  Future<void> returnGroupMembersAsList(String userId) async {
+    final userDoc =
+    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    List<String> groupMembersNames = [];
+
+    if (groupId != null) {
+      try {
+        final groupDoc =
+        FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final docSnapshot = await groupDoc.get();
+        final data = docSnapshot.data();
+
+        if (data != null) {
+          List<dynamic> groupMembersIds = data['members'];
+
+          //Removes the current user
+          groupMembersIds.remove(userId);
+
+          for (int i = 0; i < groupMembersIds.length; i++) {
+            final groupUserDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(groupMembersIds[i])
+                .get();
+
+            final groupMemberName = await groupUserDoc.data()?['username'];
+
+            groupMembersNames.add(groupMemberName);
+          }
+        }
+      } catch (e) {
+        print("Error retrieving group members: $e");
+      }
+    }
+    _members = groupMembersNames;
+    notifyListeners();
   }
 
   //Bottom sheet builder

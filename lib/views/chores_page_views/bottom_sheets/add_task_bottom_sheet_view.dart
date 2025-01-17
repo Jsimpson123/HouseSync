@@ -34,13 +34,6 @@ class AddTaskBottomSheetView extends StatelessWidget {
                       Navigator.of(context).pop(); //Makes bottom task bar disappear
                     }
                   ),
-                  // const SizedBox(height: 15),
-                  // TextField(
-                  //   decoration: const InputDecoration(
-                  //       hintText: "Task Description",
-                  //       border: OutlineInputBorder()),
-                  //   controller: enteredTaskDescController,
-                  // )
                 ],
               )));
     });
