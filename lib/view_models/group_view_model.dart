@@ -256,6 +256,16 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeMember(int index) {
+    members.removeAt(index);
+    notifyListeners();
+  }
+
+  String reAddMember() {
+    return _members.toString();
+  }
+
+
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(

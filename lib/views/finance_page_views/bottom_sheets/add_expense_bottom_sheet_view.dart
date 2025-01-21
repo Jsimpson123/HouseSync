@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
 import '../../../view_models/finance_view_model.dart';
@@ -16,6 +17,16 @@ class AddExpenseBottomSheetView extends StatefulWidget {
       TextEditingController();
   final TextEditingController enteredExpenseAmountController =
       TextEditingController();
+
+  bool isButtonEnabled() {
+    return enteredExpenseNameController.text.isNotEmpty
+    && enteredExpenseAmountController.text.isNotEmpty;
+  }
+
+FinanceViewModel financeViewModel = FinanceViewModel();
+  GroupViewModel groupViewModel = GroupViewModel();
+
+List<String> assignedUsers = <String>[];
 
   class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
   @override
@@ -36,49 +47,49 @@ class AddExpenseBottomSheetView extends StatefulWidget {
                     decoration: const InputDecoration(
                         hintText: "Expense Name", border: OutlineInputBorder()),
                     controller: enteredExpenseNameController,
-                    // onSubmitted: (value) {
-                    //   if (enteredExpenseNameController.text.isNotEmpty) {
-                    //     Expense newExpense = Expense.newExpense(.text);
-                    //     viewModel.addExpense(newExpense)
-                    //     .clear();
-                    //   }
-                    //   Navigator.of(context).pop(); //Makes bottom expense bar disappear
-                    // }
-                  ),
+                    onChanged: (_) => setState(() {
+                    })),
+
                   TextField(
                     decoration: const InputDecoration(
                         hintText: "Expense Amount",
                         border: OutlineInputBorder()),
                     controller: enteredExpenseAmountController,
-                    // onSubmitted: (value) {
-                    //   if (enteredExpenseNameController.text.isNotEmpty) {
-                    //     Expense newExpense = Expense.newExpense(.text);
-                    //     viewModel.addExpense(newExpense)
-                    //     .clear();
-                    //   }
-                    //   Navigator.of(context).pop(); //Makes bottom expense bar disappear
-                    // }
-                  ),
+                    onChanged: (_) => setState(() {
+                    })),
                   IconButton(
                     icon: Icon(Icons.add),
-                    onPressed: () {
-                      assignUsersToExpensePopup(context);
-                    },
-                  ),
+                    onPressed: () => isButtonEnabled() ? assignUsersToExpensePopup(context) : null),
+
+                  ElevatedButton(
+                      child: Text("Submit"),
+                      onPressed: () => {
+                        if (enteredExpenseNameController.text.isNotEmpty &&
+                            enteredExpenseAmountController.text.isNotEmpty &&
+                        assignedUsers.isNotEmpty) {
+                          financeViewModel.createExpense(
+                              user!.uid,
+                              enteredExpenseNameController.text,
+                              double.tryParse(enteredExpenseAmountController.text) ?? 0.0,
+                              assignedUsers),
+
+                          Navigator.of(context).pop(),
+
+                          enteredExpenseNameController.clear(),
+                          enteredExpenseAmountController.clear(),
+                          // assignedUsers.clear()
+                        },
+                        // setState(() {
+                        //   groupViewModel.members.addAll(assignedUsers);
+                        // })
+                      }
+                  )
                 ],
               )));
     });
   }
 
   Future<void> assignUsersToExpensePopup(BuildContext context) async {
-    // GroupViewModel groupViewModel = GroupViewModel();
-    //
-    // int membersSize = groupViewModel.returnGroupMembersSize(user!.uid) as int;
-
-    FinanceViewModel financeViewModel = FinanceViewModel();
-
-    List<String> assignedUsers = <String>[];
-
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -116,33 +127,20 @@ class AddExpenseBottomSheetView extends StatefulWidget {
                                               fontSize: 16)),
                                       onTap: () => {
                                             assignedUsers.add(viewModel.members[index]),
+                                        showToast(message: "Assigned: ${viewModel.members[index]}"),
 
                                         setState(() {
-                                      viewModel.members.removeAt(index);
+                                      viewModel.removeMember(index);
                                         })
                                           }),
                                 ),
                               );
-                            })
+                            }),
                       ],
                     ),
                   ),
                 ),
               ),
-              actions: [
-                ElevatedButton(
-                    child: Text("Submit"),
-                    onPressed: () {
-                      if (enteredExpenseNameController.text.isNotEmpty &&
-                          enteredExpenseAmountController.text.isNotEmpty) {
-                        financeViewModel.createExpense(
-                            user!.uid,
-                            enteredExpenseNameController.text,
-                            double.tryParse(enteredExpenseAmountController.text) ?? 0.0,
-                            assignedUsers);
-                      }
-                    })
-              ],
             );
           });
         });

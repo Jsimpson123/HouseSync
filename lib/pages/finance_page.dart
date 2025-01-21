@@ -11,7 +11,6 @@ import 'home_page.dart';
 import 'medical_page.dart';
 
 class FinancePage extends StatefulWidget {
-  // late final Widget body;
 
   @override
   State<FinancePage> createState() {
