@@ -9,7 +9,7 @@ class AddExpenseView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<FinanceViewModel>(builder: (context, viewModel, child) {
       return SizedBox(
-        height: 100,
+        height: 60,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: viewModel.colour3,

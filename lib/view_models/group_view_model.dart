@@ -13,8 +13,10 @@ class GroupViewModel extends ChangeNotifier {
 
   final List<Group> _groups = <Group>[];
   List<String> _members = <String>[];
+  List<dynamic> _memberIds = <String>[];
 
   List<String> get members => _members;
+  List<dynamic> get memberIds => _memberIds;
 
   List<Group> get groups => List.unmodifiable(_groups);
 
@@ -223,6 +225,7 @@ class GroupViewModel extends ChangeNotifier {
     final groupId = await userDoc.data()?['groupId'];
 
     List<String> groupMembersNames = [];
+    List<dynamic> groupMembersIds = [];
 
     if (groupId != null) {
       try {
@@ -232,7 +235,7 @@ class GroupViewModel extends ChangeNotifier {
         final data = docSnapshot.data();
 
         if (data != null) {
-          List<dynamic> groupMembersIds = data['members'];
+           groupMembersIds = data['members'];
 
           //Removes the current user
           groupMembersIds.remove(userId);
@@ -253,16 +256,49 @@ class GroupViewModel extends ChangeNotifier {
       }
     }
     _members = groupMembersNames;
+    _memberIds = groupMembersIds;
     notifyListeners();
   }
+
+  // Future<void> returnGroupMembersIds(String userId) async {
+  //   final userDoc =
+  //   await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  //   final groupId = await userDoc.data()?['groupId'];
+  //
+  //   List<String> groupMembersIds = [];
+  //
+  //   if (groupId != null) {
+  //     try {
+  //       final groupDoc =
+  //       FirebaseFirestore.instance.collection('groups').doc(groupId);
+  //       final docSnapshot = await groupDoc.get();
+  //       final data = docSnapshot.data();
+  //
+  //       if (data != null) {
+  //         groupMembersIds = data['members'];
+  //
+  //         //Removes the current user
+  //         groupMembersIds.remove(userId);
+  //
+  //       }
+  //     } catch (e) {
+  //       print("Error retrieving group members: $e");
+  //     }
+  //   }
+  //   _memberIds = groupMembersIds;
+  //   notifyListeners();
+  // }
 
   void removeMember(int index) {
     members.removeAt(index);
+    memberIds.removeAt(index);
     notifyListeners();
   }
 
-  String reAddMember() {
-    return _members.toString();
+  void reAddMembers() {
+    members.clear();
+    members.addAll(_members);
+    notifyListeners();
   }
 
 

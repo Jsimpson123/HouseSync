@@ -24,6 +24,8 @@ class _FinancePageState extends State<FinancePage> {
   void initState() {
     super.initState();
     Provider.of<GroupViewModel>(context, listen: false).returnGroupMembersAsList(user!.uid);
+    Provider.of<GroupViewModel>(context, listen: false).memberIds;
+    Provider.of<GroupViewModel>(context, listen: false).members;
   }
 
   int index = 2;
@@ -43,11 +45,11 @@ class _FinancePageState extends State<FinancePage> {
           child: Column(
             children: [
                 Expanded(flex: 2, child: Container(color: Colors.red)),
-              Expanded(flex: 2, child: AddExpenseView()),
+              Expanded(flex: 2, child: Container(color: Colors.green,)),
               Expanded(flex: 6, child: Container(color: Colors.blue))
             ],
           )),
-      // floatingActionButton: AddTaskView(),
+      floatingActionButton: AddExpenseView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }

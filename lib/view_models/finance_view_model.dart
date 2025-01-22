@@ -10,7 +10,9 @@ class FinanceViewModel extends ChangeNotifier {
   Color colour3 = Colors.grey.shade800;
   Color colour4 = Colors.grey.shade900;
 
-  Future<bool> createExpense(String userId, String expenseName, double expenseAmount, List<String> assignedUsers) async {
+  double expenseAmount = 0;
+
+  Future<bool> createExpense(String userId, String expenseName, expenseAmount, List<Map<String, dynamic>> assignedUsers) async {
     //Creates an expense
     final groupRef = await _firestore.collection('expenses').add({
       'expenseCreatorId': userId,

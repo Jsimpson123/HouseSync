@@ -15,7 +15,6 @@ class TaskListView extends StatefulWidget {
 class _TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
-    UserViewModel userViewModel = UserViewModel();
     final User? user = FirebaseAuth.instance.currentUser;
 
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
