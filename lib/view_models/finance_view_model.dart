@@ -14,21 +14,35 @@ class FinanceViewModel extends ChangeNotifier {
 
   Future<bool> createExpense(String userId, String expenseName, expenseAmount, List<Map<String, dynamic>> assignedUsers) async {
     //Creates an expense
-    final groupRef = await _firestore.collection('expenses').add({
+    final expenseRef = await _firestore.collection('expenses').add({
       'expenseCreatorId': userId,
       'name': expenseName,
       'expenseAmount': expenseAmount,
       'assignedUsers': assignedUsers
     });
-
-    // //Adds the current user to the group
-    // await _firestore
-    //     .collection('users')
-    //     .doc(userId)
-    //     .update({'groupId': groupRef.id});
-
     notifyListeners();
     return true;
+  }
+
+  //This and the following methods will be used to display expense data in some sort of card 
+  Future<String?> returnExpenseName(String expenseId) async {
+    //Retrieves an expense
+    final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();
+
+    if (expenseDoc.exists) {
+      try {
+        final expenseName = await expenseDoc.data()?['name'];
+        final data = expenseName.data();
+
+        if (data != null) {
+          return data['name'] as String?;
+        }
+      } catch (e) {
+        print("Error retrieving expense name: $e");
+      }
+      notifyListeners();
+    }
+    return null;
   }
 
   //Bottom sheet builder
