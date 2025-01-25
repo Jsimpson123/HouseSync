@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/finance_model.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
+import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 class FinanceViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -43,8 +44,6 @@ class FinanceViewModel extends ChangeNotifier {
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
 
-    print(newExpense.assignedUsers);
-
     //Creates an expense
     await _firestore.collection('expenses').doc(newExpense.expenseId).set({
       'expenseCreatorId': newExpense.expenseCreatorId,
@@ -54,7 +53,12 @@ class FinanceViewModel extends ChangeNotifier {
       'groupId': groupId
     });
 
-    print(newExpense.assignedUsers);
+    for (int i = 0; i < newExpense.assignedUsers.length; i++) {
+      //Updates the assignedTasks field of the assigned users with the new expense
+      await _firestore.collection('users').doc(newExpense.assignedUsers[i]['userId']).update({
+        'assignedExpenses': FieldValue.arrayUnion([newExpense.expenseId])
+      });
+    }
 
     _expenses.add(newExpense);
     notifyListeners();
@@ -81,6 +85,28 @@ class FinanceViewModel extends ChangeNotifier {
     }
     return null;
   }
+
+  // Future<List<String>> returnCurrentUserExpenses(String userId) async {
+  //
+  //   //Retrieves an expense
+  //   final expenseDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  //   final expenseIds = await expenseDoc.data()?['assignedExpenses'];
+  //
+  //   if (expenseDoc.exists) {
+  //     try {
+  //       final expenseName = await expenseDoc.data()?['name'];
+  //       final data = expenseName.data();
+  //
+  //       if (data != null) {
+  //         return data['name'] as String?;
+  //       }
+  //     } catch (e) {
+  //       print("Error retrieving expense name: $e");
+  //     }
+  //     notifyListeners();
+  //   }
+  //   return null;
+  // }
 
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {

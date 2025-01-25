@@ -5,6 +5,7 @@ class HouseSyncUser {
   String email;
   String? groupId;
   List<String> assignedTasks;
+  List<String> assignedExpenses;
 
   //Add required to the first three parameters - currently getting an error
   HouseSyncUser(
@@ -12,13 +13,15 @@ class HouseSyncUser {
       required this.username,
       required this.email,
         required this.assignedTasks,
+        required this.assignedExpenses,
       this.groupId,});
 
   //Constructor for a new User
   HouseSyncUser.newUser(this.username, this.email)
       : userId = '',
         groupId = '',
-        assignedTasks = [];
+        assignedTasks = [],
+        assignedExpenses = [];
 
   //Method that converts User to a map for database storage
   Map<String, dynamic> toMap() {
@@ -33,7 +36,8 @@ class HouseSyncUser {
         username: map['username'],
         email: map['email'],
         groupId: map['groupId'],
-        assignedTasks: List<String>.from(map['tasks'])
+        assignedTasks: List<String>.from(map['tasks']),
+        assignedExpenses: List<String>.from(map['expenses'])
     );
   }
 }
