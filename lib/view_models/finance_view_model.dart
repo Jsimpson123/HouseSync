@@ -1,30 +1,67 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_accommodation_management_app/models/finance_model.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
 
 class FinanceViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final List<Expense> _expenses = <Expense>[];
+  List<Expense> get expenses => List.unmodifiable(_expenses);
 
   Color colour1 = Colors.grey.shade50;
   Color colour2 = Colors.grey.shade200;
   Color colour3 = Colors.grey.shade800;
   Color colour4 = Colors.grey.shade900;
 
-  double expenseAmount = 0;
+  Future <void> loadExpenses() async {
+    User? user = FirebaseAuth.instance.currentUser;
 
-  Future<bool> createExpense(String userId, String expenseName, expenseAmount, List<Map<String, dynamic>> assignedUsers) async {
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    final expenseGroupQuery = FirebaseFirestore.instance
+        .collection('expenses')
+        .where('groupId', isEqualTo: groupId)
+        .get();
+
+    final snapshot = await expenseGroupQuery;
+    _expenses.clear();
+
+    for (var doc in snapshot.docs) {
+      _expenses.add(Expense.fromMap(doc.id, doc.data()));
+    }
+    notifyListeners();
+  }
+
+  Future<bool> createExpense(Expense newExpense) async {
+    newExpense.generateId();
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    print(newExpense.assignedUsers);
+
     //Creates an expense
-    final expenseRef = await _firestore.collection('expenses').add({
-      'expenseCreatorId': userId,
-      'name': expenseName,
-      'expenseAmount': expenseAmount,
-      'assignedUsers': assignedUsers
+    await _firestore.collection('expenses').doc(newExpense.expenseId).set({
+      'expenseCreatorId': newExpense.expenseCreatorId,
+      'name': newExpense.name,
+      'expenseAmount': newExpense.expenseAmount,
+      'assignedUsers': newExpense.assignedUsers,
+      'groupId': groupId
     });
+
+    print(newExpense.assignedUsers);
+
+    _expenses.add(newExpense);
     notifyListeners();
     return true;
   }
 
-  //This and the following methods will be used to display expense data in some sort of card 
+  //This and the following methods will be used to display expense data in some sort of card
   Future<String?> returnExpenseName(String expenseId) async {
     //Retrieves an expense
     final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();

@@ -18,11 +18,9 @@ class TaskViewModel extends ChangeNotifier {
   int get numTasksRemaining => _tasks.where((task) => !task.isCompleted).length;
 
   Future <void> loadTasks() async {
-
     User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc =
-    await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
 
     final taskGroupQuery = FirebaseFirestore.instance
@@ -30,10 +28,8 @@ class TaskViewModel extends ChangeNotifier {
         .where('groupId', isEqualTo: groupId)
         .get();
 
-
     final snapshot = await taskGroupQuery;
     _tasks.clear();
-
 
     for (var doc in snapshot.docs) {
       _tasks.add(Task.fromMap(doc.id, doc.data()));
@@ -46,8 +42,7 @@ class TaskViewModel extends ChangeNotifier {
 
     User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc =
-    await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
 
         await _firestore.collection('tasks').doc(newTask.taskId).set({

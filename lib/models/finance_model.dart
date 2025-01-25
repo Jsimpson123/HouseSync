@@ -1,9 +1,11 @@
+import 'package:uuid/uuid.dart';
+
 class Expense {
   String expenseId;
   String expenseCreatorId;
   String name;
   double expenseAmount;
-  List<String> assignedUsers;
+  List<Map<String, dynamic>> assignedUsers = [];
 
   Expense({
     required this.expenseId,
@@ -14,24 +16,35 @@ class Expense {
 });
 
   //Constructor for a new Expense
-  Expense.newExpense(this.expenseCreatorId, this.name, this.expenseAmount, this.assignedUsers)
+  Expense.newExpense(
+      this.expenseCreatorId,
+      this.name,
+      this.expenseAmount,
+      this.assignedUsers)
       : expenseId = '';
 
-  // //Method that converts Group to a map for database storage
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'name': name,
-  //     'members': members
-  //   };
-  // }
-  //
-  // //Factory constructor to create a Group from a Firestore document snapshot
-  // factory Group.fromMap(String groupId, Map<String, dynamic> map) {
-  //   return Group(
-  //       groupId: groupId,
-  //       name: map['name'],
-  //       groupCode: map['groupCode'],
-  //       members: List<String>.from(map['members'])
-  //   );
-  // }
+  //Method that converts Expense to a map for database storage
+  Map<String, dynamic> toMap() {
+    return {
+      'expenseCreatorId': expenseCreatorId,
+      'name': name,
+      'expenseAmount': expenseAmount,
+      'assignedUsers': assignedUsers
+    };
+  }
+
+  //Factory constructor to create a Group from a Firestore document snapshot
+  factory Expense.fromMap(String expenseId, Map<String, dynamic> map) {
+    return Expense(
+        expenseId: expenseId,
+        expenseCreatorId: map['expenseCreatorId'],
+        name: map['name'],
+        expenseAmount: map['expenseAmount'],
+        assignedUsers: List<Map<String, dynamic>>.from(map['assignedUsers'])
+    );
+  }
+
+  void generateId() {
+    expenseId = Uuid().v4();
+  }
 }

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
+import 'package:shared_accommodation_management_app/view_models/finance_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/add_expense_view.dart';
 
@@ -26,6 +27,7 @@ class _FinancePageState extends State<FinancePage> {
     Provider.of<GroupViewModel>(context, listen: false).returnGroupMembersAsList(user!.uid);
     Provider.of<GroupViewModel>(context, listen: false).memberIds;
     Provider.of<GroupViewModel>(context, listen: false).members;
+    Provider.of<FinanceViewModel>(context, listen: false).loadExpenses();
   }
 
   int index = 2;

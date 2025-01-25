@@ -7,7 +7,12 @@ class Task {
   bool isCompleted;
 
   //Constructor
-  Task({required this.taskId, required this.title, required this.assignedUser, this.isCompleted = false});
+  Task({
+    required this.taskId,
+    required this.title,
+    required this.assignedUser,
+    this.isCompleted = false
+  });
 
   //Constructor for a new task
   Task.newTask(this.title)
