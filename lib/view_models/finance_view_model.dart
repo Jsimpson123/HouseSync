@@ -11,6 +11,9 @@ class FinanceViewModel extends ChangeNotifier {
   final List<Expense> _expenses = <Expense>[];
   List<Expense> get expenses => List.unmodifiable(_expenses);
 
+  final List<Expense> _assignedUsers = <Expense>[];
+  List<Expense> get assignedUsers => List.unmodifiable(_assignedUsers);
+
   Color colour1 = Colors.grey.shade50;
   Color colour2 = Colors.grey.shade200;
   Color colour3 = Colors.grey.shade800;
@@ -65,6 +68,10 @@ class FinanceViewModel extends ChangeNotifier {
     return true;
   }
 
+  String getExpenseTitle(int expenseIndex) {
+    return _expenses[expenseIndex].name;
+  }
+
   //This and the following methods will be used to display expense data in some sort of card
   Future<String?> returnExpenseName(String expenseId) async {
     //Retrieves an expense
@@ -86,27 +93,97 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  // Future<List<String>> returnCurrentUserExpenses(String userId) async {
-  //
-  //   //Retrieves an expense
-  //   final expenseDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-  //   final expenseIds = await expenseDoc.data()?['assignedExpenses'];
-  //
-  //   if (expenseDoc.exists) {
-  //     try {
-  //       final expenseName = await expenseDoc.data()?['name'];
-  //       final data = expenseName.data();
-  //
-  //       if (data != null) {
-  //         return data['name'] as String?;
-  //       }
-  //     } catch (e) {
-  //       print("Error retrieving expense name: $e");
-  //     }
-  //     notifyListeners();
-  //   }
-  //   return null;
-  // }
+  //Modify and finish this method
+  Future<List?> returnGroupExpensesIds(String userId) async {
+    List<dynamic> currentUserExpenses = [];
+
+    final expenseDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final expenseIds = await expenseDoc.data()?['assignedExpenses'];
+
+      try {
+          currentUserExpenses = expenseIds;
+          return currentUserExpenses;
+      } catch (e) {
+        print("Error retrieving expense name: $e");
+      }
+      notifyListeners();
+    return null;
+  }
+
+  Future <String?> returnAssignedExpenseUsernames (String expenseId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      String expenseMembersNamesFormatted = "";
+
+      if (data != null) {
+        List assignedUsers = data['assignedUsers'];
+        List<dynamic> userIds = [];
+        List<String> assignedUserNames = [];
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          userIds.add(data['assignedUsers'][i]['userId']);
+
+          final expenseUserDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userIds[i])
+              .get();
+
+          final expenseMemberName = await expenseUserDoc.data()?['username'];
+
+          assignedUserNames.add(expenseMemberName);
+
+          expenseMembersNamesFormatted = assignedUserNames
+              .toString()
+              .replaceAll("[", "")
+              .replaceAll("]", "\n");
+        }
+        return expenseMembersNamesFormatted.toString();
+
+      }
+    } catch (e) {
+      print("Error retrieving username: $e");
+    }
+    return null;
+  }
+
+  Future<int?> returnAssignedExpenseAmount (String expenseId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        int expenseAmount = data['expenseAmount'];
+        // List<int> expenseAmounts = [];
+        //
+        // for (int i = 0; i < expenseAmounts.length; i++) {
+        //   expenseAmounts.add(expenseAmount);
+        //
+        //   final expenseUserDoc = await FirebaseFirestore.instance
+        //       .collection('users')
+        //       .doc(userIds[i])
+        //       .get();
+        //
+        //   final expenseMemberName = await expenseUserDoc.data()?['username'];
+        //
+        //   assignedUserNames.add(expenseMemberName);
+        //
+        //   expenseMembersNamesFormatted = assignedUserNames
+        //       .toString()
+        //       .replaceAll("[", "")
+        //       .replaceAll("]", "");
+        // }
+        return expenseAmount;
+
+      }
+    } catch (e) {
+      print("Error retrieving Amount: $e");
+    }
+    return null;
+  }
 
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {

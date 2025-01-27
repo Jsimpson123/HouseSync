@@ -151,6 +151,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   _passwordController.text.length >= 6) {
                 print("User was successfully created");
 
+                //Make functionality so cant naviagate unless wifi working
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
               }

@@ -175,14 +175,12 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<String?> returnGroupMembers(String userId) async {
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final groupId = await userDoc.data()?['groupId'];
 
     if (groupId != null) {
       try {
-        final groupDoc =
-            FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
         final docSnapshot = await groupDoc.get();
         final data = docSnapshot.data();
 
