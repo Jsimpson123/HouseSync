@@ -11,8 +11,10 @@ class FinanceViewModel extends ChangeNotifier {
   final List<Expense> _expenses = <Expense>[];
   List<Expense> get expenses => List.unmodifiable(_expenses);
 
-  final List<Expense> _assignedUsers = <Expense>[];
-  List<Expense> get assignedUsers => List.unmodifiable(_assignedUsers);
+  final List<String> _assignedUsers = <String>[];
+  List<String> get assignedUsers => List.unmodifiable(_assignedUsers);
+
+  //int get numAssignedUsers => _expenses.where((expense) => expense.assignedUsers.isNotEmpty).length;
 
   Color colour1 = Colors.grey.shade50;
   Color colour2 = Colors.grey.shade200;
@@ -135,18 +137,92 @@ class FinanceViewModel extends ChangeNotifier {
 
           assignedUserNames.add(expenseMemberName);
 
+          _assignedUsers.add(expenseMemberName);
+
           expenseMembersNamesFormatted = assignedUserNames
               .toString()
               .replaceAll("[", "")
               .replaceAll("]", "\n");
         }
         return expenseMembersNamesFormatted.toString();
-
       }
     } catch (e) {
       print("Error retrieving username: $e");
     }
     return null;
+  }
+
+  Future <List<String>> returnAssignedExpenseUsernamesList (String expenseId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List assignedUsers = data['assignedUsers'];
+        List<dynamic> userIds = [];
+        List<String> assignedUserNames = [];
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          userIds.add(data['assignedUsers'][i]['userId']);
+
+          final expenseUserDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userIds[i])
+              .get();
+
+          final expenseMemberName = await expenseUserDoc.data()?['username'];
+
+          assignedUserNames.add(expenseMemberName);
+        }
+        return assignedUserNames;
+      }
+    } catch (e) {
+      print("Error retrieving username: $e");
+    }
+     return [];
+  }
+
+  Future<List> returnAssignedExpenseUserIdsList (String expenseId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List assignedUsers = data['assignedUsers'];
+        List<dynamic> userIds = [];
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          userIds.add(data['assignedUsers'][i]['userId']);
+        }
+        return userIds;
+      }
+    } catch (e) {
+      print("Error retrieving UserId: $e");
+    }
+    return [];
+  }
+
+  Future<List> returnAssignedUsersAmountOwedList (String expenseId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List assignedUsers = data['assignedUsers'];
+        List<dynamic> amounts = [];
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          amounts.add(data['assignedUsers'][i]['amount']);
+        }
+        return amounts;
+      }
+    } catch (e) {
+      print("Error retrieving amounts: $e");
+    }
+    return [];
   }
 
   Future<int?> returnAssignedExpenseAmount (String expenseId) async {
@@ -157,32 +233,51 @@ class FinanceViewModel extends ChangeNotifier {
 
       if (data != null) {
         int expenseAmount = data['expenseAmount'];
-        // List<int> expenseAmounts = [];
-        //
-        // for (int i = 0; i < expenseAmounts.length; i++) {
-        //   expenseAmounts.add(expenseAmount);
-        //
-        //   final expenseUserDoc = await FirebaseFirestore.instance
-        //       .collection('users')
-        //       .doc(userIds[i])
-        //       .get();
-        //
-        //   final expenseMemberName = await expenseUserDoc.data()?['username'];
-        //
-        //   assignedUserNames.add(expenseMemberName);
-        //
-        //   expenseMembersNamesFormatted = assignedUserNames
-        //       .toString()
-        //       .replaceAll("[", "")
-        //       .replaceAll("]", "");
-        // }
-        return expenseAmount;
 
+        return expenseAmount;
       }
     } catch (e) {
       print("Error retrieving Amount: $e");
     }
     return null;
+  }
+
+  //find the userid inside map to minus amount owed
+  Future<void> updateUserAmountPaid(String expenseId, String userId, double amountPaid) async {
+    try {
+      final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await expenseDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List assignedUsers = data['assignedUsers'];
+        double totalAmount = data['expenseAmount'];
+
+        var amount = 'amount';
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          if (assignedUsers[i]['userId'] == userId) {
+            double userAmount = double.parse(assignedUsers[i]['amount']);
+
+
+            await FirebaseFirestore.instance.collection('expenses')
+                .doc(expenseId)
+                .update({
+              'expenseAmount' :  totalAmount - amountPaid
+            });
+
+            //Fix this so it doesnt delete the other fields in the db
+            await FirebaseFirestore.instance.collection('expenses')
+                .doc(expenseId)
+                .update({
+              'assignedUsers.$i.$amount' : userAmount - amountPaid
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error retrieving Amount: $e");
+    }
   }
 
   //Bottom sheet builder
