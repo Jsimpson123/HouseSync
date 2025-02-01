@@ -89,10 +89,10 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                   }),
                             ),
                             trailing: SizedBox(width: 100,
-                              child: FutureBuilder<int?>(
+                              child: FutureBuilder<double?>(
                                   future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
                                   builder: (BuildContext context,
-                                        AsyncSnapshot<int?> snapshot) {
+                                        AsyncSnapshot<double?> snapshot) {
                                     if ("${snapshot.data}" == "null") {
                                       return const Text(
                                           ""); //Due to a delay in the username loading
@@ -170,6 +170,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                             itemCount: snapshot.data?[0]!.length,
                                             itemBuilder: (context, index) {
                                               TextEditingController enteredUserAmountController = TextEditingController();
+                                              // double amountOwed = double.parse(snapshot.data?[1]![index]);
                                                   return Container(
                                                       decoration: BoxDecoration(
                                                           color: viewModel.colour1,
@@ -188,21 +189,26 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
 
                                                         subtitle: user?.uid == snapshot.data?[2][index]
                                                             ? TextField(
-                                                          decoration:
-                                                          const InputDecoration(
-                                                              hintText:
-                                                              "Amount Owed",
-                                                              border:
-                                                              OutlineInputBorder()),
-                                                          controller:
-                                                          enteredUserAmountController,
+                                                          decoration: const InputDecoration(
+                                                              hintText: "Amount Owed",
+                                                              border: OutlineInputBorder()),
+                                                          controller: enteredUserAmountController,
                                                         ) : null,
 
-                                                        trailing: IconButton(
-                                                            onPressed: () async =>
-                                                            await viewModel.updateUserAmountPaid(expenseId, user!.uid, double.parse(enteredUserAmountController.text)),
-                                                            icon: Icon(
-                                                                Icons.add)),
+                                                        trailing:
+                                                           IconButton(
+                                                            onPressed: () async {
+                                                              setState(() async {
+                                                                if (enteredUserAmountController.text.isNotEmpty) {
+                                                                  await viewModel.updateUserAmountPaid(
+                                                                      expenseId,
+                                                                      user!.uid,
+                                                                      double.parse(enteredUserAmountController.text)
+                                                                  );
+                                                                }
+                                                              });
+
+                                              }, icon: Icon(Icons.add))
                                                       ));
                                             });
                                       }

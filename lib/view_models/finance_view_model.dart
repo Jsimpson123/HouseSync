@@ -225,14 +225,14 @@ class FinanceViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future<int?> returnAssignedExpenseAmount (String expenseId) async {
+  Future<double?> returnAssignedExpenseAmount (String expenseId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await taskDoc.get();
       final data = docSnapshot.data();
 
       if (data != null) {
-        int expenseAmount = data['expenseAmount'];
+        double expenseAmount = data['expenseAmount'];
 
         return expenseAmount;
       }
@@ -253,25 +253,37 @@ class FinanceViewModel extends ChangeNotifier {
         List assignedUsers = data['assignedUsers'];
         double totalAmount = data['expenseAmount'];
 
-        var amount = 'amount';
+        Map<String, dynamic> currentUserExpenseDetails;
 
         for (int i = 0; i < assignedUsers.length; i++) {
           if (assignedUsers[i]['userId'] == userId) {
+            //Retrieves the users expense details and assigns it to a map
+            currentUserExpenseDetails = assignedUsers[i];
+            
             double userAmount = double.parse(assignedUsers[i]['amount']);
 
-
-            await FirebaseFirestore.instance.collection('expenses')
-                .doc(expenseId)
-                .update({
+            //Updates the total expense amount
+            await expenseDoc.update({
               'expenseAmount' :  totalAmount - amountPaid
             });
 
-            //Fix this so it doesnt delete the other fields in the db
-            await FirebaseFirestore.instance.collection('expenses')
-                .doc(expenseId)
-                .update({
-              'assignedUsers.$i.$amount' : userAmount - amountPaid
+            //Remove the current user expense details (Firebase doesn't support directly updating specific items)
+            await expenseDoc.update({
+              'assignedUsers' : FieldValue.arrayRemove([currentUserExpenseDetails])
             });
+
+            //New map with updated user expense details
+            Map<String, dynamic> updatedUserExpenseDetails = {
+              'userId': userId,
+              'amount': (userAmount - amountPaid).toString()
+            };
+
+            //Updates the array with the new details
+            await expenseDoc.update({
+              'assignedUsers' : FieldValue.arrayUnion([updatedUserExpenseDetails])
+            });
+
+            notifyListeners();
           }
         }
       }
