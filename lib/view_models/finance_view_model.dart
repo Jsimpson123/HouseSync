@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/finance_model.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
+import 'package:shared_accommodation_management_app/pages/finance_page.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 class FinanceViewModel extends ChangeNotifier {
@@ -66,6 +67,21 @@ class FinanceViewModel extends ChangeNotifier {
     }
 
     _expenses.add(newExpense);
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> deleteExpense(String expenseId) async {
+    //Retrieves an expense
+    final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();
+
+    if (expenseDoc.exists) {
+      final expenseName = await expenseDoc.data()?['expenseAmount'];
+
+      if (expenseName == 0) {
+        await FirebaseFirestore.instance.collection('expenses').doc(expenseId).delete();
+      }
+    }
     notifyListeners();
     return true;
   }
@@ -242,6 +258,26 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
+  //THIS NEEDS CALLED
+  Future<String?> returnExpenseCreator(String expenseId) async{
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        String expenseCreator = data['expenseCreatorId'];
+
+        if (expenseCreator.isNotEmpty) {
+          return expenseCreator;
+        }
+      }
+    } catch (e) {
+      print("Error retrieving Amount: $e");
+    }
+    return null;
+  }
+
   //find the userid inside map to minus amount owed
   Future<void> updateUserAmountPaid(String expenseId, String userId, double amountPaid) async {
     try {
@@ -272,17 +308,19 @@ class FinanceViewModel extends ChangeNotifier {
               'assignedUsers' : FieldValue.arrayRemove([currentUserExpenseDetails])
             });
 
-            //New map with updated user expense details
-            Map<String, dynamic> updatedUserExpenseDetails = {
-              'userId': userId,
-              'amount': (userAmount - amountPaid).toString()
-            };
+            if (amountPaid != userAmount) {
+              //New map with updated user expense details
+              Map<String, dynamic> updatedUserExpenseDetails = {
+                'userId': userId,
+                'amount': (userAmount - amountPaid).toString()
+              };
 
-            //Updates the array with the new details
-            await expenseDoc.update({
-              'assignedUsers' : FieldValue.arrayUnion([updatedUserExpenseDetails])
-            });
-
+              //Updates the array with the new details
+              await expenseDoc.update({
+                'assignedUsers': FieldValue.arrayUnion(
+                    [updatedUserExpenseDetails])
+              });
+            }
             notifyListeners();
           }
         }

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../pages/finance_page.dart';
 import '../../view_models/finance_view_model.dart';
 
 class ExpenseCardListView extends StatefulWidget {
@@ -33,12 +34,6 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                       separatorBuilder: (context, index) {
                         return SizedBox(height: 15);
                       },
-                    // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    //     crossAxisCount: 2,
-                    //     crossAxisSpacing: 20,
-                    //     mainAxisSpacing: 20,
-                    //     // childAspectRatio: 8
-                    // ),
                       scrollDirection: Axis.vertical,
                       physics: ScrollPhysics(),
                       shrinkWrap: true,
@@ -52,7 +47,6 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                           child: ListTile(
                             leading: Icon(Icons.attach_money),
                             title: Container(width: 50,
-                                child: Align(
                                   alignment: Alignment.bottomCenter,
                                   child: FittedBox(
                                     fit: BoxFit.fitHeight,
@@ -62,7 +56,6 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
                                   ),
-                                ),
                             ),
                             subtitle: Container(width: 50,
                               child: FutureBuilder<String?>(
@@ -96,6 +89,17 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                     if ("${snapshot.data}" == "null") {
                                       return const Text(
                                           ""); //Due to a delay in the username loading
+                                    } else if ("${snapshot.data}" == "0") {
+                                      //FIX THIS
+                                      setState(() async {
+                                        await viewModel.deleteExpense(expense.expenseId);
+
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => FinancePage()));
+                                      });
+                                      return SizedBox();
                                     } else {
                                       return Align(
                                         alignment: Alignment.bottomRight,
@@ -112,7 +116,6 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                     }
                                   }),
                             ),
-
                             onTap: () => expenseDetailsPopup(context, expense.expenseId),
                           )
                         );
