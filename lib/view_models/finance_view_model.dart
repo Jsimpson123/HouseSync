@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/finance_model.dart';
-import 'package:shared_accommodation_management_app/models/user_model.dart';
-import 'package:shared_accommodation_management_app/pages/finance_page.dart';
-import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 class FinanceViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -12,8 +9,8 @@ class FinanceViewModel extends ChangeNotifier {
   final List<Expense> _expenses = <Expense>[];
   List<Expense> get expenses => List.unmodifiable(_expenses);
 
-  final List<String> _assignedUsers = <String>[];
-  List<String> get assignedUsers => List.unmodifiable(_assignedUsers);
+  // final List<String> _assignedUsers = <String>[];
+  // List<String> get assignedUsers => List.unmodifiable(_assignedUsers);
 
   //int get numAssignedUsers => _expenses.where((expense) => expense.assignedUsers.isNotEmpty).length;
 
@@ -153,7 +150,7 @@ class FinanceViewModel extends ChangeNotifier {
 
           assignedUserNames.add(expenseMemberName);
 
-          _assignedUsers.add(expenseMemberName);
+          // _assignedUsers.add(expenseMemberName);
 
           expenseMembersNamesFormatted = assignedUserNames
               .toString()

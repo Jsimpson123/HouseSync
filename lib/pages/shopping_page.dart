@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_accommodation_management_app/views/shopping_page_views/add_shopping_list_view.dart';
 
 import '../features/appbar_display.dart';
 import 'chores_page.dart';
@@ -21,8 +22,17 @@ class _ShoppingPageState extends State<ShoppingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarDisplay(),
-      body: Center(child: Text('Shopping')),
+      body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(flex: 2, child: Container(color: Colors.red)),
+              Expanded(flex: 2, child: Container(color: Colors.green,)),
+              Expanded(flex: 6, child: Container(color: Colors.green,)),
+              // Expanded(flex: 6, child: ExpenseCardListView())
+            ],
+          )),
+      floatingActionButton: AddShoppingListView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }
