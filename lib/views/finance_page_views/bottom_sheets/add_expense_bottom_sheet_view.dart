@@ -31,6 +31,7 @@ List<TextEditingController> controllers = [];
 double totalAmountOwed = 0;
 
 List<String> assignedUsers = <String>[];
+
 List<Map<String, dynamic>> assignedUserIds = [];
 
 bool isAddButtonEnabled() {
@@ -246,7 +247,6 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                             });
                                                           }
                                                         },
-
                                                         icon: Icon(
                                                             Icons.check),
                                                       )

@@ -4,19 +4,19 @@ class ShoppingList {
   String shoppingListId;
   String name;
   bool allItemsPurchased;
-  // List<String> items = [];
+  List<Map<String, dynamic>> items = [];
 
   ShoppingList({
     required this.shoppingListId,
     required this.name,
     this.allItemsPurchased = false,
-    // required this.items
+    required this.items
   });
 
   //Constructor for a new Shopping List
   ShoppingList.newShoppingList(
       this.name,
-      //this.items
+      this.items
   )
       : shoppingListId = '',
         allItemsPurchased = false;
@@ -25,7 +25,7 @@ class ShoppingList {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      //'items': items,
+      'items': items,
       'allItemsPurchased': allItemsPurchased
     };
   }
@@ -36,7 +36,7 @@ class ShoppingList {
         shoppingListId: shoppingListId,
         name: map['name'],
         allItemsPurchased: map['allItemsPurchased'] ?? false,
-        //items: List<String>.from(map['items'])
+        items: List<Map<String, dynamic>>.from(map['items'])
     );
   }
 

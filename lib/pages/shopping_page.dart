@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 import 'package:shared_accommodation_management_app/views/shopping_page_views/add_shopping_list_view.dart';
+import 'package:shared_accommodation_management_app/views/shopping_page_views/shopping_list_card_list_view.dart';
 
 import '../features/appbar_display.dart';
+import '../view_models/finance_view_model.dart';
 import 'chores_page.dart';
 import 'finance_page.dart';
 import 'home_page.dart';
@@ -17,6 +21,11 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ShoppingViewModel>(context, listen: false).loadShoppingLists();
+  }
   int index = 3;
   List<Widget> pages = [HomePage(),ChoresPage(),FinancePage(),ShoppingPage(),MedicalPage()];
   @override
@@ -28,8 +37,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
             children: [
               Expanded(flex: 2, child: Container(color: Colors.red)),
               Expanded(flex: 2, child: Container(color: Colors.green,)),
-              Expanded(flex: 6, child: Container(color: Colors.green,)),
-              // Expanded(flex: 6, child: ExpenseCardListView())
+              Expanded(flex: 6, child: ShoppingListCardListView())
             ],
           )),
       floatingActionButton: AddShoppingListView(),

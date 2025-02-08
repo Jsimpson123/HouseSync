@@ -8,6 +8,8 @@ import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 import 'package:shared_accommodation_management_app/views/shopping_page_views/bottom_sheets/add_shopping_list_items_bottom_sheet_view.dart';
+import 'package:uuid/uuid.dart';
+import 'package:uuid/v4.dart';
 
 import '../../../models/shopping_model.dart';
 import '../../../view_models/finance_view_model.dart';
@@ -28,8 +30,10 @@ User? user = FirebaseAuth.instance.currentUser;
 
 final TextEditingController enteredShoppingListNameController =
 TextEditingController();
-// final TextEditingController enteredExpenseAmountController =
-// TextEditingController();
+final TextEditingController enteredItemNameController =
+TextEditingController();
+
+List<Map<String, dynamic>> addedItems = [];
 
 List<TextEditingController> controllers = [];
 
@@ -38,8 +42,8 @@ bool isAddButtonEnabled() {
 }
 
 bool isSubmitButtonEnabled() {
-  return enteredShoppingListNameController.text.isNotEmpty;
-
+  return enteredShoppingListNameController.text.isNotEmpty
+      && addedItems.isNotEmpty;
 }
 
 FinanceViewModel financeViewModel = FinanceViewModel();
@@ -107,12 +111,14 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                           ? null
                           : ()  async {
                         //If the required fields have data then create the expense
-                        if (enteredShoppingListNameController.text.isNotEmpty)
+                        if (enteredShoppingListNameController.text.isNotEmpty && addedItems.isNotEmpty)
                         {
-                          ShoppingList newShoppingList = ShoppingList.newShoppingList(enteredShoppingListNameController.text);
+                          ShoppingList newShoppingList = ShoppingList.newShoppingList(enteredShoppingListNameController.text, addedItems);
 
                           //Sending data to the db
                           await viewModel.createShoppingList(newShoppingList);
+
+                          addedItems.clear();
 
                           setState(() {
                             //Resets everything to ensure values don't remain when creating a new expense
@@ -151,33 +157,51 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: viewModel.colour2,
-                                        borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(30),
-                                            bottom: Radius.circular(30))),
-                                  child: SizedBox(
-                                    height: 60,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: viewModel.colour3,
-                                            foregroundColor: viewModel.colour1
-                                        ),
-                                        onPressed: () {
-                                          viewModel.displayBottomSheet(
-                                              AddShoppingListItemsBottomSheetView(), context);
-                                        },
-                                        child: Icon(
-                                            Icons.add)),
-                                  ),
-                                )
-                            ),
-                          ],
-                        ),
+                        child: Padding(
+                      padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context)
+                          .viewInsets
+                          .bottom), //Ensures the keyboard doesn't cover the textfields
+                      child: Container(
+                          height: 100,
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextField(
+                                  decoration: const InputDecoration(
+                                      hintText: "Item Name", border: OutlineInputBorder()),
+                                  controller: enteredItemNameController,
+                                  onSubmitted: (value) {
+                                    // if (enteredItemNameController.text.isNotEmpty) {
+                                    //   addedItems.add({
+                                    //     'itemName': enteredItemNameController.text,
+                                    //     'isPurchased': false,
+                                    //     'itemId': Uuid().v4()
+                                    //   });
+                                    //   enteredItemNameController.clear();
+                                    // }
+                                    // Navigator.of(context).pop(); //Makes bottom task bar disappear
+                                  }
+                              ),
+                              IconButton(
+                                   onPressed: () {
+                                    if (enteredItemNameController.text.isNotEmpty) {
+                                      setState(() {
+                                        addedItems.add({
+                                          'itemName': enteredItemNameController
+                                              .text,
+                                          'isPurchased': false,
+                                          'itemId': Uuid().v4()
+                                        });
+                                        showToast(message: "Added: " + enteredItemNameController.text);
+                                        enteredItemNameController.clear();
+                                      });
+                                    }
+                                   },
+                                  icon: Icon(Icons.check))
+                            ],
+                          )))
                       ),
                     ),
                   ),

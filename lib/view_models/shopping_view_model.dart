@@ -22,6 +22,26 @@ class ShoppingViewModel extends ChangeNotifier {
   Color colour3 = Colors.grey.shade800;
   Color colour4 = Colors.grey.shade900;
 
+  Future <void> loadShoppingLists() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    final shoppingListGroupQuery = FirebaseFirestore.instance
+        .collection('shoppingLists')
+        .where('groupId', isEqualTo: groupId)
+        .get();
+
+    final snapshot = await shoppingListGroupQuery;
+    _shoppingLists.clear();
+
+    for (var doc in snapshot.docs) {
+      _shoppingLists.add(ShoppingList.fromMap(doc.id, doc.data()));
+    }
+    notifyListeners();
+  }
+
   Future<bool> createShoppingList(ShoppingList newShoppingList) async {
     newShoppingList.generateId();
 
@@ -33,7 +53,7 @@ class ShoppingViewModel extends ChangeNotifier {
     //Creates a shopping list
     await _firestore.collection('shoppingLists').doc(newShoppingList.shoppingListId).set({
       'name': newShoppingList.name,
-      // 'items': newShoppingList.items,
+      'items': newShoppingList.items,
       'allItemsPurchased': newShoppingList.allItemsPurchased,
       'groupId': groupId
     });
@@ -44,19 +64,70 @@ class ShoppingViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future<void> addShoppingItem(ShoppingItem newItem, String shoppingListId) async {
-    newItem.generateId();
-
-    await _firestore.collection('shoppingLists').doc(shoppingListId)
-        .collection('shoppingListItems').add({
-    'itemId': newItem.itemId,
-    'title': newItem.title,
-    'isPurchased': newItem.isPurchased,
-    });
-
-    _items.add(newItem);
-    notifyListeners();
+  String getShoppingListTitle(int shoppingListIndex) {
+    return _shoppingLists[shoppingListIndex].name;
   }
+
+  Future <int?> returnShoppingListLength (String shoppingListId) async {
+    try {
+      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final docSnapshot = await shoppingDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List items = data['items'];
+        return items.length;
+      }
+    } catch (e) {
+      print("Error retrieving items length: $e");
+    }
+    return null;
+  }
+
+  Future <List<String>> returnShoppingListItemsList (String shoppingListId) async {
+    try {
+      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final docSnapshot = await shoppingDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List items = data['items'];
+        // List<dynamic> userIds = [];
+        List<String> itemNames = [];
+
+        for (int i = 0; i < items.length; i++) {
+          itemNames.add(data['items'][i]['itemName']);
+
+          // final expenseUserDoc = await FirebaseFirestore.instance
+          //     .collection('users')
+          //     .doc(userIds[i])
+          //     .get();
+
+          // final expenseMemberName = await expenseUserDoc.data()?['username'];
+          //
+          // assignedUserNames.add(expenseMemberName);
+        }
+        return itemNames;
+      }
+    } catch (e) {
+      print("Error retrieving item names: $e");
+    }
+    return [];
+  }
+
+  // Future<void> addShoppingItem(ShoppingItem newItem, String shoppingListId) async {
+  //   newItem.generateId();
+  //
+  //   await _firestore.collection('shoppingLists').doc(shoppingListId)
+  //       .collection('shoppingListItems').add({
+  //   'itemId': newItem.itemId,
+  //   'title': newItem.title,
+  //   'isPurchased': newItem.isPurchased,
+  //   });
+  //
+  //   _items.add(newItem);
+  //   notifyListeners();
+  // }
 
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
