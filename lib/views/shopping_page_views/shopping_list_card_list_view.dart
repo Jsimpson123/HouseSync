@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/models/shopping_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 
 import '../../pages/finance_page.dart';
@@ -109,7 +110,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                       child: FittedBox(
                                         fit: BoxFit.fitHeight,
                                         child: Text(
-                                            "Owed: \n${snapshot.data}",
+                                            "Items: \n${snapshot.data}",
                                             style: TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.bold,
@@ -119,7 +120,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                   }
                                 }),
                           ),
-                          onTap: () => shoppingListDetailsPopup(context, shoppingList.shoppingListId),
+                          onTap: () => shoppingListDetailsPopup(context, shoppingList),
                         )
                     );
                   }),
@@ -129,15 +130,14 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
       );
     });
   }
-  Future<void> shoppingListDetailsPopup(BuildContext context, String shoppingListId) async {
-    User? user = FirebaseAuth.instance.currentUser;
+  Future<void> shoppingListDetailsPopup(BuildContext context, ShoppingList shoppingList) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
-            Future itemsFuture = viewModel.returnShoppingListItemsList(shoppingListId);
-            // Future amountsFuture = viewModel.returnAssignedUsersAmountOwedList(expenseId);
-            // Future userIdsFuture = viewModel.returnAssignedExpenseUserIdsList(expenseId);
+            Future itemNamesFuture = viewModel.returnShoppingListItemsNamesList(shoppingList.shoppingListId);
+            Future itemStatusesFuture = viewModel.returnShoppingListItemsPurchaseStatusList(shoppingList.shoppingListId);
+            Future itemIdsFuture = viewModel.returnShoppingListItemsIdsList(shoppingList.shoppingListId);
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -151,6 +151,144 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                       child: Form(
                         child: Column(
                           children: <Widget>[
+                            // FutureBuilder<int?>(
+                            //   //If true
+                            //     future: viewModel.returnShoppingListItemsIdsListLength(shoppingList.shoppingListId),
+                            //     builder: (BuildContext context,
+                            //         AsyncSnapshot<int?> snapshot) {
+                            //       if ("${snapshot.data}" == "null") {
+                            //         return const Text(
+                            //             ""); //Due to a delay in the number loading
+                            //       } else {
+                            //         return Align(
+                            //           alignment: Alignment.bottomLeft,
+                            //           child: FittedBox(
+                            //             fit: BoxFit.fitHeight,
+                            //             child: Text(
+                            //                 "Number of items: \n${snapshot.data}",
+                            //                 style: TextStyle(
+                            //                     fontSize: 14,
+                            //                     fontWeight: FontWeight.bold,
+                            //                     color: viewModel.colour4)),
+                            //           ),
+                            //         );
+                            //       }
+                            //     }),
+
+                        Container(
+                          height: 50,
+                        width: 800,
+                        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        child: Row(
+                          children: [
+                            //Total Tasks
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: viewModel.colour2, borderRadius: BorderRadius.circular(10)),
+                                child: Column(children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: FittedBox(
+                                        child: FutureBuilder<int?>(
+                                              future: viewModel.returnShoppingListItemsIdsListLength(shoppingList.shoppingListId),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<int?> snapshot) {
+                                                if ("${snapshot.data}" == "null") {
+                                                  return const Text(
+                                                      ""); //Due to a delay in the number loading
+                                                } else {
+                                                  return Align(
+                                                    alignment: Alignment.bottomLeft,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.fitHeight,
+                                                      child: Text(
+                                                          "${snapshot.data}",
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: viewModel.colour4)),
+                                                    ),
+                                                  );
+                                                }
+                                              }),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: FittedBox(
+                                        child: Text("Total Items", style: TextStyle(
+                                            color: viewModel.colour4, fontWeight: FontWeight.w600
+                                        ),),
+                                      ),
+                                    ),
+                                  )
+                                ]),
+                              ),
+                            ),
+
+                            SizedBox(width: 20),
+
+                            //Remaining Tasks
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: viewModel.colour2, borderRadius: BorderRadius.circular(10)),
+                                child: Column(children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: FittedBox(
+                                        child: FutureBuilder<int?>(
+                                            future: viewModel.returnShoppingListNotPurchasedItemsLength(shoppingList.shoppingListId),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<int?> snapshot) {
+                                              if ("${snapshot.data}" == "null") {
+                                                return const Text(
+                                                    ""); //Due to a delay in the number loading
+                                              } else {
+                                                return Align(
+                                                  alignment: Alignment.bottomLeft,
+                                                  child: FittedBox(
+                                                    fit: BoxFit.fitHeight,
+                                                    child: Text(
+                                                        "${snapshot.data}",
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: viewModel.colour4)),
+                                                  ),
+                                                );
+                                              }
+                                            }),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: FittedBox(
+                                        child: Text("Remaining items", style: TextStyle(
+                                            color: viewModel.colour4, fontWeight: FontWeight.w600
+                                        ),),
+                                      ),
+                                    ),
+                                  )
+                                ]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                             Expanded(
                                 child: Container(
                                     decoration: BoxDecoration(
@@ -160,7 +298,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             bottom: Radius.circular(30))),
 
                                     child: FutureBuilder(
-                                        future: Future.wait([itemsFuture]),
+                                        future: Future.wait([itemNamesFuture, itemStatusesFuture, itemIdsFuture]),
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<dynamic>> snapshot) {
                                           if ("${snapshot.data}" == "null") {
@@ -175,8 +313,9 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                 },
                                                 itemCount: snapshot.data?[0]!.length,
                                                 itemBuilder: (context, index) {
-                                                  TextEditingController enteredUserAmountController = TextEditingController();
-                                                  // double amountOwed = double.parse(snapshot.data?[1]![index]);
+                                                  // String shoppingListId = snapshot.data?[0];
+                                                  bool isChecked = snapshot.data?[1][index];
+                                                  // print(snapshot.data?[0][index] + ": " + snapshot.data?[1][index].toString());
                                                   return Container(
                                                       decoration: BoxDecoration(
                                                           color: viewModel.colour1,
@@ -184,8 +323,19 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                           BorderRadius.circular(
                                                               20)),
                                                       child: ListTile(
-                                                          // leading: Text(
-                                                          //     snapshot.data?[1]![index]),
+                                                        leading: Checkbox(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(5)),
+                                                            side: BorderSide(width: 2, color: viewModel.colour3),
+                                                            checkColor: viewModel.colour1,
+                                                            activeColor: viewModel.colour3,
+                                                            value: isChecked,
+                                                            onChanged: (bool? newValue) async {
+                                                              setState(() {
+                                                                snapshot.data?[1][index] = newValue;
+                                                              });
+                                                              await viewModel.setItemValue(shoppingList, snapshot.data?[2][index], newValue!);
+                                                            }),
                                                           title: Text(
                                                               snapshot.data?[0]![index],
                                                               style: TextStyle(

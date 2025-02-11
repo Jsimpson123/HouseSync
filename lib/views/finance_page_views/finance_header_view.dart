@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
-import 'add_task_view.dart';
-import 'bottom_sheets/delete_task_bottom_sheet_view.dart';
 
-class ChoresHeaderView extends StatelessWidget {
-  const ChoresHeaderView({super.key});
+class FinanceHeaderView extends StatelessWidget {
+  const FinanceHeaderView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,7 @@ class ChoresHeaderView extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
-                          child: Text("Chores",
+                          child: Text("Finance",
                               style: TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.w900,
@@ -35,14 +33,6 @@ class ChoresHeaderView extends StatelessWidget {
                   ],
                 ),
               )),
-          // Delete Icon
-              Container(
-                margin: EdgeInsets.only(right: 100),
-                child: InkWell( onTap: () {
-                  viewModel.displayBottomSheet(DeleteTaskBottomSheetView(), context);
-                },
-                child: Icon(Icons.delete, size: 40)),
-              ),
         ],
       );
     });

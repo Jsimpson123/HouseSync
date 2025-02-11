@@ -1,14 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 import 'package:shared_accommodation_management_app/views/shopping_page_views/add_shopping_list_view.dart';
+import 'package:shared_accommodation_management_app/views/shopping_page_views/shopping_header_view.dart';
 import 'package:shared_accommodation_management_app/views/shopping_page_views/shopping_list_card_list_view.dart';
+import 'package:shared_accommodation_management_app/views/shopping_page_views/shopping_list_info_view.dart';
 
 import '../features/appbar_display.dart';
 import '../view_models/finance_view_model.dart';
+import '../view_models/user_view_model.dart';
+import '../views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
 import 'chores_page.dart';
 import 'finance_page.dart';
 import 'home_page.dart';
+import 'login_page.dart';
 import 'medical_page.dart';
 
 class ShoppingPage extends StatefulWidget {
@@ -21,6 +27,7 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
+
   @override
   void initState() {
     super.initState();
@@ -30,13 +37,88 @@ class _ShoppingPageState extends State<ShoppingPage> {
   List<Widget> pages = [HomePage(),ChoresPage(),FinancePage(),ShoppingPage(),MedicalPage()];
   @override
   Widget build(BuildContext context) {
+    UserViewModel userViewModel = UserViewModel();
+
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: userViewModel.colour2),
+
+              //User icon
+              currentAccountPicture: const Expanded(
+                  child: FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Icon(Icons.account_circle_rounded))),
+
+              //Username
+              accountName: FutureBuilder<String?>(
+                  future: userViewModel.returnCurrentUsername(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                    if ("${snapshot.data}" == "null") {
+                      return const Text(
+                          ""); //Due to a delay in the username loading
+                    } else {
+                      return Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Text("${snapshot.data}",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: userViewModel.colour4)),
+                        ),
+                      );
+                    }
+                  }),
+
+              //Email
+              accountEmail: FutureBuilder<String?>(
+                  future: userViewModel.returnCurrentEmail(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                    if ("${snapshot.data}" == "null") {
+                      return const Text(
+                          ""); //Due to a delay in the email loading
+                    } else {
+                      return Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Text("${snapshot.data}",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: userViewModel.colour4)),
+                        ),
+                      );
+                    }
+                  }),
+            ),
+            ListTile(
+              title: Text("Group"),
+              onTap: () => userViewModel.displayBottomSheet(
+                  GroupDetailsBottomSheetView(), context),
+            ),
+            ListTile(title: Text("Settings")),
+
+            ListTile(
+                title: Text("Logout"),
+                onTap: () async => await FirebaseAuth.instance.signOut()
+                    .then((value) =>
+                    Navigator.of(context)
+                        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()),(route) => false))
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
           bottom: false,
           child: Column(
             children: [
-              Expanded(flex: 2, child: Container(color: Colors.red)),
-              Expanded(flex: 2, child: Container(color: Colors.green,)),
+              Expanded(flex: 2, child: ShoppingHeaderView()),
+              Expanded(flex: 2, child: ShoppingListInfoView()),
               Expanded(flex: 6, child: ShoppingListCardListView())
             ],
           )),

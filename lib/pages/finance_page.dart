@@ -6,6 +6,7 @@ import 'package:shared_accommodation_management_app/view_models/finance_view_mod
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/add_expense_view.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/expense_card_list_view.dart';
+import 'package:shared_accommodation_management_app/views/finance_page_views/finance_header_view.dart';
 
 import '../features/appbar_display.dart';
 import 'chores_page.dart';
@@ -47,7 +48,7 @@ class _FinancePageState extends State<FinancePage> {
           bottom: false,
           child: Column(
             children: [
-                Expanded(flex: 2, child: Container(color: Colors.red)),
+                Expanded(flex: 2, child: FinanceHeaderView()),
               Expanded(flex: 2, child: Container(color: Colors.green,)),
               Expanded(flex: 6, child: ExpenseCardListView())
             ],

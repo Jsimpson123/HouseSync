@@ -21,7 +21,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  UserViewModel homeViewModel = UserViewModel();
   int index = 0;
   List<Widget> pages = [
     HomePage(),
