@@ -22,23 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int index = 0;
-  List<Widget> pages = [
-    HomePage(),
-    ChoresPage(),
-    FinancePage(),
-    ShoppingPage(),
-    MedicalPage()
-  ];
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBarDisplay(),
-  //     body: Center(child: Text('Home')),
-  //     bottomNavigationBar: setBottomNavigationBar(),
-  //   );
-  // }
-
+  List<Widget> pages = [HomePage(), ChoresPage(), FinancePage(), ShoppingPage(), MedicalPage()];
   @override
   Widget build(BuildContext context) {
     UserViewModel userViewModel = UserViewModel();

@@ -9,6 +9,8 @@ class FinanceViewModel extends ChangeNotifier {
   final List<Expense> _expenses = <Expense>[];
   List<Expense> get expenses => List.unmodifiable(_expenses);
 
+  int get numExpenses => _expenses.length;
+
   // final List<String> _assignedUsers = <String>[];
   // List<String> get assignedUsers => List.unmodifiable(_assignedUsers);
 

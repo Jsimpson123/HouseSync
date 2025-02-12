@@ -4,9 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/shopping_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 
-import '../../pages/finance_page.dart';
-import '../../view_models/finance_view_model.dart';
-
 class ShoppingListCardListView extends StatefulWidget {
   const ShoppingListCardListView({super.key});
 
@@ -59,30 +56,6 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                       fontWeight: FontWeight.bold)),
                             ),
                           ),
-                          // subtitle: Container(width: 50,
-                          //   child: FutureBuilder<String?>(
-                          //       future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
-                          //       builder: (BuildContext context,
-                          //           AsyncSnapshot<String?> snapshot) {
-                          //         if ("${snapshot.data}" == "null") {
-                          //           return const Text(
-                          //               ""); //Due to a delay in the username loading
-                          //         } else {
-                          //           return Align(
-                          //             alignment: Alignment.bottomLeft,
-                          //             child: FittedBox(
-                          //               fit: BoxFit.fitHeight,
-                          //               child: Text(
-                          //                   "Assigned Users: \n${snapshot.data}",
-                          //                   style: TextStyle(
-                          //                       fontSize: 14,
-                          //                       fontWeight: FontWeight.bold,
-                          //                       color: viewModel.colour4)),
-                          //             ),
-                          //           );
-                          //         }
-                          //       }),
-                          // ),
                           trailing: SizedBox(width: 100,
                             child: FutureBuilder<int?>(
                                 future: viewModel.returnShoppingListLength(shoppingList.shoppingListId),
@@ -90,20 +63,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     AsyncSnapshot<int?> snapshot) {
                                   if ("${snapshot.data}" == "null") {
                                     return const Text(
-                                        ""); //Due to a delay in the username loading
+                                        ""); //Due to a delay
                                   }
-                                  // else if ("${snapshot.data}" == "0") {
-                                  //   //FIX THIS
-                                  //   setState(() async {
-                                  //     await viewModel.deleteExpense(expense.expenseId);
-                                  //
-                                  //     Navigator.push(
-                                  //         context,
-                                  //         MaterialPageRoute(
-                                  //             builder: (context) => FinancePage()));
-                                  //   });
-                                  //   return SizedBox();
-                                  // }
                                   else {
                                     return Align(
                                       alignment: Alignment.bottomRight,
@@ -151,30 +112,6 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                       child: Form(
                         child: Column(
                           children: <Widget>[
-                            // FutureBuilder<int?>(
-                            //   //If true
-                            //     future: viewModel.returnShoppingListItemsIdsListLength(shoppingList.shoppingListId),
-                            //     builder: (BuildContext context,
-                            //         AsyncSnapshot<int?> snapshot) {
-                            //       if ("${snapshot.data}" == "null") {
-                            //         return const Text(
-                            //             ""); //Due to a delay in the number loading
-                            //       } else {
-                            //         return Align(
-                            //           alignment: Alignment.bottomLeft,
-                            //           child: FittedBox(
-                            //             fit: BoxFit.fitHeight,
-                            //             child: Text(
-                            //                 "Number of items: \n${snapshot.data}",
-                            //                 style: TextStyle(
-                            //                     fontSize: 14,
-                            //                     fontWeight: FontWeight.bold,
-                            //                     color: viewModel.colour4)),
-                            //           ),
-                            //         );
-                            //       }
-                            //     }),
-
                         Container(
                           height: 50,
                         width: 800,
@@ -193,28 +130,32 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     child: Align(
                                       alignment: Alignment.center,
                                       child: FittedBox(
-                                        child: FutureBuilder<int?>(
-                                              future: viewModel.returnShoppingListItemsIdsListLength(shoppingList.shoppingListId),
-                                              builder: (BuildContext context,
-                                                  AsyncSnapshot<int?> snapshot) {
-                                                if ("${snapshot.data}" == "null") {
-                                                  return const Text(
-                                                      ""); //Due to a delay in the number loading
-                                                } else {
-                                                  return Align(
-                                                    alignment: Alignment.bottomLeft,
-                                                    child: FittedBox(
-                                                      fit: BoxFit.fitHeight,
-                                                      child: Text(
-                                                          "${snapshot.data}",
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: viewModel.colour4)),
-                                                    ),
-                                                  );
-                                                }
-                                              }),
+                                        fit: BoxFit.fitWidth,
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(minWidth: 1, minHeight: 1),
+                                          child: FutureBuilder<int?>(
+                                                future: viewModel.returnShoppingListItemsIdsListLength(shoppingList.shoppingListId),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<int?> snapshot) {
+                                                  if ("${snapshot.data}" == "null") {
+                                                    return const Text(
+                                                        ""); //Due to a delay in the number loading
+                                                  } else {
+                                                    return Align(
+                                                      alignment: Alignment.bottomLeft,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.fitHeight,
+                                                        child: Text(
+                                                            "${snapshot.data}",
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: viewModel.colour4)),
+                                                      ),
+                                                    );
+                                                  }
+                                                }),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -223,6 +164,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     child: Align(
                                       alignment: Alignment.topCenter,
                                       child: FittedBox(
+                                        fit: BoxFit.fitWidth,
                                         child: Text("Total Items", style: TextStyle(
                                             color: viewModel.colour4, fontWeight: FontWeight.w600
                                         ),),
@@ -247,28 +189,32 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     child: Align(
                                       alignment: Alignment.center,
                                       child: FittedBox(
-                                        child: FutureBuilder<int?>(
-                                            future: viewModel.returnShoppingListNotPurchasedItemsLength(shoppingList.shoppingListId),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<int?> snapshot) {
-                                              if ("${snapshot.data}" == "null") {
-                                                return const Text(
-                                                    ""); //Due to a delay in the number loading
-                                              } else {
-                                                return Align(
-                                                  alignment: Alignment.bottomLeft,
-                                                  child: FittedBox(
-                                                    fit: BoxFit.fitHeight,
-                                                    child: Text(
-                                                        "${snapshot.data}",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: viewModel.colour4)),
-                                                  ),
-                                                );
-                                              }
-                                            }),
+                                        fit: BoxFit.fitWidth,
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(minWidth: 1, minHeight: 1),
+                                          child: FutureBuilder<int?>(
+                                              future: viewModel.returnShoppingListNotPurchasedItemsLength(shoppingList.shoppingListId),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<int?> snapshot) {
+                                                if ("${snapshot.data}" == "null") {
+                                                  return const Text(
+                                                      ""); //Due to a delay in the number loading
+                                                } else {
+                                                  return Align(
+                                                    alignment: Alignment.bottomLeft,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.fitHeight,
+                                                      child: Text(
+                                                          "${snapshot.data}",
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: viewModel.colour4)),
+                                                    ),
+                                                  );
+                                                }
+                                              }),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -277,6 +223,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     child: Align(
                                       alignment: Alignment.topCenter,
                                       child: FittedBox(
+                                        fit: BoxFit.fitWidth,
                                         child: Text("Remaining items", style: TextStyle(
                                             color: viewModel.colour4, fontWeight: FontWeight.w600
                                         ),),
@@ -303,70 +250,47 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             AsyncSnapshot<List<dynamic>> snapshot) {
                                           if ("${snapshot.data}" == "null") {
                                             return const Text(
-                                                ""); //Due to a delay in the username loading
+                                                "");
                                           } else {
-                                            return ListView.separated(
-                                                padding: EdgeInsets.all(15),
-                                                shrinkWrap: true,
-                                                separatorBuilder: (context, index) {
-                                                  return SizedBox(height: 15);
-                                                },
-                                                itemCount: snapshot.data?[0]!.length,
-                                                itemBuilder: (context, index) {
-                                                  // String shoppingListId = snapshot.data?[0];
-                                                  bool isChecked = snapshot.data?[1][index];
-                                                  // print(snapshot.data?[0][index] + ": " + snapshot.data?[1][index].toString());
-                                                  return Container(
-                                                      decoration: BoxDecoration(
-                                                          color: viewModel.colour1,
-                                                          borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                      child: ListTile(
-                                                        leading: Checkbox(
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(5)),
-                                                            side: BorderSide(width: 2, color: viewModel.colour3),
-                                                            checkColor: viewModel.colour1,
-                                                            activeColor: viewModel.colour3,
-                                                            value: isChecked,
-                                                            onChanged: (bool? newValue) async {
-                                                              setState(() {
-                                                                snapshot.data?[1][index] = newValue;
-                                                              });
-                                                              await viewModel.setItemValue(shoppingList, snapshot.data?[2][index], newValue!);
-                                                            }),
-                                                          title: Text(
-                                                              snapshot.data?[0]![index],
-                                                              style: TextStyle(
-                                                                  color:
-                                                                  viewModel.colour4,
-                                                                  fontSize: 16)),
-
-                                                          // subtitle: user?.uid == snapshot.data?[2][index]
-                                                          //     ? TextField(
-                                                          //   decoration: const InputDecoration(
-                                                          //       hintText: "Amount Owed",
-                                                          //       border: OutlineInputBorder()),
-                                                          //   controller: enteredUserAmountController,
-                                                          // ) : null,
-
-                                                          // trailing:
-                                                          // IconButton(
-                                                          //     onPressed: () async {
-                                                          //       setState(() async {
-                                                          //         if (enteredUserAmountController.text.isNotEmpty) {
-                                                          //           await viewModel.updateUserAmountPaid(
-                                                          //               expenseId,
-                                                          //               user!.uid,
-                                                          //               double.parse(enteredUserAmountController.text)
-                                                          //           );
-                                                          //         }
-                                                          //       });
-                                                          //
-                                                          //     }, icon: Icon(Icons.add))
-                                                      ));
-                                                });
+                                            return Expanded(
+                                              child: ListView.separated(
+                                                  padding: EdgeInsets.all(15),
+                                                  shrinkWrap: true,
+                                                  separatorBuilder: (context, index) {
+                                                    return SizedBox(height: 15);
+                                                  },
+                                                  itemCount: snapshot.data?[0]!.length,
+                                                  itemBuilder: (context, index) {
+                                                    bool isChecked = snapshot.data?[1][index];
+                                                    return Container(
+                                                        decoration: BoxDecoration(
+                                                            color: viewModel.colour1,
+                                                            borderRadius:
+                                                            BorderRadius.circular(
+                                                                20)),
+                                                        child: ListTile(
+                                                          leading: Checkbox(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(5)),
+                                                              side: BorderSide(width: 2, color: viewModel.colour3),
+                                                              checkColor: viewModel.colour1,
+                                                              activeColor: viewModel.colour3,
+                                                              value: isChecked,
+                                                              onChanged: (bool? newValue) async {
+                                                                setState(() {
+                                                                  snapshot.data?[1][index] = newValue;
+                                                                });
+                                                                await viewModel.setItemValue(shoppingList, snapshot.data?[2][index], newValue!);
+                                                              }),
+                                                            title: Text(
+                                                                snapshot.data?[0]![index],
+                                                                style: TextStyle(
+                                                                    color:
+                                                                    viewModel.colour4,
+                                                                    fontSize: 16)),
+                                                        ));
+                                                  }),
+                                            );
                                           }
                                         })
                                 )

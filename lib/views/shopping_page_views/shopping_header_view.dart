@@ -10,6 +10,12 @@ class ShoppingHeaderView extends StatelessWidget {
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
           Expanded(
               flex: 2,
               child: Container(
@@ -22,7 +28,7 @@ class ShoppingHeaderView extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
-                          child: Text("Finance",
+                          child: Text("Shopping",
                               style: TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.w900,

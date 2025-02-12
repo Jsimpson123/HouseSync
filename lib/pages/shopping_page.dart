@@ -18,8 +18,6 @@ import 'login_page.dart';
 import 'medical_page.dart';
 
 class ShoppingPage extends StatefulWidget {
-  // late final Widget body;
-
   @override
   State<ShoppingPage> createState() {
     return _ShoppingPageState();
@@ -27,7 +25,6 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
-
   @override
   void initState() {
     super.initState();

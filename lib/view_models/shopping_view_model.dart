@@ -70,7 +70,6 @@ class ShoppingViewModel extends ChangeNotifier {
     return _shoppingLists[shoppingListIndex].name;
   }
 
-  //FINISH THIS
   Future<void> setItemValue(ShoppingList shoppingList, String itemId, bool newValue) async {
     final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingList.shoppingListId);
     final docSnapshot = await shoppingDoc.get();
@@ -227,20 +226,6 @@ class ShoppingViewModel extends ChangeNotifier {
     }
     return null;
   }
-
-  // Future<void> addShoppingItem(ShoppingItem newItem, String shoppingListId) async {
-  //   newItem.generateId();
-  //
-  //   await _firestore.collection('shoppingLists').doc(shoppingListId)
-  //       .collection('shoppingListItems').add({
-  //   'itemId': newItem.itemId,
-  //   'title': newItem.title,
-  //   'isPurchased': newItem.isPurchased,
-  //   });
-  //
-  //   _items.add(newItem);
-  //   notifyListeners();
-  // }
 
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
