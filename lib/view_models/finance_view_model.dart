@@ -74,11 +74,34 @@ class FinanceViewModel extends ChangeNotifier {
     //Retrieves an expense
     final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();
 
+    final data = expenseDoc.data();
+
     if (expenseDoc.exists) {
       final expenseName = await expenseDoc.data()?['expenseAmount'];
 
       if (expenseName == 0) {
         await FirebaseFirestore.instance.collection('expenses').doc(expenseId).delete();
+
+        List assignedUsers = data?['assignedUsers'];
+        List<dynamic> userIds = [];
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          userIds.add(data?['assignedUsers'][i]['userId']);
+
+          final expenseUserDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userIds[i])
+              .get();
+
+          List assignedExpenses = await expenseUserDoc.data()?['assignedExpenses'];
+          //FIX THIS CODE
+          if (assignedExpenses.contains(expenseId)) {
+            await _firestore.collection('users').doc(userIds[i]).update({
+              'assignedExpenses': FieldValue.arrayRemove([expenseId])
+            });
+          }
+          
+        }
       }
     }
     notifyListeners();
@@ -129,8 +152,8 @@ class FinanceViewModel extends ChangeNotifier {
 
   Future <String?> returnAssignedExpenseUsernames (String expenseId) async {
     try {
-      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
-      final docSnapshot = await taskDoc.get();
+      final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await expenseDoc.get();
       final data = docSnapshot.data();
 
       String expenseMembersNamesFormatted = "";

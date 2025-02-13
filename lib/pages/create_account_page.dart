@@ -61,62 +61,74 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             ),
           ),
         ),
-        const SizedBox(
-          height: 25,
-        ),
+        // const SizedBox(
+        //   height: 25,
+        // ),
         const Center(
             child: Text("Create Account", style: TextStyle(fontSize: 50))),
         //Spacing between the logo and TextFields
         const SizedBox(
           height: 25,
         ),
-        TextField(
-            controller: _usernameController,
-            decoration: InputDecoration(
-              hintText: "User Name",
-              filled: true,
-              focusedBorder: OutlineInputBorder(
+        SizedBox(
+          width: 750,
+          child: TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.account_box_rounded),
+                hintText: "User Name",
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: Colors.green, width: 2.0)),
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide:
-                      const BorderSide(color: Colors.green, width: 2.0)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(width: 2.0),
-              ),
-            )),
+                  borderSide: const BorderSide(width: 2.0),
+                ),
+              )),
+        ),
         //Spacing between the TextFields
         const SizedBox(height: 25),
-        TextField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              hintText: "Email",
-              filled: true,
-              focusedBorder: OutlineInputBorder(
+        SizedBox(
+          width: 750,
+          child: TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.email_rounded),
+                hintText: "Email",
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: Colors.green, width: 2.0)),
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide:
-                      const BorderSide(color: Colors.green, width: 2.0)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(width: 2.0),
-              ),
-            )),
+                  borderSide: const BorderSide(width: 2.0),
+                ),
+              )),
+        ),
         //Spacing between the TextFields
         const SizedBox(height: 25),
-        TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: "Password",
-              filled: true,
-              focusedBorder: OutlineInputBorder(
+        SizedBox(
+          width: 750,
+          child: TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.password_rounded),
+                hintText: "Password",
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: Colors.green, width: 2.0)),
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide:
-                      const BorderSide(color: Colors.green, width: 2.0)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(width: 2.0),
-              ),
-            )),
+                  borderSide: const BorderSide(width: 2.0),
+                ),
+              )),
+        ),
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
         ElevatedButton(

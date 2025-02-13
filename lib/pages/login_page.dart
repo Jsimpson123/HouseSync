@@ -16,7 +16,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //FirebaseAuthFunctionality instance
   final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
 
   //Setting up the TextEditingControllers
@@ -53,50 +52,58 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        // const SizedBox(
+        //   height: 10,
+        // ),
         const Center(child: Text("Welcome", style: TextStyle(fontSize: 50))),
         const Center(
             child:
                 Text("Sign into your account", style: TextStyle(fontSize: 25))),
         //Spacing between the logo and TextFields
         const SizedBox(
-          height: 25,
+          height: 10,
         ),
-        TextField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              hintText: "Email",
-              filled: true,
-              focusedBorder: OutlineInputBorder(
+        SizedBox(
+          width: 750,
+          child: TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.email_rounded),
+                hintText: "Email",
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: Colors.green, width: 2.0)),
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide:
-                      const BorderSide(color: Colors.green, width: 2.0)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(width: 2.0),
-              ),
-            )),
+                  borderSide: const BorderSide(width: 2.0),
+                ),
+              )),
+        ),
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
-        TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: "Password",
-              filled: true,
-              focusedBorder: OutlineInputBorder(
+        SizedBox(
+          width: 750,
+          child: TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.password_rounded),
+                hintText: "Password",
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide:
+                        const BorderSide(color: Colors.green, width: 2.0)),
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide:
-                      const BorderSide(color: Colors.green, width: 2.0)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(width: 2.0),
-              ),
-            )),
+                  borderSide: const BorderSide(width: 2.0),
+                ),
+              )),
+        ),
         //Spacing between the TextFields
-        const SizedBox(height: 25),
+        const SizedBox(height: 10),
         ElevatedButton(
             onPressed: () {
               _signIn();
@@ -111,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                     WidgetStateProperty.all<TextStyle>(TextStyle(fontSize: 30)),
                 minimumSize: WidgetStateProperty.all<Size>(Size(200, 100)))),
         //Spacing between the login button and create account text
-        const SizedBox(height: 50),
+        const SizedBox(height: 15),
 
         const Center(
             child:
