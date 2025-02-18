@@ -15,8 +15,12 @@ class GroupViewModel extends ChangeNotifier {
   List<String> _members = <String>[];
   List<dynamic> _memberIds = <String>[];
 
+  List<HouseSyncUser> _houseSyncUsers = <HouseSyncUser>[];
+
   List<String> get members => _members;
   List<dynamic> get memberIds => _memberIds;
+
+  List<HouseSyncUser> get houseSyncUsers => List.unmodifiable(_houseSyncUsers);
 
   List<Group> get groups => List.unmodifiable(_groups);
 
@@ -33,16 +37,15 @@ class GroupViewModel extends ChangeNotifier {
         6, (index) => alphanumeric[random.nextInt(alphanumeric.length)]).join();
   }
 
-  Future<bool> createGroup(
-      String userId, String groupName, String groupCode) async {
+  Future<bool> createGroup(String userId, String groupName, String groupCode) async {
     final userDoc = await _firestore
         .collection('users')
         .doc(userId)
         .get(); //Gets the userId from the users collection
+
     //Checks if the current user is already in a group and throws an exception if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
       throw Exception("User is already in a group");
-      showToast(message: "User is already in a group");
     }
 
     //Creates a group
@@ -247,6 +250,8 @@ class GroupViewModel extends ChangeNotifier {
             final groupMemberName = await groupUserDoc.data()?['username'];
 
             groupMembersNames.add(groupMemberName);
+
+            _houseSyncUsers.add(HouseSyncUser.fromMap(userId, groupUserDoc.data()!));
           }
         }
       } catch (e) {

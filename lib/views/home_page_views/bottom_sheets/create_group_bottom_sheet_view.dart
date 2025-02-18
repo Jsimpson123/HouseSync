@@ -37,11 +37,9 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                       controller: enteredGroupNameController,
                       onSubmitted: (value) async {
                         if (enteredGroupNameController.text.isNotEmpty) {
-                          Group newGroup =
-                              Group.newGroup(enteredGroupNameController.text);
+                          Group newGroup = Group.newGroup(enteredGroupNameController.text);
                           User? user = FirebaseAuth.instance.currentUser;
-                          bool groupCreated = await viewModel.createGroup(user!.uid, newGroup.name,
-                              viewModel.generateRandomGroupJoinCode());
+                          bool groupCreated = await viewModel.createGroup(user!.uid, newGroup.name, viewModel.generateRandomGroupJoinCode());
                           enteredGroupNameController.clear();
 
                         setState(() {

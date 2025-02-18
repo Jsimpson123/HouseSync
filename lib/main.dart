@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_accommodation_management_app/view_models/finance_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
+import 'package:shared_accommodation_management_app/view_models/medical_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
@@ -35,6 +36,9 @@ void main() async {
     ),
     ChangeNotifierProvider(
         create: (context) => ShoppingViewModel()
+    ),
+    ChangeNotifierProvider(
+        create: (context) => MedicalViewModel()
     ),
   ], child: const MyApp()));
 }

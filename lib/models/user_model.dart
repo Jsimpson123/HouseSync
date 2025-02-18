@@ -7,7 +7,6 @@ class HouseSyncUser {
   List<String> assignedTasks;
   List<String> assignedExpenses;
 
-  //Add required to the first three parameters - currently getting an error
   HouseSyncUser(
       {required this.userId,
       required this.username,
@@ -30,7 +29,7 @@ class HouseSyncUser {
 
   //Factory constructor to create a User from a Firestore document snapshot
   factory HouseSyncUser.fromMap(
-      String userId, String groupId, Map<String, dynamic> map) {
+      String userId, Map<String, dynamic> map) {
     return HouseSyncUser(
         userId: userId,
         username: map['username'],
