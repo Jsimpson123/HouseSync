@@ -15,12 +15,8 @@ class GroupViewModel extends ChangeNotifier {
   List<String> _members = <String>[];
   List<dynamic> _memberIds = <String>[];
 
-  List<HouseSyncUser> _houseSyncUsers = <HouseSyncUser>[];
-
   List<String> get members => _members;
   List<dynamic> get memberIds => _memberIds;
-
-  List<HouseSyncUser> get houseSyncUsers => List.unmodifiable(_houseSyncUsers);
 
   List<Group> get groups => List.unmodifiable(_groups);
 
@@ -221,8 +217,7 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<void> returnGroupMembersAsList(String userId) async {
-    final userDoc =
-    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final groupId = await userDoc.data()?['groupId'];
 
     List<String> groupMembersNames = [];
@@ -250,8 +245,6 @@ class GroupViewModel extends ChangeNotifier {
             final groupMemberName = await groupUserDoc.data()?['username'];
 
             groupMembersNames.add(groupMemberName);
-
-            _houseSyncUsers.add(HouseSyncUser.fromMap(userId, groupUserDoc.data()!));
           }
         }
       } catch (e) {
@@ -298,11 +291,11 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reAddMembers() {
-    members.clear();
-    members.addAll(_members);
-    notifyListeners();
-  }
+  // void reAddMembers() {
+  //   members.clear();
+  //   members.addAll(_members);
+  //   notifyListeners();
+  // }
 
 
   //Bottom sheet builder

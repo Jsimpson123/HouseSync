@@ -78,7 +78,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                       alignment: Alignment.center,
                       child: FittedBox(
                         child: Text(
-                          "$totalAmountOwed",
+                        ("£$totalAmountOwed"),
                           style: TextStyle(
                               fontSize: 28,
                               color: viewModel.colour3,

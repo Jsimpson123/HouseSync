@@ -40,7 +40,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
       scrollDirection: Axis.vertical,
       physics: ScrollPhysics(),
       shrinkWrap: true,
-      itemCount: viewModel.members.length,
+      itemCount: viewModel.memberIds.length,
       itemBuilder: (context, index) {
       // final member = viewModel.houseSyncUsers[index];
       return GestureDetector(
@@ -56,7 +56,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
       color: viewModel.colour4,
       fontSize: 16)),
 
-        // onTap: () => viewSpecificUsersMedicalConditionsPopup(context, viewModel.houseSyncUsers[index]),
+        onTap: () => viewSpecificUsersMedicalConditionsPopup(context, viewModel.memberIds[index]),
       )));
       }),
       ),
@@ -66,12 +66,13 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
     });
   }
 
-  Future<void> viewSpecificUsersMedicalConditionsPopup(BuildContext context, HouseSyncUser houseSyncUser) async {
+  Future<void> viewSpecificUsersMedicalConditionsPopup(BuildContext context, String memberId) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return Consumer<MedicalViewModel>(builder: (context, viewModel, child) {
-            Future medicalNamesFuture = viewModel.returnMedicalConditionsNamesList(houseSyncUser.userId);
+            Future medicalNamesFuture = viewModel.returnMedicalConditionsNamesList(memberId);
+            Future medicalDescsFuture = viewModel.returnMedicalConditionsDescsList(memberId);
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -79,7 +80,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 200,
+                    height: 400,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -94,20 +95,25 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                             bottom: Radius.circular(30))),
 
                                     child: FutureBuilder(
-                                        future: Future.wait([medicalNamesFuture]),
+                                        future: Future.wait([medicalNamesFuture, medicalDescsFuture]),
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<dynamic>> snapshot) {
                                           if ("${snapshot.data}" == "null") {
                                             return const Text(
                                                 "");
                                           } else {
-                                            return Expanded(
-                                              child: ListView.separated(
+                                            return GridView.builder(
+                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 2,
+                                                    crossAxisSpacing: 10,
+                                                    mainAxisSpacing: 10,
+                                                    childAspectRatio: 1.5,
+                                                  ),
                                                   padding: EdgeInsets.all(15),
                                                   shrinkWrap: true,
-                                                  separatorBuilder: (context, index) {
-                                                    return SizedBox(height: 15);
-                                                  },
+                                                  // separatorBuilder: (context, index) {
+                                                  //   return SizedBox(height: 15);
+                                                  // },
                                                   itemCount: snapshot.data?[0]!.length,
                                                   itemBuilder: (context, index) {
                                                     return Container(
@@ -116,16 +122,31 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                             borderRadius:
                                                             BorderRadius.circular(
                                                                 20)),
-                                                        child: ListTile(
-                                                          title: Text(
-                                                              snapshot.data?[0]![index],
-                                                              style: TextStyle(
-                                                                  color:
-                                                                  viewModel.colour4,
-                                                                  fontSize: 16)),
+                                                        child: Card(
+                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                          child: Column(
+                                                            children: [
+                                                              Center(
+                                                                child: Text(
+                                                                    snapshot.data?[0]![index],
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                        viewModel.colour4,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 24)),
+                                                              ),
+                                                              Center(
+                                                                child: Text(
+                                                                    snapshot.data?[1]![index],
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                        viewModel.colour4,
+                                                                        fontSize: 16)),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ));
-                                                  }),
-                                            );
+                                                  });
                                           }
                                         })
                                 )

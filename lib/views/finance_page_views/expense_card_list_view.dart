@@ -28,96 +28,119 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                   decoration: BoxDecoration(
                       color: viewModel.colour2,
                       borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-                  padding: EdgeInsets.all(20),
-                  child: ListView.separated(
+                  child: GridView.builder(
                       padding: EdgeInsets.all(15),
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 15);
-                      },
-                      scrollDirection: Axis.vertical,
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
+                      // separatorBuilder: (context, index) {
+                      //   return SizedBox(height: 15);
+                      // },
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 2.7,
+                      ),
+                      // scrollDirection: Axis.vertical,
+                      // physics: ScrollPhysics(),
+                      // shrinkWrap: true,
                     itemCount: viewModel.expenses.length,
                     itemBuilder: (context, index) {
                       final expense = viewModel.expenses[index];
-                        return Container(
-                            decoration: BoxDecoration(
-                                color: viewModel.colour1,
-                                borderRadius: BorderRadius.circular(20)),
-                          child: ListTile(
-                            leading: Icon(Icons.attach_money),
-                            title: Container(width: 50,
-                                  alignment: Alignment.bottomCenter,
-                                  child: FittedBox(
-                                    fit: BoxFit.fitHeight,
-                                    child: Text(viewModel.getExpenseTitle(index),
-                                        style: TextStyle(
-                                            color: viewModel.colour4,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                            ),
-                            subtitle: Container(width: 50,
-                              child: FutureBuilder<String?>(
-                                  future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<String?> snapshot) {
-                                    if ("${snapshot.data}" == "null") {
-                                      return const Text(
-                                          ""); //Due to a delay in the username loading
-                                    } else {
-                                      return Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: FittedBox(
-                                          fit: BoxFit.fitHeight,
-                                          child: Text(
-                                              "Assigned Users: \n${snapshot.data}",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: viewModel.colour4)),
-                                        ),
-                                      );
-                                    }
-                                  }),
-                            ),
-                            trailing: SizedBox(width: 100,
-                              child: FutureBuilder<double?>(
-                                  future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
-                                  builder: (BuildContext context,
-                                        AsyncSnapshot<double?> snapshot) {
-                                    if ("${snapshot.data}" == "null") {
-                                      return const Text(
-                                          ""); //Due to a delay in the username loading
-                                    } else if ("${snapshot.data}" == "0") {
-                                      //FIX THIS
-                                      setState(() async {
-                                        await viewModel.deleteExpense(expense.expenseId);
+                        return InkWell(
+                          onTap: () => expenseDetailsPopup(context, expense.expenseId),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: viewModel.colour1,
+                                  borderRadius: BorderRadius.circular(20)),
+                            child: Card(
+                              child:
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          // Icon(Icons.attach_money),
+                                          Expanded(
+                                                    child: Center(
+                                                      child: Text(viewModel.getExpenseTitle(index),
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              color: viewModel.colour4,
+                                                              fontSize: 24,
+                                                              fontWeight: FontWeight.bold)),
+                                                    ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 30),
+                                      Center(
+                                        child: FutureBuilder<double?>(
+                                            future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<double?> snapshot) {
+                                              if ("${snapshot.data}" == "null") {
+                                                return const Text(
+                                                    ""); //Due to a delay in the username loading
+                                              } else if ("${snapshot.data}" == "0") {
+                                                //FIX THIS
+                                                setState(() async {
+                                                  await viewModel.deleteExpense(expense.expenseId);
+                          
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => FinancePage()));
+                                                });
+                                                return SizedBox();
+                                              } else {
+                                                return FittedBox(
+                                                    fit: BoxFit.fitHeight,
+                                                    child: Text(
+                                                        "£${snapshot.data}",
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: viewModel.colour4)),
+                                                );
+                                              }
+                                            }),
+                                      ),
 
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => FinancePage()));
-                                      });
-                                      return SizedBox();
-                                    } else {
-                                      return Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: FittedBox(
-                                          fit: BoxFit.fitHeight,
-                                          child: Text(
-                                              "Owed: \n${snapshot.data}",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: viewModel.colour4)),
-                                        ),
-                                      );
-                                    }
-                                  }),
-                            ),
-                            onTap: () => expenseDetailsPopup(context, expense.expenseId),
-                          )
+                                      SizedBox(height: 50),
+                                      Center(
+                                        child: FutureBuilder<String?>(
+                                            future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<String?> snapshot) {
+                                              if ("${snapshot.data}" == "null") {
+                                                return const Text(
+                                                    ""); //Due to a delay in the username loading
+                                              } else {
+                                                return FittedBox(
+                                                  fit: BoxFit.fitHeight,
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                          "Assigned Users:",
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: viewModel.colour4)),
+                                                      Text(
+                                                          "${snapshot.data}",
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: viewModel.colour4)),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                            )
+                          ),
                         );
                     }),
                 ),
@@ -142,7 +165,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 200,
+                    height: 400,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -182,7 +205,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               20)),
                                                       child: ListTile(
                                                         leading: Text(
-                                                            snapshot.data?[1]![index]),
+                                                            "£" + snapshot.data?[1]![index]),
                                                         title: Text(
                                                             snapshot.data?[0]![index],
                                                             style: TextStyle(

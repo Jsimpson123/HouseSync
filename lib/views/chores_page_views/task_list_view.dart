@@ -60,7 +60,10 @@ class _TaskListViewState extends State<TaskListView> {
                         }),
                     title: Text(viewModel.getTaskTitle(index),
                         style:
-                            TextStyle(color: viewModel.colour4, fontSize: 16)),
+                            TextStyle(
+                                color: viewModel.colour4,
+                                fontSize: 16, fontWeight:
+                                FontWeight.bold)),
                     trailing: task.assignedUser != null
                         ? IconButton(
                             //If true
@@ -107,7 +110,7 @@ class _TaskListViewState extends State<TaskListView> {
                                           "Assigned User: \n${snapshot.data}",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+                                              // fontWeight: FontWeight.bold,
                                               color: viewModel.colour4)),
                                     ),
                                   );

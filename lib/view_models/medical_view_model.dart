@@ -91,6 +91,34 @@ class MedicalViewModel extends ChangeNotifier {
     return [];
   }
 
+  Future <List<String>> returnMedicalConditionsDescsList (String userId) async {
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+      final docSnapshot = await userDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List medicalConditions = data['medicalConditions'];
+        List<String> conditionDescs = [];
+
+        for (int i = 0; i < medicalConditions.length; i++) {
+          final medicalDoc = await FirebaseFirestore.instance
+              .collection('medicalConditions')
+              .doc(medicalConditions[i])
+              .get();
+
+          final medicalConditionDesc = await medicalDoc.data()?['description'];
+
+          conditionDescs.add(medicalConditionDesc);
+        }
+        return conditionDescs;
+      }
+    } catch (e) {
+      print("Error retrieving item descriptions: $e");
+    }
+    return [];
+  }
+
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(

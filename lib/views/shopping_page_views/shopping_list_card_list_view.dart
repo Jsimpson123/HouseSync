@@ -27,7 +27,6 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
               decoration: BoxDecoration(
                   color: viewModel.colour2,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-              padding: EdgeInsets.all(20),
               child: ListView.separated(
                   padding: EdgeInsets.all(15),
                   separatorBuilder: (context, index) {
@@ -106,7 +105,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 200,
+                    height: 400,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -118,7 +117,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                         margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
                         child: Row(
                           children: [
-                            //Total Tasks
+                            //Total Items
                             Expanded(
                               flex: 1,
                               child: Container(
@@ -177,7 +176,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
 
                             SizedBox(width: 20),
 
-                            //Remaining Tasks
+                            //Remaining Items
                             Expanded(
                               flex: 1,
                               child: Container(
@@ -237,6 +236,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                         ),
                       ),
                             Expanded(
+                              flex: 6,
                                 child: Container(
                                     decoration: BoxDecoration(
                                         color: viewModel.colour2,

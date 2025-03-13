@@ -144,6 +144,7 @@ class _LoginPageState extends State<LoginPage> {
     final userDoc = await _firestore.collection('users').doc(user?.uid).get(); //Gets the userId from the users collection
     //Checks if the current user is already in a group and displays the Home page if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
+      print("User was successfully signed in");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
     }
