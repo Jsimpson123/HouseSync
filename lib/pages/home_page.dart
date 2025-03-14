@@ -7,9 +7,11 @@ import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
+import 'package:shared_accommodation_management_app/views/home_page_views/calendar_view.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/group_functions_view.dart';
 
 import '../view_models/user_view_model.dart';
+import '../views/home_page_views/add_calendar_event_view.dart';
 import '../views/home_page_views/home_header_view.dart';
 import 'medical_page.dart';
 
@@ -107,10 +109,10 @@ class _HomePageState extends State<HomePage> {
             children: [
               Expanded(flex: 2, child: HomeHeaderView()),
               Expanded(flex: 2, child: Container(color: Colors.green)),
-              Expanded(flex: 6, child: Container(color: Colors.red))
+              Expanded(flex: 6, child: CalendarView())
             ],
           )),
-      // floatingActionButton: AddTaskView(),
+      floatingActionButton: AddCalendarEventView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }

@@ -67,6 +67,9 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
   }
 
   Future<void> viewSpecificUsersMedicalConditionsPopup(BuildContext context, String memberId) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -103,11 +106,11 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                 "");
                                           } else {
                                             return GridView.builder(
-                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
+                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: isMobile ? 1 : 2,
                                                     crossAxisSpacing: 10,
                                                     mainAxisSpacing: 10,
-                                                    childAspectRatio: 1.5,
+                                                    childAspectRatio: isMobile ? 0.8 : 1.4,
                                                   ),
                                                   padding: EdgeInsets.all(15),
                                                   shrinkWrap: true,
@@ -133,15 +136,19 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                         color:
                                                                         viewModel.colour4,
                                                                         fontWeight: FontWeight.bold,
-                                                                        fontSize: 24)),
+                                                                        fontSize: isMobile ? 20 : 24)),
                                                               ),
-                                                              Center(
-                                                                child: Text(
-                                                                    snapshot.data?[1]![index],
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        viewModel.colour4,
-                                                                        fontSize: 16)),
+                                                              Expanded(
+                                                                child: SingleChildScrollView(
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                        snapshot.data?[1]![index],
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                            viewModel.colour4,
+                                                                            fontSize: isMobile ? 14 : 16)),
+                                                                  ),
+                                                                ),
                                                               ),
                                                             ],
                                                           ),

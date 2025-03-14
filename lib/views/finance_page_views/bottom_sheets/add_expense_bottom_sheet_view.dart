@@ -28,7 +28,7 @@ TextEditingController();
 
 List<TextEditingController> controllers = [];
 
-double totalAmountOwed = 0;
+num totalAmountOwed = 0;
 
 List<String> assignedUsers = <String>[];
 
@@ -243,7 +243,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                                 });
                                                               }
                                                               viewModel.removeMember(index);
-                                                              totalAmountOwed = totalAmountOwed + double.parse(enteredUserAmountController.text);
+                                                              totalAmountOwed = totalAmountOwed + num.parse(enteredUserAmountController.text);
                                                             });
                                                           }
                                                         },

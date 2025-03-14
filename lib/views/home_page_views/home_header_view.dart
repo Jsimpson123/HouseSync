@@ -14,6 +14,9 @@ class HomeHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
 
     GroupViewModel groupViewModel = GroupViewModel();
     User? user = FirebaseAuth.instance.currentUser;
@@ -36,7 +39,7 @@ class HomeHeaderView extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Align(
-                        alignment: Alignment.bottomLeft,
+                        alignment: isMobile ? Alignment.centerLeft : Alignment.bottomLeft,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: Text("Welcome",
@@ -58,7 +61,7 @@ class HomeHeaderView extends StatelessWidget {
                             return Expanded(
                               flex: 2,
                               child: Align(
-                                alignment: Alignment.bottomLeft,
+                                alignment: isMobile ? Alignment.topLeft : Alignment.bottomLeft,
                                 child: FittedBox(
                                   fit: BoxFit.fitHeight,
                                   child: Text("${snapshot.data}",
@@ -85,7 +88,7 @@ class HomeHeaderView extends StatelessWidget {
                   return Expanded(
                     flex: 1,
                     child: Align(
-                      alignment: Alignment.bottomRight,
+                      alignment: isMobile ? Alignment.centerRight : Alignment.bottomRight,
                       child: FittedBox(
                         fit: BoxFit.fitHeight,
                         child: Text("Group Code: \n${snapshot.data}",

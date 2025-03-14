@@ -4,7 +4,7 @@ class Expense {
   String expenseId;
   String expenseCreatorId;
   String name;
-  double expenseAmount;
+  num expenseAmount;
   List<Map<String, dynamic>> assignedUsers = [];
 
   Expense({

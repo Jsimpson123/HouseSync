@@ -263,14 +263,14 @@ class FinanceViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future<double?> returnAssignedExpenseAmount (String expenseId) async {
+  Future<num?> returnAssignedExpenseAmount (String expenseId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await taskDoc.get();
       final data = docSnapshot.data();
 
       if (data != null) {
-        double expenseAmount = data['expenseAmount'];
+        num expenseAmount = data['expenseAmount'];
 
         return expenseAmount;
       }
@@ -301,7 +301,7 @@ class FinanceViewModel extends ChangeNotifier {
   }
 
   //find the userid inside map to minus amount owed
-  Future<void> updateUserAmountPaid(String expenseId, String userId, double amountPaid) async {
+  Future<void> updateUserAmountPaid(String expenseId, String userId, num amountPaid) async {
     try {
       final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await expenseDoc.get();
@@ -309,7 +309,7 @@ class FinanceViewModel extends ChangeNotifier {
 
       if (data != null) {
         List assignedUsers = data['assignedUsers'];
-        double totalAmount = data['expenseAmount'];
+        num totalAmount = data['expenseAmount'];
 
         Map<String, dynamic> currentUserExpenseDetails;
 
@@ -318,7 +318,7 @@ class FinanceViewModel extends ChangeNotifier {
             //Retrieves the users expense details and assigns it to a map
             currentUserExpenseDetails = assignedUsers[i];
             
-            double userAmount = double.parse(assignedUsers[i]['amount']);
+            num userAmount = num.parse(assignedUsers[i]['amount']);
 
             //Updates the total expense amount
             await expenseDoc.update({
@@ -358,6 +358,7 @@ class FinanceViewModel extends ChangeNotifier {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         context: context,
+        isScrollControlled: true,
         builder: ((context) {
           return bottomSheetView;
         }));

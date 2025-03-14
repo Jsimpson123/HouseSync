@@ -20,6 +20,9 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     return Consumer<FinanceViewModel>(builder: (context, viewModel, child) {
           return Column(
             children: [
@@ -33,11 +36,11 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                       // separatorBuilder: (context, index) {
                       //   return SizedBox(height: 15);
                       // },
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 2.7,
+                      childAspectRatio: isMobile ? 0.8 : 2.7,
                       ),
                       // scrollDirection: Axis.vertical,
                       // physics: ScrollPhysics(),
@@ -54,90 +57,92 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                             child: Card(
                               child:
                                 // mainAxisAlignment: MainAxisAlignment.center,
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          // Icon(Icons.attach_money),
-                                          Expanded(
-                                                    child: Center(
-                                                      child: Text(viewModel.getExpenseTitle(index),
-                                                          textAlign: TextAlign.center,
+                                  SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            // Icon(Icons.attach_money),
+                                            Expanded(
+                                                      child: Center(
+                                                        child: Text(viewModel.getExpenseTitle(index),
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                color: viewModel.colour4,
+                                                                fontSize: 24,
+                                                                fontWeight: FontWeight.bold)),
+                                                      ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 30),
+                                        Center(
+                                          child: FutureBuilder<num?>(
+                                              future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<num?> snapshot) {
+                                                if ("${snapshot.data}" == "null") {
+                                                  return const Text(
+                                                      ""); //Due to a delay in the username loading
+                                                } else if ("${snapshot.data}" == "0") {
+                                                  //FIX THIS
+                                                  setState(() async {
+                                                    await viewModel.deleteExpense(expense.expenseId);
+                                                              
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => FinancePage()));
+                                                  });
+                                                  return SizedBox();
+                                                } else {
+                                                  return FittedBox(
+                                                      fit: BoxFit.fitHeight,
+                                                      child: Text(
+                                                          "£${snapshot.data}",
                                                           style: TextStyle(
-                                                              color: viewModel.colour4,
-                                                              fontSize: 24,
-                                                              fontWeight: FontWeight.bold)),
-                                                    ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 30),
-                                      Center(
-                                        child: FutureBuilder<double?>(
-                                            future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<double?> snapshot) {
-                                              if ("${snapshot.data}" == "null") {
-                                                return const Text(
-                                                    ""); //Due to a delay in the username loading
-                                              } else if ("${snapshot.data}" == "0") {
-                                                //FIX THIS
-                                                setState(() async {
-                                                  await viewModel.deleteExpense(expense.expenseId);
-                          
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) => FinancePage()));
-                                                });
-                                                return SizedBox();
-                                              } else {
-                                                return FittedBox(
+                                                              fontSize: 18,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: viewModel.colour4)),
+                                                  );
+                                                }
+                                              }),
+                                        ),
+                                    
+                                        SizedBox(height: 50),
+                                        Center(
+                                          child: FutureBuilder<String?>(
+                                              future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<String?> snapshot) {
+                                                if ("${snapshot.data}" == "null") {
+                                                  return const Text(
+                                                      ""); //Due to a delay in the username loading
+                                                } else {
+                                                  return FittedBox(
                                                     fit: BoxFit.fitHeight,
-                                                    child: Text(
-                                                        "£${snapshot.data}",
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight: FontWeight.bold,
-                                                            color: viewModel.colour4)),
-                                                );
-                                              }
-                                            }),
-                                      ),
-
-                                      SizedBox(height: 50),
-                                      Center(
-                                        child: FutureBuilder<String?>(
-                                            future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<String?> snapshot) {
-                                              if ("${snapshot.data}" == "null") {
-                                                return const Text(
-                                                    ""); //Due to a delay in the username loading
-                                              } else {
-                                                return FittedBox(
-                                                  fit: BoxFit.fitHeight,
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                          "Assigned Users:",
-                                                          style: TextStyle(
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: viewModel.colour4)),
-                                                      Text(
-                                                          "${snapshot.data}",
-                                                          style: TextStyle(
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: viewModel.colour4)),
-                                                    ],
-                                                  ),
-                                                );
-                                              }
-                                            }),
-                                      ),
-                                    ],
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                            "Assigned Users:",
+                                                            style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: viewModel.colour4)),
+                                                        Text(
+                                                            "${snapshot.data}",
+                                                            style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: viewModel.colour4)),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              }),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                             )
                           ),
@@ -150,7 +155,12 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
       });
   }
   Future<void> expenseDetailsPopup(BuildContext context, String expenseId) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
+
     User? user = FirebaseAuth.instance.currentUser;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -165,7 +175,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 400,
+                    height: isMobile ? 600 : 400,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -223,13 +233,13 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
 
                                                         trailing:
                                                            IconButton(
-                                                            onPressed: () async {
+                                                            onPressed: () {
                                                               setState(() async {
                                                                 if (enteredUserAmountController.text.isNotEmpty) {
                                                                   await viewModel.updateUserAmountPaid(
                                                                       expenseId,
                                                                       user!.uid,
-                                                                      double.parse(enteredUserAmountController.text)
+                                                                      num.parse(enteredUserAmountController.text)
                                                                   );
                                                                 }
                                                               });

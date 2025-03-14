@@ -7,7 +7,6 @@ class AddTaskBottomSheetView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController enteredTaskNameController = TextEditingController();
-    final TextEditingController enteredTaskDescController = TextEditingController();
 
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Padding(

@@ -247,6 +247,7 @@ class TaskViewModel extends ChangeNotifier {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         context: context,
+        isScrollControlled: true,
         builder: ((context) {
           return bottomSheetView;
         }));

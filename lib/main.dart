@@ -40,6 +40,9 @@ void main() async {
     ChangeNotifierProvider(
         create: (context) => MedicalViewModel()
     ),
+    ChangeNotifierProvider(
+        create: (context) => HomeViewModel()
+    ),
   ], child: const MyApp()));
 }
 
