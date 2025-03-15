@@ -67,12 +67,42 @@ class HomeViewModel extends ChangeNotifier {
     await _firestore.collection('calendarEvents').doc(newEvent.eventId).set({
       'eventId': newEvent.eventId,
       'title': newEvent.title,
+      'date': Timestamp.fromDate(newEvent.date),
       'eventCreatorId': userId,
       'groupId': groupId
     });
 
-    // _events.addAll(newEvent);
     notifyListeners();
+  }
+
+  Future<List<Event>> getEventsForDay(DateTime day) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+    
+    DateTime dayStart = DateTime(day.year, day.month, day.day, 0, 0, 0);
+    DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
+    
+    final dateSnapshot = await _firestore.collection('calendarEvents')
+        .where('groupId', isEqualTo: groupId)
+        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(dayStart))
+        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(dayEnd))
+        .get();
+    
+    List<Event> events = dateSnapshot.docs.map((doc) {
+      final data = doc.data();
+
+      return Event(
+          eventId: data['eventId'],
+          title: data['title'],
+          eventCreatorId: data['eventCreatorId'],
+          date: (data['date'] as Timestamp).toDate()
+      );
+
+    }).toList();
+
+    return events;
   }
 
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
