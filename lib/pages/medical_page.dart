@@ -146,7 +146,7 @@ class _MedicalPageState extends State<MedicalPage> {
       },
       type: BottomNavigationBarType.fixed,
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.account_box_rounded), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
         BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Finance"),
         BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Shopping"),

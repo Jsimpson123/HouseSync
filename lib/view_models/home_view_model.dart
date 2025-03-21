@@ -56,7 +56,7 @@ class HomeViewModel extends ChangeNotifier {
   //   return null;
   // }
 
-  Future<void> addCalendarEvent(Event newEvent, String userId) async {
+  Future<void> addCalendarEvent(Event newEvent, String userId, TimeOfDay selectedTime) async {
     newEvent.generateId();
 
     User? user = FirebaseAuth.instance.currentUser;
@@ -64,10 +64,21 @@ class HomeViewModel extends ChangeNotifier {
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
 
+    DateTime dateTime = DateTime(
+      newEvent.date.year,
+      newEvent.date.month,
+      newEvent.date.day,
+      selectedTime.hour,
+      selectedTime.minute
+    );
+
+    TimeOfDay time = TimeOfDay(hour: selectedTime.hour, minute: selectedTime.minute);
+
     await _firestore.collection('calendarEvents').doc(newEvent.eventId).set({
       'eventId': newEvent.eventId,
       'title': newEvent.title,
-      'date': Timestamp.fromDate(newEvent.date),
+      'date': Timestamp.fromDate(dateTime),
+      'time': time.toString().replaceAll("TimeOfDay(", "").replaceAll(")", ""),
       'eventCreatorId': userId,
       'groupId': groupId
     });
@@ -97,13 +108,31 @@ class HomeViewModel extends ChangeNotifier {
           eventId: data['eventId'],
           title: data['title'],
           eventCreatorId: data['eventCreatorId'],
-          date: (data['date'] as Timestamp).toDate()
+          date: (data['date'] as Timestamp).toDate(),
+          time: (data['time'])
       );
 
     }).toList();
 
     return events;
   }
+
+  // Future<num?> returnAssignedExpenseAmount (String expenseId) async {
+  //   try {
+  //     final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+  //     final docSnapshot = await taskDoc.get();
+  //     final data = docSnapshot.data();
+  //
+  //     if (data != null) {
+  //       num expenseAmount = data['expenseAmount'];
+  //
+  //       return expenseAmount;
+  //     }
+  //   } catch (e) {
+  //     print("Error retrieving Amount: $e");
+  //   }
+  //   return null;
+  // }
 
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(

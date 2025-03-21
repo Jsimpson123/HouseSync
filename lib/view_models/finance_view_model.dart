@@ -281,24 +281,24 @@ class FinanceViewModel extends ChangeNotifier {
   }
 
   //THIS NEEDS CALLED
-  Future<String?> returnExpenseCreator(String expenseId) async{
-    try {
-      final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
-      final docSnapshot = await taskDoc.get();
-      final data = docSnapshot.data();
-
-      if (data != null) {
-        String expenseCreator = data['expenseCreatorId'];
-
-        if (expenseCreator.isNotEmpty) {
-          return expenseCreator;
-        }
-      }
-    } catch (e) {
-      print("Error retrieving Amount: $e");
-    }
-    return null;
-  }
+  // Future<String?> returnExpenseCreator(String expenseId) async{
+  //   try {
+  //     final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+  //     final docSnapshot = await taskDoc.get();
+  //     final data = docSnapshot.data();
+  //
+  //     if (data != null) {
+  //       String expenseCreator = data['expenseCreatorId'];
+  //
+  //       if (expenseCreator.isNotEmpty) {
+  //         return expenseCreator;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print("Error retrieving Amount: $e");
+  //   }
+  //   return null;
+  // }
 
   //find the userid inside map to minus amount owed
   Future<void> updateUserAmountPaid(String expenseId, String userId, num amountPaid) async {

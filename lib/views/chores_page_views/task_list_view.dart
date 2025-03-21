@@ -70,7 +70,7 @@ class _TaskListViewState extends State<TaskListView> {
                             onPressed: () async {
                               bool userAssigned =
                                   await viewModel.unAssignCurrentUserFromTask(
-                                      user!.uid, task.taskId);
+                                      user!.uid, task.taskId, index);
 
                               setState(() {
                                 if (userAssigned) {

@@ -183,7 +183,7 @@ class TaskViewModel extends ChangeNotifier {
       return true;
   }
 
-  Future <bool> unAssignCurrentUserFromTask (String userId, String taskId) async {
+  Future <bool> unAssignCurrentUserFromTask (String userId, String taskId, int taskIndex) async {
 
     //Deletes the tasks assigned user
     await _firestore
@@ -191,10 +191,24 @@ class TaskViewModel extends ChangeNotifier {
         .doc(taskId)
         .update({'assignedUser': FieldValue.delete()});
 
+    final task = _tasks[taskIndex];
+
+    final userQuery = await _firestore
+        .collection('users')
+        .where('assignedTasks', arrayContains: task.taskId)
+        .get();
+
+    for (var doc in userQuery.docs) {
+      //Updates the assignedTasks field by removing the taskId
+      await doc.reference.update({
+        'assignedTasks': FieldValue.arrayRemove([task.taskId])
+      });
+    }
+
     //Updates the assignedTasks field by removing the taskId
-    await _firestore.collection('users').doc(userId).update({
-      'assignedTasks': FieldValue.arrayRemove([taskId])
-    });
+    // await _firestore.collection('users').doc(userId).update({
+    //   'assignedTasks': FieldValue.arrayRemove([taskId])
+    // });
 
     notifyListeners();
     return true;

@@ -149,7 +149,7 @@ class _ChoresPageState extends State<ChoresPage> {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.account_box_rounded), label: "Home"),
+                icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
             BottomNavigationBarItem(

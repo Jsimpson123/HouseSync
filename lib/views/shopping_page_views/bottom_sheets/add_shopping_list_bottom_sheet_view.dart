@@ -55,97 +55,103 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
     return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
-      return Padding(
-          padding: EdgeInsets.only(
-              bottom: isMobile ? MediaQuery.of(context)
-                  .viewInsets
-                  .bottom + 77 : MediaQuery.of(context)
-                  .viewInsets
-                  .bottom), //Ensures the keyboard doesn't cover the textfields
-          child: Container(
-              height: 300,
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-
-                  //ExpenseName
-                  TextField(
-                      decoration: const InputDecoration(
-                          hintText: "Shopping List Name",
-                          border: OutlineInputBorder()),
-                      controller: enteredShoppingListNameController,
-                      onChanged: (_) => setState(() {})),
-
-                  SizedBox(height: 15),
-
-                  // Expanded(
-                  //   flex: 2,
-                  //   child: Align(
-                  //     alignment: Alignment.center,
-                  //     child: FittedBox(
-                  //       child: Text(
-                  //         "$totalAmountOwed",
-                  //         style: TextStyle(
-                  //             fontSize: 28,
-                  //             color: viewModel.colour3,
-                  //             fontWeight: FontWeight.bold),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-
-                  //Assign items Button
-                  IconButton(
-                      icon: Icon(Icons.shopping_basket),
-                      iconSize: 30,
-                      onPressed: !isAddButtonEnabled()
-                          ? null
-                          : () => assignItemsToShoppingListPopup(context)),
-
-                  SizedBox(height: 10),
-
-                  //Submit Button
-                  ElevatedButton(
-                      child: Text("Submit"),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: viewModel.colour3,
-                          foregroundColor: viewModel.colour1,
-                          fixedSize: Size(150, 100)),
-                      onPressed: !isSubmitButtonEnabled()
-                          ? null
-                          : ()  async {
-                        //If the required fields have data then create the expense
-                        if (enteredShoppingListNameController.text.isNotEmpty && addedItems.isNotEmpty)
-                        {
-                          ShoppingList newShoppingList = ShoppingList.newShoppingList(enteredShoppingListNameController.text, addedItems);
-
-                          //Sending data to the db
-                          await viewModel.createShoppingList(newShoppingList);
-
-                          addedItems.clear();
-
-                          setState(() {
-                            //Resets everything to ensure values don't remain when creating a new expense
-                            Navigator.of(context).pop();
-                            enteredShoppingListNameController.clear();
-                            controllers.clear();
-                          });
-                        }
-
-                        //Refreshes the page to allow users to be visible again when assigning
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ShoppingPage()));
-                      })
-                ],
-              )));
+      return SingleChildScrollView(
+        child: Padding(
+            padding: EdgeInsets.only(
+                bottom: isMobile ? MediaQuery.of(context)
+                    .viewInsets
+                    .bottom + 77 : MediaQuery.of(context)
+                    .viewInsets
+                    .bottom), //Ensures the keyboard doesn't cover the textfields
+            child: Container(
+                height: 300,
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+        
+                    //ExpenseName
+                    TextField(
+                        decoration: const InputDecoration(
+                            hintText: "Shopping List Name",
+                            border: OutlineInputBorder()),
+                        controller: enteredShoppingListNameController,
+                        onChanged: (_) => setState(() {})),
+        
+                    SizedBox(height: 15),
+        
+                    // Expanded(
+                    //   flex: 2,
+                    //   child: Align(
+                    //     alignment: Alignment.center,
+                    //     child: FittedBox(
+                    //       child: Text(
+                    //         "$totalAmountOwed",
+                    //         style: TextStyle(
+                    //             fontSize: 28,
+                    //             color: viewModel.colour3,
+                    //             fontWeight: FontWeight.bold),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+        
+                    //Assign items Button
+                    IconButton(
+                        icon: Icon(Icons.shopping_basket),
+                        iconSize: 30,
+                        onPressed: !isAddButtonEnabled()
+                            ? null
+                            : () => assignItemsToShoppingListPopup(context)),
+        
+                    SizedBox(height: 10),
+        
+                    //Submit Button
+                    ElevatedButton(
+                        child: Text("Submit"),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: viewModel.colour3,
+                            foregroundColor: viewModel.colour1,
+                            fixedSize: Size(150, 100)),
+                        onPressed: !isSubmitButtonEnabled()
+                            ? null
+                            : ()  async {
+                          //If the required fields have data then create the expense
+                          if (enteredShoppingListNameController.text.isNotEmpty && addedItems.isNotEmpty)
+                          {
+                            ShoppingList newShoppingList = ShoppingList.newShoppingList(enteredShoppingListNameController.text, addedItems);
+        
+                            //Sending data to the db
+                            await viewModel.createShoppingList(newShoppingList);
+        
+                            addedItems.clear();
+        
+                            setState(() {
+                              //Resets everything to ensure values don't remain when creating a new expense
+                              Navigator.of(context).pop();
+                              enteredShoppingListNameController.clear();
+                              controllers.clear();
+                            });
+                          }
+        
+                          //Refreshes the page to allow users to be visible again when assigning
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ShoppingPage()));
+                        })
+                  ],
+                ))),
+      );
     });
   }
 
   Future<void> assignItemsToShoppingListPopup(BuildContext context) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -162,14 +168,6 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
-                        child: Padding(
-                      padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context)
-                          .viewInsets
-                          .bottom), //Ensures the keyboard doesn't cover the textfields
-                      child: Container(
-                          height: 100,
-                          padding: const EdgeInsets.all(16.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -206,7 +204,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                    },
                                   icon: Icon(Icons.check))
                             ],
-                          )))
+                          )
                       ),
                     ),
                   ),

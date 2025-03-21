@@ -16,7 +16,6 @@ import 'package:shared_accommodation_management_app/view_models/home_view_model.
 
 import '../models/event_model.dart';
 import '../view_models/user_view_model.dart';
-import '../views/home_page_views/add_calendar_event_view.dart';
 import '../views/home_page_views/home_header_view.dart';
 import 'medical_page.dart';
 
@@ -153,7 +152,14 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               Expanded(flex: 2, child: HomeHeaderView()),
-              Expanded(flex: 1, child: Container(color: Colors.green)),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.black),
+                  ),
+                ),
+              ),
+              // Expanded(flex: 1, child: Container(color: Colors.green)),
               Expanded(flex: 5,
                   child: SingleChildScrollView(
                     child: TableCalendar(
@@ -189,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                   )
               ),
               SizedBox(height: 8.0),
-              
+
               Expanded(
                 flex: 2,
                   child: ValueListenableBuilder<List<Event>>(valueListenable: _selectedEvents, builder: (context, value, _) {
@@ -197,27 +203,43 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                           color: userViewModel.colour2,
                           borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-                      child: ListView.separated(
-                          padding: EdgeInsets.all(15),
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: 15);
-                          },
-                        itemCount: value.length,
-                          itemBuilder: (context, index) {
-                        return Container(
-                            margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 4.0,
-                        ),
-                            decoration: BoxDecoration(
-                            border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: ListTile(
-                        // onTap: () => print(''),
-                        title: Text(value[index].title),
-                        ));
-                      }),
+                      child: Column(
+                        children: [
+                          Text("Events",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: userViewModel.colour4)
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              height: 200,
+                              child: ListView.separated(
+                                  padding: EdgeInsets.all(15),
+                                  separatorBuilder: (context, index) {
+                                    return SizedBox(height: 15);
+                                  },
+                                itemCount: value.length,
+                                  itemBuilder: (context, index) {
+                                return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                    horizontal: 12.0,
+                                    vertical: 4.0,
+                                ),
+                                    decoration: BoxDecoration(
+                                    border: Border.all(),
+                                borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: ListTile(
+                                // onTap: () => print(''),
+                                title: Text(value[index].title),
+                                  subtitle: Text(value[index].time.toString()),
+                                ));
+                              }),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
 
                   }),
@@ -250,10 +272,15 @@ class _HomePageState extends State<HomePage> {
         decoration: const InputDecoration(
         hintText: "Event Name", border: OutlineInputBorder()),
         controller: enteredEventNameController,
-        onSubmitted: (value) {
+        onSubmitted: (value) async {
         if (enteredEventNameController.text.isNotEmpty) {
         Event newEvent = Event.newEvent(user!.uid, enteredEventNameController.text, _focusedDay);
-        viewModel.addCalendarEvent(newEvent, user.uid);
+
+        TimeOfDay? selectedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now());
+
+        viewModel.addCalendarEvent(newEvent, user.uid, selectedTime!);
         // events.addAll({_selectedDay! : [newEvent]});
         setState(() {
           if (events.containsKey(_selectedDay)) {
@@ -306,7 +333,7 @@ class _HomePageState extends State<HomePage> {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.account_box_rounded), label: "Home"),
+                icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
             BottomNavigationBarItem(

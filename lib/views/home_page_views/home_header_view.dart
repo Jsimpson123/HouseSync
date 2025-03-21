@@ -39,41 +39,17 @@ class HomeHeaderView extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Align(
-                        alignment: isMobile ? Alignment.centerLeft : Alignment.bottomLeft,
+                        alignment: Alignment.centerLeft,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
-                          child: Text("Welcome",
+                          child: Text("Home",
                               style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w900,
                                   color: viewModel.colour4)),
                         ),
                       ),
                     ),
-                    FutureBuilder<String?>(
-                        future: viewModel.returnCurrentUsername(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String?> snapshot) {
-                          if ("${snapshot.data}" == "null") {
-                            return const Text(
-                                ""); //Due to a delay in the username loading
-                          } else {
-                            return Expanded(
-                              flex: 2,
-                              child: Align(
-                                alignment: isMobile ? Alignment.topLeft : Alignment.bottomLeft,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: Text("${snapshot.data}",
-                                      style: TextStyle(
-                                          fontSize: 42,
-                                          fontWeight: FontWeight.bold,
-                                          color: viewModel.colour4)),
-                                ),
-                              ),
-                            );
-                          }
-                        }),
                   ],
                 ),
               )),
