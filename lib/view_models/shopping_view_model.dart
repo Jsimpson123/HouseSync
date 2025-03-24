@@ -107,6 +107,15 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteShoppingList(int shoppingListIndex) async {
+    final task = _shoppingLists[shoppingListIndex];
+
+    await _firestore.collection('shoppingLists').doc(task.shoppingListId).delete();
+    _shoppingLists.removeAt(shoppingListIndex);
+
+    notifyListeners();
+  }
+
   Future <int?> returnShoppingListLength (String shoppingListId) async {
     try {
       final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);

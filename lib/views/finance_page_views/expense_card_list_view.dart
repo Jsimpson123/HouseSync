@@ -33,18 +33,12 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                       borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                   child: GridView.builder(
                       padding: EdgeInsets.all(15),
-                      // separatorBuilder: (context, index) {
-                      //   return SizedBox(height: 15);
-                      // },
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                       childAspectRatio: isMobile ? 0.8 : 2.7,
                       ),
-                      // scrollDirection: Axis.vertical,
-                      // physics: ScrollPhysics(),
-                      // shrinkWrap: true,
                     itemCount: viewModel.expenses.length,
                     itemBuilder: (context, index) {
                       final expense = viewModel.expenses[index];
@@ -55,8 +49,8 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                   color: viewModel.colour1,
                                   borderRadius: BorderRadius.circular(20)),
                             child: Card(
+                              color: Colors.white,
                               child:
-                                // mainAxisAlignment: MainAxisAlignment.center,
                                   SingleChildScrollView(
                                     child: Column(
                                       children: [
@@ -75,6 +69,14 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                             ),
                                           ],
                                         ),
+                                        //Separating line
+                                        // Container(
+                                        //   decoration: BoxDecoration(
+                                        //     border: Border(
+                                        //       bottom: BorderSide(color: Colors.black),
+                                        //     ),
+                                        //   ),
+                                        // ),
                                         SizedBox(height: 30),
                                         Center(
                                           child: FutureBuilder<num?>(
@@ -83,7 +85,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                   AsyncSnapshot<num?> snapshot) {
                                                 if ("${snapshot.data}" == "null") {
                                                   return const Text(
-                                                      ""); //Due to a delay in the username loading
+                                                      ""); //Due to a delay in the amount loading
                                                 } else if ("${snapshot.data}" == "0") {
                                                   //FIX THIS
                                                   setState(() async {
@@ -101,15 +103,15 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                       child: Text(
                                                           "£${snapshot.data}",
                                                           style: TextStyle(
-                                                              fontSize: 18,
+                                                              fontSize: 24,
                                                               fontWeight: FontWeight.bold,
-                                                              color: viewModel.colour4)),
+                                                              color: Colors.green)),
                                                   );
                                                 }
                                               }),
                                         ),
                                     
-                                        SizedBox(height: 50),
+                                        SizedBox(height: 30),
                                         Center(
                                           child: FutureBuilder<String?>(
                                               future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
@@ -123,12 +125,8 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                     fit: BoxFit.fitHeight,
                                                     child: Column(
                                                       children: [
-                                                        Text(
-                                                            "Assigned Users:",
-                                                            style: TextStyle(
-                                                                fontSize: 18,
-                                                                fontWeight: FontWeight.bold,
-                                                                color: viewModel.colour4)),
+                                                        Icon(Icons.supervisor_account_sharp,
+                                                          size: 40),
                                                         Text(
                                                             "${snapshot.data}",
                                                             style: TextStyle(
@@ -215,7 +213,11 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               20)),
                                                       child: ListTile(
                                                         leading: Text(
-                                                            "£" + snapshot.data?[1]![index]),
+                                                            "£" + snapshot.data?[1]![index],
+                                                            style: TextStyle(
+                                                            color: Colors.green,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 16)),
                                                         title: Text(
                                                             snapshot.data?[0]![index],
                                                             style: TextStyle(
@@ -223,6 +225,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                                 viewModel.colour4,
                                                                 fontSize: 16)),
 
+                                                        //TextField only shows if the current user owes money
                                                         subtitle: user?.uid == snapshot.data?[2][index]
                                                             ? TextField(
                                                           decoration: const InputDecoration(
@@ -231,8 +234,9 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                           controller: enteredUserAmountController,
                                                         ) : null,
 
-                                                        trailing:
-                                                           IconButton(
+                                                          //Add Icon only shows if the current user owes money
+                                                        trailing: user?.uid == snapshot.data?[2][index]
+                                                            ? IconButton(
                                                             onPressed: () {
                                                               setState(() async {
                                                                 if (enteredUserAmountController.text.isNotEmpty) {
@@ -245,6 +249,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               });
 
                                               }, icon: Icon(Icons.add))
+                                                            : null
                                                       ));
                                             });
                                       }

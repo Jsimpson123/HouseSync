@@ -19,6 +19,11 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
 
   @override
   Widget build(BuildContext context) {
+
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
+
     return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
       return Column(
         children: [
@@ -27,61 +32,151 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
               decoration: BoxDecoration(
                   color: viewModel.colour2,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-              child: ListView.separated(
+              child: GridView.builder(
                   padding: EdgeInsets.all(15),
-                  separatorBuilder: (context, index) {
-                    return SizedBox(height: 15);
-                  },
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: isMobile ? 0.8 : 2.7,
+                  ),
                   scrollDirection: Axis.vertical,
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: viewModel.shoppingLists.length,
                   itemBuilder: (context, index) {
                     final shoppingList = viewModel.shoppingLists[index];
-                    return Container(
+                    return Dismissible(
+                      //Makes tasks dismissible via swiping
+                      key: UniqueKey(),
+                      onDismissed: (direction) {
+                        viewModel.deleteShoppingList(index);
+                      },
+                      background: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
-                            color: viewModel.colour1,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: ListTile(
-                          leading: Icon(Icons.shopping_cart),
-                          title: Container(width: 50,
-                            alignment: Alignment.bottomCenter,
-                            child: FittedBox(
-                              fit: BoxFit.fitHeight,
-                              child: Text(viewModel.getShoppingListTitle(index),
-                                  style: TextStyle(
-                                      color: viewModel.colour4,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                          trailing: SizedBox(width: 100,
-                            child: FutureBuilder<int?>(
-                                future: viewModel.returnShoppingListLength(shoppingList.shoppingListId),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<int?> snapshot) {
-                                  if ("${snapshot.data}" == "null") {
-                                    return const Text(
-                                        ""); //Due to a delay
-                                  }
-                                  else {
-                                    return Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: FittedBox(
-                                        fit: BoxFit.fitHeight,
-                                        child: Text(
-                                            "Items: \n${snapshot.data}",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: viewModel.colour4)),
-                                      ),
-                                    );
-                                  }
-                                }),
-                          ),
-                          onTap: () => shoppingListDetailsPopup(context, shoppingList),
-                        )
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(child: Icon(Icons.delete)),
+                      ),
+                      child: InkWell(
+                        onTap: () => shoppingListDetailsPopup(context, shoppingList),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: viewModel.colour1,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Card(
+                              color: Colors.white,
+
+                              child:
+                              SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    IntrinsicHeight(
+                                      child: Stack(
+                                      children: [
+                                        const Positioned(
+                                          left: 0,
+                                          child: Icon(
+                                            Icons.shopping_cart,
+                                            size: 30,
+                                          ),
+                                        ),
+                                        Align(
+                                          child: Text(viewModel.getShoppingListTitle(index),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: viewModel.colour4,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                      ],
+                                )
+                                    ),
+                                    //Separating line
+                                    // Container(
+                                    //   decoration: BoxDecoration(
+                                    //     border: Border(
+                                    //       bottom: BorderSide(color: Colors.black),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    SizedBox(height: 30),
+                                    Column(
+                                      children: [
+                                        Center(
+                                          child: Text("Items:", style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: viewModel.colour4)),
+                                        ),
+
+                                        Center(
+                                          child: FutureBuilder<int?>(
+                                                  future: viewModel.returnShoppingListLength(shoppingList.shoppingListId),
+                                                  builder: (BuildContext context,
+                                                      AsyncSnapshot<int?> snapshot) {
+                                                    if ("${snapshot.data}" == "null") {
+                                                      return const Text(
+                                                          ""); //Due to a delay
+                                                    }
+                                                    else {
+                                                      return FittedBox(
+                                                        fit: BoxFit.fitHeight,
+                                                        child: Text("${snapshot.data}",
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: viewModel.colour4)),
+                                                      );
+                                                    }
+                                                  }),
+                                            ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // leading: Icon(Icons.shopping_cart),
+                              // title: Container(width: 50,
+                              //   alignment: Alignment.bottomCenter,
+                              //   child: FittedBox(
+                              //     fit: BoxFit.fitHeight,
+                              //     child: Text(viewModel.getShoppingListTitle(index),
+                              //         style: TextStyle(
+                              //             color: viewModel.colour4,
+                              //             fontSize: 16,
+                              //             fontWeight: FontWeight.bold)),
+                              //   ),
+                              // ),
+                              // trailing: SizedBox(width: 100,
+                              //   child: FutureBuilder<int?>(
+                              //       future: viewModel.returnShoppingListLength(shoppingList.shoppingListId),
+                              //       builder: (BuildContext context,
+                              //           AsyncSnapshot<int?> snapshot) {
+                              //         if ("${snapshot.data}" == "null") {
+                              //           return const Text(
+                              //               ""); //Due to a delay
+                              //         }
+                              //         else {
+                              //           return Align(
+                              //             alignment: Alignment.bottomRight,
+                              //             child: FittedBox(
+                              //               fit: BoxFit.fitHeight,
+                              //               child: Text(
+                              //                   "Items: \n${snapshot.data}",
+                              //                   style: TextStyle(
+                              //                       fontSize: 14,
+                              //                       fontWeight: FontWeight.bold,
+                              //                       color: viewModel.colour4)),
+                              //             ),
+                              //           );
+                              //         }
+                              //       }),
+                              // ),
+                            )
+                        ),
+                      ),
                     );
                   }),
             ),

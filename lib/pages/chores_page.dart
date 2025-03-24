@@ -125,6 +125,7 @@ class _ChoresPageState extends State<ChoresPage> {
               Expanded(flex: 6, child: TaskListView())
             ],
           )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AddTaskView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );

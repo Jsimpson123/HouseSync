@@ -62,7 +62,7 @@ class _TaskListViewState extends State<TaskListView> {
                         style:
                             TextStyle(
                                 color: viewModel.colour4,
-                                fontSize: 16, fontWeight:
+                                fontSize: 20, fontWeight:
                                 FontWeight.bold)),
                     trailing: task.assignedUser != null
                         ? IconButton(
@@ -93,29 +93,34 @@ class _TaskListViewState extends State<TaskListView> {
                             },
                             icon: Icon(Icons.add_box)),
                     subtitle: task.assignedUser != null
-                        ? FutureBuilder<String?>(
-                            //If true
-                            future: viewModel.returnAssignedTaskUsername(task.taskId),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<String?> snapshot) {
-                              if ("${snapshot.data}" == "null") {
-                                return const Text(
-                                    ""); //Due to a delay in the username loading
-                              } else {
-                                return Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: FittedBox(
-                                      fit: BoxFit.fitHeight,
-                                      child: Text(
-                                          "Assigned User: \n${snapshot.data}",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              // fontWeight: FontWeight.bold,
-                                              color: viewModel.colour4)),
-                                    ),
-                                  );
-                              }
-                            })
+                        ? Row(
+                          children: [
+                            Icon(Icons.account_box),
+                            FutureBuilder<String?>(
+                                //If true
+                                future: viewModel.returnAssignedTaskUsername(task.taskId),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String?> snapshot) {
+                                  if ("${snapshot.data}" == "null") {
+                                    return const Text(
+                                        ""); //Due to a delay in the username loading
+                                  } else {
+                                    return Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: FittedBox(
+                                          fit: BoxFit.fitHeight,
+                                          child: Text(
+                                              "${snapshot.data}",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  // fontWeight: FontWeight.bold,
+                                                  color: viewModel.colour4)),
+                                        ),
+                                      );
+                                  }
+                                }),
+                          ],
+                        )
                         : null, //If false
                   ),
                 ),

@@ -232,8 +232,20 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 child: ListTile(
                                 // onTap: () => print(''),
-                                title: Text(value[index].title),
-                                  subtitle: Text(value[index].time.toString()),
+                                title: Text(value[index].title,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: homeViewModel.colour4)),
+                                  subtitle: Row(
+                                    children: [
+                                      Icon(Icons.access_time_outlined),
+                                      Text(value[index].time.toString(),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: homeViewModel.colour4)),
+                                    ],
+                                  ),
                                 ));
                               }),
                             ),
@@ -246,6 +258,7 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Consumer<HomeViewModel>(builder: (context, viewModel, child) {
                   return SizedBox(
                     height: 60,
