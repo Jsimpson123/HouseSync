@@ -45,7 +45,7 @@ class MedicalViewModel extends ChangeNotifier {
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
 
-    //Creates a shopping list
+    //Creates a medical conditon
     await _firestore.collection('medicalConditions').doc(newMedicalCondition.medicalConditionId).set({
       'medicalConditionCreatorId': newMedicalCondition.medicalConditionCreatorId,
       'name': newMedicalCondition.name,
@@ -53,7 +53,7 @@ class MedicalViewModel extends ChangeNotifier {
       'groupId': groupId
     });
 
-    //Updates the assignedTasks field of the user with the new task
+    //Updates the medicalConditions field of the user with the new condition
     await _firestore.collection('users').doc(user?.uid).update({
       'medicalConditions': FieldValue.arrayUnion([newMedicalCondition.medicalConditionId])
     });
@@ -61,6 +61,37 @@ class MedicalViewModel extends ChangeNotifier {
     _medicalConditions.add(newMedicalCondition);
     notifyListeners();
     return true;
+  }
+
+  Future<void> deleteMedicalCondition(String conditionId) async {
+    //Retrieves a condition
+    final medicalDoc = await FirebaseFirestore.instance.collection(
+        'medicalConditions').doc(conditionId).get();
+
+    final data = medicalDoc.data();
+
+    if (medicalDoc.exists) {
+      await FirebaseFirestore.instance.collection('medicalConditions')
+          .doc(conditionId)
+          .delete();
+
+      String creatorId = data?['medicalConditionCreatorId'];
+
+      final medicalUserDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(creatorId)
+          .get();
+
+      List userConditions = await medicalUserDoc.data()?['medicalConditions'];
+
+      if (userConditions.contains(conditionId)) {
+        await _firestore.collection('users').doc(medicalUserDoc.id).update({
+          'medicalConditions': FieldValue.arrayRemove([conditionId])
+        });
+      }
+
+      notifyListeners();
+    }
   }
 
   Future <List<String>> returnMedicalConditionsNamesList (String userId) async {
@@ -118,6 +149,49 @@ class MedicalViewModel extends ChangeNotifier {
     }
     return [];
   }
+
+  Future <List<String>> returnMedicalConditionIds (String userId) async {
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+      final docSnapshot = await userDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List medicalConditions = data['medicalConditions'];
+        List<String> conditionIds = [];
+
+        for (int i = 0; i < medicalConditions.length; i++) {
+          final medicalDoc = await FirebaseFirestore.instance
+              .collection('medicalConditions')
+              .doc(medicalConditions[i])
+              .get();
+
+          conditionIds.add(medicalDoc.id);
+        }
+        return conditionIds;
+      }
+    } catch (e) {
+      print("Error retrieving condition ids: $e");
+    }
+    return [];
+  }
+
+  // Future<String> returnMedicalConditionCreatorId (String conditionId) async {
+  //   try {
+  //     final taskDoc = FirebaseFirestore.instance.collection('medicalConditions').doc(conditionId);
+  //     final docSnapshot = await taskDoc.get();
+  //     final data = docSnapshot.data();
+  //
+  //     if (data != null) {
+  //       String creatorId = data['medicalConditionCreatorId'];
+  //
+  //       return creatorId;
+  //     }
+  //   } catch (e) {
+  //     print("Error retrieving UserId: $e");
+  //   }
+  //   return [];
+  // }
 
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {

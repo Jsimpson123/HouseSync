@@ -108,6 +108,15 @@ class FinanceViewModel extends ChangeNotifier {
     return true;
   }
 
+  Future<void> deleteExpenseUponClick(int expenseIndex) async {
+    final expense = _expenses[expenseIndex];
+
+    await _firestore.collection('expenses').doc(expense.expenseId).delete();
+    _expenses.removeAt(expenseIndex);
+
+    notifyListeners();
+  }
+
   String getExpenseTitle(int expenseIndex) {
     return _expenses[expenseIndex].name;
   }
@@ -281,24 +290,24 @@ class FinanceViewModel extends ChangeNotifier {
   }
 
   //THIS NEEDS CALLED
-  // Future<String?> returnExpenseCreator(String expenseId) async{
-  //   try {
-  //     final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
-  //     final docSnapshot = await taskDoc.get();
-  //     final data = docSnapshot.data();
-  //
-  //     if (data != null) {
-  //       String expenseCreator = data['expenseCreatorId'];
-  //
-  //       if (expenseCreator.isNotEmpty) {
-  //         return expenseCreator;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print("Error retrieving Amount: $e");
-  //   }
-  //   return null;
-  // }
+  Future<String?> returnExpenseCreatorId(String expenseId) async{
+    try {
+      final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await expenseDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        String expenseCreator = data['expenseCreatorId'];
+
+        if (expenseCreator.isNotEmpty) {
+          return expenseCreator;
+        }
+      }
+    } catch (e) {
+      print("Error retrieving expense creator Id: $e");
+    }
+    return null;
+  }
 
   //find the userid inside map to minus amount owed
   Future<void> updateUserAmountPaid(String expenseId, String userId, num amountPaid) async {

@@ -256,6 +256,42 @@ class GroupViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> returnAllGroupMembersAsList(String userId) async {
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    List<String> groupMembersNames = [];
+    List<dynamic> groupMembersIds = [];
+
+    if (groupId != null) {
+      try {
+        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final docSnapshot = await groupDoc.get();
+        final data = docSnapshot.data();
+
+        if (data != null) {
+          groupMembersIds = data['members'];
+
+          for (int i = 0; i < groupMembersIds.length; i++) {
+            final groupUserDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(groupMembersIds[i])
+                .get();
+
+            final groupMemberName = await groupUserDoc.data()?['username'];
+
+            groupMembersNames.add(groupMemberName);
+          }
+        }
+      } catch (e) {
+        print("Error retrieving group members: $e");
+      }
+    }
+    _members = groupMembersNames;
+    _memberIds = groupMembersIds;
+    notifyListeners();
+  }
+
   // Future<void> returnGroupMembersIds(String userId) async {
   //   final userDoc =
   //   await FirebaseFirestore.instance.collection('users').doc(userId).get();

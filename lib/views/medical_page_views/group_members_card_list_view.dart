@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/shopping_model.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
@@ -83,10 +84,10 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
         builder: (BuildContext context) {
           return Consumer<MedicalViewModel>(
               builder: (context, viewModel, child) {
-            Future medicalNamesFuture =
-                viewModel.returnMedicalConditionsNamesList(memberId);
-            Future medicalDescsFuture =
-                viewModel.returnMedicalConditionsDescsList(memberId);
+            Future medicalNamesFuture = viewModel.returnMedicalConditionsNamesList(memberId);
+            Future medicalDescsFuture = viewModel.returnMedicalConditionsDescsList(memberId);
+            Future medicalIds = viewModel.returnMedicalConditionIds(memberId);
+
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -110,7 +111,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                     child: FutureBuilder(
                                         future: Future.wait([
                                           medicalNamesFuture,
-                                          medicalDescsFuture
+                                          medicalDescsFuture,
+                                          medicalIds
                                         ]),
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<dynamic>>
@@ -119,38 +121,24 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                             return const Text("");
                                           } else {
                                             return GridView.builder(
-                                                gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount:
-                                                      isMobile ? 1 : 2,
+                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: isMobile ? 1 : 2,
                                                   crossAxisSpacing: 10,
                                                   mainAxisSpacing: 10,
-                                                  childAspectRatio:
-                                                      isMobile ? 0.8 : 1.4,
+                                                  childAspectRatio: isMobile ? 0.8 : 1.4,
                                                 ),
                                                 padding: EdgeInsets.all(15),
                                                 shrinkWrap: true,
-                                                // separatorBuilder: (context, index) {
-                                                //   return SizedBox(height: 15);
-                                                // },
-                                                itemCount:
-                                                    snapshot.data?[0]!.length,
+                                                itemCount: snapshot.data?[0]!.length,
                                                 itemBuilder: (context, index) {
                                                   return Container(
                                                       decoration: BoxDecoration(
-                                                          color:
-                                                              viewModel.colour1,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      20)),
+                                                          color: viewModel.colour1,
+                                                          borderRadius: BorderRadius.circular(20)),
                                                       child: Card(
                                                         color: Colors.white,
                                                         shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
+                                                            borderRadius: BorderRadius.circular(10)),
                                                         child: Column(
                                                           children: [
                                                             IntrinsicHeight(
@@ -187,18 +175,30 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                   SingleChildScrollView(
                                                                 child: Center(
                                                                   child: Text(
-                                                                      snapshot.data?[
-                                                                              1]![
-                                                                          index],
+                                                                      snapshot.data?[1]![index],
                                                                       style: TextStyle(
-                                                                          color: viewModel
-                                                                              .colour4,
-                                                                          fontSize: isMobile
-                                                                              ? 14
-                                                                              : 16)),
+                                                                          color: viewModel.colour4,
+                                                                          fontSize: isMobile ? 14 : 16)),
                                                                 ),
                                                               ),
                                                             ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                                              child: user?.uid == memberId
+                                                                  ? ElevatedButton(
+                                                                  onPressed: () async {
+                                                                    await viewModel.deleteMedicalCondition(snapshot.data?[2][index]);
+                                                                    showToast(message: "Condition Successfully Deleted");
+                                                                  },
+                                                                  style: ElevatedButton.styleFrom(
+                                                                      foregroundColor: viewModel.colour1,
+                                                                      backgroundColor: Colors.red,
+                                                                      textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(20))),
+                                                                  child: const Text("Delete"))
+                                                           : null
+                                                            )
                                                           ],
                                                         ),
                                                       ));

@@ -108,11 +108,49 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteShoppingList(int shoppingListIndex) async {
-    final task = _shoppingLists[shoppingListIndex];
+    final shoppingList = _shoppingLists[shoppingListIndex];
 
-    await _firestore.collection('shoppingLists').doc(task.shoppingListId).delete();
+    await _firestore.collection('shoppingLists').doc(shoppingList.shoppingListId).delete();
     _shoppingLists.removeAt(shoppingListIndex);
 
+    notifyListeners();
+  }
+
+  Future<void> deleteShoppingItem(ShoppingList shoppingList, String itemId) async {
+    final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingList.shoppingListId);
+    final docSnapshot = await shoppingDoc.get();
+    final data = docSnapshot.data();
+
+    if (data != null) {
+      List items = data['items'];
+      Map<String, dynamic>? currentItemsDetails;
+
+      for (int i = 0; i < items.length; i++) {
+        if (items[i]['itemId'] == itemId) {
+          currentItemsDetails = items[i];
+
+          //Remove the current item details (Firebase doesn't support directly updating specific items)
+          await shoppingDoc.update({
+            'items' : FieldValue.arrayRemove([currentItemsDetails])
+          });
+
+          //New map with updated item details
+          // Map<String, dynamic> updatedItemDetails = {
+          //   'isPurchased': newValue,
+          //   'itemId': currentItemsDetails?['itemId'],
+          //   'itemName': currentItemsDetails?['itemName']
+          // };
+          //
+          // //Updates the array with the new details
+          // await shoppingDoc.update({
+          //   'items': FieldValue.arrayUnion(
+          //       [updatedItemDetails])
+          // });
+
+          break;
+        }
+      }
+    }
     notifyListeners();
   }
 

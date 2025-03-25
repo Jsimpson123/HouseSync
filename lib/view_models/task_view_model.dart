@@ -73,22 +73,6 @@ class TaskViewModel extends ChangeNotifier {
     await _firestore.collection('tasks').doc(task.taskId).delete();
     _tasks.removeAt(taskIndex);
 
-    // final userDoc = await _firestore
-    //     .collection('users')
-    //     .doc()
-    //     .get(); //Gets the userId from the users collection
-    //
-    // final userDoc2 =
-    // FirebaseFirestore.instance.collection('users').doc(userDoc.id);
-    //
-    // List userTasks = userDoc.get('assignedTasks');
-    //
-    // if (userTasks.contains(task.taskId) == true) {
-    //   userDoc2.update({
-    //     "assignedTasks": FieldValue.arrayRemove([task.taskId])
-    //   });
-    // }
-
     notifyListeners();
   }
 

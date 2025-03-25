@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/global/common/toast.dart';
 
 import '../../pages/finance_page.dart';
 import '../../view_models/finance_view_model.dart';
@@ -77,7 +78,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                         //     ),
                                         //   ),
                                         // ),
-                                        SizedBox(height: 30),
+                                        SizedBox(height: 15),
                                         Center(
                                           child: FutureBuilder<num?>(
                                               future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
@@ -111,7 +112,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                               }),
                                         ),
                                     
-                                        SizedBox(height: 30),
+                                        SizedBox(height: 15),
                                         Center(
                                           child: FutureBuilder<String?>(
                                               future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
@@ -126,7 +127,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                     child: Column(
                                                       children: [
                                                         Icon(Icons.supervisor_account_sharp,
-                                                          size: 40),
+                                                          size: 35),
                                                         Text(
                                                             "${snapshot.data}",
                                                             style: TextStyle(
@@ -139,6 +140,35 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                 }
                                               }),
                                         ),
+
+                                        FutureBuilder(
+                                          future: viewModel.returnExpenseCreatorId(expense.expenseId),
+                                          builder: (BuildContext context,
+                                          AsyncSnapshot<String?> snapshot) {
+                                            if (user?.uid == snapshot.data) {
+                                              return ElevatedButton(
+                                                  onPressed: () {
+                                                      viewModel.deleteExpenseUponClick(index);
+                                                  },
+                                                  style: ElevatedButton
+                                                      .styleFrom(
+                                                      foregroundColor: viewModel
+                                                          .colour1,
+                                                      backgroundColor: Colors
+                                                          .red,
+                                                      textStyle:
+                                                      TextStyle(
+                                                          fontWeight: FontWeight
+                                                              .w700,
+                                                          fontSize: 16),
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius
+                                                              .circular(20))),
+                                                  child: const Text("Delete"));
+                                            }
+                                            return SizedBox();
+                                          }
+                                        )
                                       ],
                                     ),
                                   ),

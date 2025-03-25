@@ -46,20 +46,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                   itemCount: viewModel.shoppingLists.length,
                   itemBuilder: (context, index) {
                     final shoppingList = viewModel.shoppingLists[index];
-                    return Dismissible(
-                      //Makes tasks dismissible via swiping
-                      key: UniqueKey(),
-                      onDismissed: (direction) {
-                        viewModel.deleteShoppingList(index);
-                      },
-                      background: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Center(child: Icon(Icons.delete)),
-                      ),
-                      child: InkWell(
+                      return InkWell(
                         onTap: () => shoppingListDetailsPopup(context, shoppingList),
                         child: Container(
                             decoration: BoxDecoration(
@@ -132,52 +119,29 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                     }
                                                   }),
                                             ),
+
+                                        SizedBox(height: 52),
+
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            viewModel.deleteShoppingList(index);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              foregroundColor: viewModel.colour1,
+                                              backgroundColor: Colors.red,
+                                              textStyle:
+                                              TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20))),
+                                          child: const Text("Delete"))
                                       ],
                                     ),
                                   ],
                                 ),
                               ),
-                              // leading: Icon(Icons.shopping_cart),
-                              // title: Container(width: 50,
-                              //   alignment: Alignment.bottomCenter,
-                              //   child: FittedBox(
-                              //     fit: BoxFit.fitHeight,
-                              //     child: Text(viewModel.getShoppingListTitle(index),
-                              //         style: TextStyle(
-                              //             color: viewModel.colour4,
-                              //             fontSize: 16,
-                              //             fontWeight: FontWeight.bold)),
-                              //   ),
-                              // ),
-                              // trailing: SizedBox(width: 100,
-                              //   child: FutureBuilder<int?>(
-                              //       future: viewModel.returnShoppingListLength(shoppingList.shoppingListId),
-                              //       builder: (BuildContext context,
-                              //           AsyncSnapshot<int?> snapshot) {
-                              //         if ("${snapshot.data}" == "null") {
-                              //           return const Text(
-                              //               ""); //Due to a delay
-                              //         }
-                              //         else {
-                              //           return Align(
-                              //             alignment: Alignment.bottomRight,
-                              //             child: FittedBox(
-                              //               fit: BoxFit.fitHeight,
-                              //               child: Text(
-                              //                   "Items: \n${snapshot.data}",
-                              //                   style: TextStyle(
-                              //                       fontSize: 14,
-                              //                       fontWeight: FontWeight.bold,
-                              //                       color: viewModel.colour4)),
-                              //             ),
-                              //           );
-                              //         }
-                              //       }),
-                              // ),
                             )
                         ),
-                      ),
-                    );
+                      );
                   }),
             ),
           ),
@@ -357,33 +321,47 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                   itemCount: snapshot.data?[0]!.length,
                                                   itemBuilder: (context, index) {
                                                     bool isChecked = snapshot.data?[1][index];
-                                                    return Container(
+                                                    return Dismissible(
+                                                      //Makes items dismissible via swiping
+                                                      key: UniqueKey(),
+                                                      onDismissed: (direction) {
+                                                        viewModel.deleteShoppingItem(shoppingList, snapshot.data?[2][index]);
+                                                      },
+                                                      background: Container(
+                                                        margin: EdgeInsets.symmetric(horizontal: 5),
                                                         decoration: BoxDecoration(
-                                                            color: viewModel.colour1,
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                                20)),
-                                                        child: ListTile(
-                                                          leading: Checkbox(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.circular(5)),
-                                                              side: BorderSide(width: 2, color: viewModel.colour3),
-                                                              checkColor: viewModel.colour1,
-                                                              activeColor: viewModel.colour3,
-                                                              value: isChecked,
-                                                              onChanged: (bool? newValue) async {
-                                                                setState(() {
-                                                                  snapshot.data?[1][index] = newValue;
-                                                                });
-                                                                await viewModel.setItemValue(shoppingList, snapshot.data?[2][index], newValue!);
-                                                              }),
-                                                            title: Text(
-                                                                snapshot.data?[0]![index],
-                                                                style: TextStyle(
-                                                                    color:
-                                                                    viewModel.colour4,
-                                                                    fontSize: 16)),
-                                                        ));
+                                                            color: Colors.red,
+                                                            borderRadius: BorderRadius.circular(10)),
+                                                        child: Center(child: Icon(Icons.delete)),
+                                                      ),
+                                                      child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color: viewModel.colour1,
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  20)),
+                                                          child: ListTile(
+                                                            leading: Checkbox(
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(5)),
+                                                                side: BorderSide(width: 2, color: viewModel.colour3),
+                                                                checkColor: viewModel.colour1,
+                                                                activeColor: viewModel.colour3,
+                                                                value: isChecked,
+                                                                onChanged: (bool? newValue) async {
+                                                                  setState(() {
+                                                                    snapshot.data?[1][index] = newValue;
+                                                                  });
+                                                                  await viewModel.setItemValue(shoppingList, snapshot.data?[2][index], newValue!);
+                                                                }),
+                                                              title: Text(
+                                                                  snapshot.data?[0]![index],
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                      viewModel.colour4,
+                                                                      fontSize: 16)),
+                                                          )),
+                                                    );
                                                   }),
                                             );
                                           }
