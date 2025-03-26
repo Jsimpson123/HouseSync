@@ -66,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: 750,
           child: TextField(
+            key: Key('emailField'),
               controller: _emailController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email_rounded),
@@ -86,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: 750,
           child: TextField(
+            key: Key('passwordField'),
               controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
@@ -105,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
         //Spacing between the TextFields
         const SizedBox(height: 10),
         ElevatedButton(
+          key: Key("loginButton"),
             onPressed: () {
               _signIn();
             },
@@ -124,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
             child:
                 Text("Don't have an account?", style: TextStyle(fontSize: 25))),
         TextButton(
+          key: Key("registerButton"),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => CreateAccountPage()));

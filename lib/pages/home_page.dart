@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
   
   HomeViewModel homeViewModel = HomeViewModel();
 
-  //Stores the created calendar events
+  //Map to store the created calendar events
   Map<DateTime, List<Event>> events = {};
 
   @override
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 8.0),
 
               Expanded(
-                flex: 2,
+                flex: 3,
                   child: ValueListenableBuilder<List<Event>>(valueListenable: _selectedEvents, builder: (context, value, _) {
                     return Container(
                       decoration: BoxDecoration(
@@ -222,14 +222,9 @@ class _HomePageState extends State<HomePage> {
                                 itemCount: value.length,
                                   itemBuilder: (context, index) {
                                 return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                    horizontal: 12.0,
-                                    vertical: 4.0,
-                                ),
                                     decoration: BoxDecoration(
-                                    border: Border.all(),
-                                borderRadius: BorderRadius.circular(12.0),
-                                ),
+                                        color: homeViewModel.colour1,
+                                        borderRadius: BorderRadius.circular(20)),
                                 child: ListTile(
                                 // onTap: () => print(''),
                                 title: Text(value[index].title,

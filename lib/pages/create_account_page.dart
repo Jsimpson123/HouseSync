@@ -73,6 +73,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: 750,
           child: TextField(
+              key: Key("registerUsernameField"),
               controller: _usernameController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.account_box_rounded),
@@ -93,6 +94,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: 750,
           child: TextField(
+            key: Key("registerEmailField"),
               controller: _emailController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email_rounded),
@@ -113,6 +115,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: 750,
           child: TextField(
+              key: Key("registerPasswordField"),
               controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
@@ -132,41 +135,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
         ElevatedButton(
-            onPressed: () {
-              // if (_usernameController.text.isEmpty) {
-              //   showToast(message: 'Username must not be empty');
-              //   return;
-              // }
-              //
-              // if (_passwordController.text.isEmpty) {
-              //   showToast(message: 'Password must not be empty');
-              //   return;
-              // }
-              //
-              // if (_passwordController.text.length < 6) {
-              //   showToast(message: 'Password must be at least 6 characters long');
-              //   return;
-              // }
-              //
-              // if (_emailController.text.isEmpty && !_emailController.text.contains('@') && !_emailController.text.contains('.')) {
-              //   return;
-              // }
-
-              HouseSyncUser newUser = HouseSyncUser.newUser(
-                  _usernameController.text, _emailController.text);
-              firebaseAuthFunctionality.registerUser(
-                  newUser, _passwordController.text);
-
-              if (newUser.username.isNotEmpty &&
-                  newUser.email.contains('@') &&
-                  newUser.email.contains('.') &&
-                  _passwordController.text.length >= 6) {
-                print("User was successfully created");
-
-                //Make functionality so cant naviagate unless wifi working
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
-              }
+            key: Key("registerNowButton"),
+            onPressed: () async {
+              HouseSyncUser newUser = HouseSyncUser.newUser(_usernameController.text, _emailController.text);
+              await firebaseAuthFunctionality.registerUser(newUser, _passwordController.text, context);
             },
             child: Text("Register Now"),
             style: ButtonStyle(
