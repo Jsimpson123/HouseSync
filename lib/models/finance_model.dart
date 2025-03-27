@@ -4,23 +4,29 @@ class Expense {
   String expenseId;
   String expenseCreatorId;
   String name;
-  num expenseAmount;
+  num initialExpenseAmount;
+  num remainingExpenseAmount;
   List<Map<String, dynamic>> assignedUsers = [];
+  List<Map<String, dynamic>> assignedUsersRecords = [];
 
   Expense({
     required this.expenseId,
     required this.expenseCreatorId,
     required this.name,
-    required this.expenseAmount,
-    required this.assignedUsers
+    required this.initialExpenseAmount,
+    required this.remainingExpenseAmount,
+    required this.assignedUsers,
 });
 
   //Constructor for a new Expense
   Expense.newExpense(
       this.expenseCreatorId,
       this.name,
-      this.expenseAmount,
-      this.assignedUsers)
+      this.initialExpenseAmount,
+      this.remainingExpenseAmount,
+      this.assignedUsers,
+      this.assignedUsersRecords
+      )
       : expenseId = '';
 
   //Method that converts Expense to a map for database storage
@@ -28,8 +34,10 @@ class Expense {
     return {
       'expenseCreatorId': expenseCreatorId,
       'name': name,
-      'expenseAmount': expenseAmount,
-      'assignedUsers': assignedUsers
+      'initialExpenseAmount': initialExpenseAmount,
+      'remainingExpenseAmount': remainingExpenseAmount,
+      'assignedUsers': assignedUsers,
+      'assignedUsersRecords': assignedUsersRecords
     };
   }
 
@@ -39,8 +47,9 @@ class Expense {
         expenseId: expenseId,
         expenseCreatorId: map['expenseCreatorId'],
         name: map['name'],
-        expenseAmount: map['expenseAmount'],
-        assignedUsers: List<Map<String, dynamic>>.from(map['assignedUsers'])
+        initialExpenseAmount: map['initialExpenseAmount'],
+        remainingExpenseAmount: map['remainingExpenseAmount'],
+        assignedUsers: List<Map<String, dynamic>>.from(map['assignedUsers']),
     );
   }
 

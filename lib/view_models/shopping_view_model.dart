@@ -154,6 +154,22 @@ class ShoppingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addNewShoppingItem(String shoppingListId, Map<String, dynamic> newItem) async {
+    final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+    final docSnapshot = await shoppingDoc.get();
+    final data = docSnapshot.data();
+
+    if (data != null) {
+      // List items = data['items'];
+
+      //Updates the array with the new details
+      await shoppingDoc.update({
+        'items': FieldValue.arrayUnion([newItem])
+      });
+    }
+    notifyListeners();
+  }
+
   Future <int?> returnShoppingListLength (String shoppingListId) async {
     try {
       final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);

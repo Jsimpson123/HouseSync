@@ -39,6 +39,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     super.dispose();
   }
 
+  bool _isHidden = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +96,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: 750,
           child: TextField(
-            key: Key("registerEmailField"),
+              key: Key("registerEmailField"),
               controller: _emailController,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.email_rounded),
@@ -117,7 +119,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           child: TextField(
               key: Key("registerPasswordField"),
               controller: _passwordController,
-              obscureText: true,
+              obscureText: _isHidden,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.password_rounded),
                 hintText: "Password",
@@ -130,6 +132,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
                 ),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isHidden = !_isHidden;
+                      });
+                    },
+                    icon: _isHidden
+                        ? const Icon(
+                            Icons.visibility_off,
+                            color: Colors.grey,
+                          )
+                        : const Icon(
+                            Icons.visibility,
+                            color: Colors.black,
+                          )
+                ),
               )),
         ),
         //Spacing between the TextFields and login button
@@ -137,8 +155,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         ElevatedButton(
             key: Key("registerNowButton"),
             onPressed: () async {
-              HouseSyncUser newUser = HouseSyncUser.newUser(_usernameController.text, _emailController.text);
-              await firebaseAuthFunctionality.registerUser(newUser, _passwordController.text, context);
+              HouseSyncUser newUser = HouseSyncUser.newUser(
+                  _usernameController.text, _emailController.text);
+              await firebaseAuthFunctionality.registerUser(
+                  newUser, _passwordController.text, context);
             },
             child: Text("Register Now"),
             style: ButtonStyle(

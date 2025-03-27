@@ -192,8 +192,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                     if (enteredItemNameController.text.isNotEmpty) {
                                       setState(() {
                                         addedItems.add({
-                                          'itemName': enteredItemNameController
-                                              .text,
+                                          'itemName': enteredItemNameController.text,
                                           'isPurchased': false,
                                           'itemId': Uuid().v4()
                                         });

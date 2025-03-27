@@ -79,6 +79,30 @@ class HomeViewModel extends ChangeNotifier {
     return events;
   }
 
+  Future<String?> returnEventCreatorUsername (String eventId) async {
+    try {
+      final eventDoc = FirebaseFirestore.instance.collection('calendarEvents').doc(eventId);
+      final docSnapshot = await eventDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        String creatorId = data['eventCreatorId'];
+
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(creatorId)
+            .get();
+
+        final userName = await userDoc.data()?['username'];
+
+        return userName;
+      }
+    } catch (e) {
+      print("Error retrieving event creator username: $e");
+    }
+    return null;
+  }
+
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

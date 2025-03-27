@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,11 +29,15 @@ TextEditingController();
 
 List<TextEditingController> controllers = [];
 
-num totalAmountOwed = 0;
+num remainingExpenseAmount = 0;
+num initialExpenseAmount = 0;
 
 List<String> assignedUsers = <String>[];
 
 List<Map<String, dynamic>> assignedUserIds = [];
+List<Map<String, dynamic>> assignedUsersRecord = [];
+
+List<Map<String, dynamic>> userPayments = [];
 
 bool isAddButtonEnabled() {
   return enteredExpenseNameController.text.isNotEmpty;
@@ -78,7 +83,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                       alignment: Alignment.center,
                       child: FittedBox(
                         child: Text(
-                        ("£$totalAmountOwed"),
+                        ("£$remainingExpenseAmount"),
                           style: TextStyle(
                               fontSize: 28,
                               color: viewModel.colour3,
@@ -110,10 +115,10 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                           : ()  async {
                         //If the required fields have data then create the expense
                         if (enteredExpenseNameController.text.isNotEmpty
-                            && totalAmountOwed > 0
+                            && initialExpenseAmount > 0
                             && assignedUserIds.isNotEmpty)
                           {
-                            Expense newExpense = Expense.newExpense(user!.uid, enteredExpenseNameController.text, totalAmountOwed, assignedUserIds);
+                            Expense newExpense = Expense.newExpense(user!.uid, enteredExpenseNameController.text, initialExpenseAmount, remainingExpenseAmount, assignedUserIds, assignedUsersRecord);
 
                             //Sending data to the db
                             await viewModel.createExpense(newExpense);
@@ -126,7 +131,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                               assignedUsers.clear();
                               assignedUserIds.clear();
                               controllers.clear();
-                              totalAmountOwed = 0;
+                              initialExpenseAmount = 0;
+                              remainingExpenseAmount = 0;
                             });
                           }
 
@@ -241,9 +247,18 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                                   'userId': viewModel.memberIds[index],
                                                                   'amount': enteredUserAmountController.text
                                                                 });
+
+                                                                assignedUsersRecord.add({
+                                                                  'userId': viewModel.memberIds[index],
+                                                                  'initialAmountOwed': num.parse(enteredUserAmountController.text),
+                                                                  'remainingAmountOwed': num.parse(enteredUserAmountController.text),
+                                                                  'paidOff': false,
+                                                                  'payments': userPayments
+                                                                });
                                                               }
                                                               viewModel.removeMember(index);
-                                                              totalAmountOwed = totalAmountOwed + num.parse(enteredUserAmountController.text);
+                                                              initialExpenseAmount = initialExpenseAmount + num.parse(enteredUserAmountController.text);
+                                                              remainingExpenseAmount = initialExpenseAmount;
                                                             });
                                                           }
                                                         },

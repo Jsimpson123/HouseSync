@@ -30,6 +30,8 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  bool _isHidden = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
           child: TextField(
             key: Key('passwordField'),
               controller: _passwordController,
-              obscureText: true,
+              obscureText: _isHidden,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.password_rounded),
                 hintText: "Password",
@@ -101,6 +103,22 @@ class _LoginPageState extends State<LoginPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
+                ),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isHidden = !_isHidden;
+                      });
+                    },
+                    icon: _isHidden
+                        ? const Icon(
+                      Icons.visibility_off,
+                      color: Colors.grey,
+                    )
+                        : const Icon(
+                      Icons.visibility,
+                      color: Colors.black,
+                    )
                 ),
               )),
         ),

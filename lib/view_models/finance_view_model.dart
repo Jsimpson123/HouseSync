@@ -53,8 +53,19 @@ class FinanceViewModel extends ChangeNotifier {
     await _firestore.collection('expenses').doc(newExpense.expenseId).set({
       'expenseCreatorId': newExpense.expenseCreatorId,
       'name': newExpense.name,
-      'expenseAmount': newExpense.expenseAmount,
+      'initialExpenseAmount': newExpense.initialExpenseAmount,
+      'remainingExpenseAmount': newExpense.remainingExpenseAmount,
       'assignedUsers': newExpense.assignedUsers,
+      'groupId': groupId
+    });
+
+    //Creates an expense record
+    await _firestore.collection('expenseRecords').doc(newExpense.expenseId).set({
+      'expenseCreatorId': newExpense.expenseCreatorId,
+      'name': newExpense.name,
+      'initialExpenseAmount': newExpense.initialExpenseAmount,
+      'assignedUsersRecords': newExpense.assignedUsersRecords,
+      'dateCreated': Timestamp.now(),
       'groupId': groupId
     });
 
@@ -77,9 +88,9 @@ class FinanceViewModel extends ChangeNotifier {
     final data = expenseDoc.data();
 
     if (expenseDoc.exists) {
-      final expenseName = await expenseDoc.data()?['expenseAmount'];
+      final expenseAmount = await expenseDoc.data()?['remainingExpenseAmount'];
 
-      if (expenseName == 0) {
+      if (expenseAmount == 0) {
         await FirebaseFirestore.instance.collection('expenses').doc(expenseId).delete();
 
         List assignedUsers = data?['assignedUsers'];
@@ -279,7 +290,7 @@ class FinanceViewModel extends ChangeNotifier {
       final data = docSnapshot.data();
 
       if (data != null) {
-        num expenseAmount = data['expenseAmount'];
+        num expenseAmount = data['remainingExpenseAmount'];
 
         return expenseAmount;
       }
@@ -316,9 +327,13 @@ class FinanceViewModel extends ChangeNotifier {
       final docSnapshot = await expenseDoc.get();
       final data = docSnapshot.data();
 
+      final expenseRecordDoc = FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId);
+      final docRecordSnapshot = await expenseRecordDoc.get();
+      final recordData = docRecordSnapshot.data();
+
       if (data != null) {
         List assignedUsers = data['assignedUsers'];
-        num totalAmount = data['expenseAmount'];
+        num totalAmount = data['remainingExpenseAmount'];
 
         Map<String, dynamic> currentUserExpenseDetails;
 
@@ -331,7 +346,7 @@ class FinanceViewModel extends ChangeNotifier {
 
             //Updates the total expense amount
             await expenseDoc.update({
-              'expenseAmount' :  totalAmount - amountPaid
+              'remainingExpenseAmount' :  totalAmount - amountPaid
             });
 
             //Remove the current user expense details (Firebase doesn't support directly updating specific items)
@@ -350,6 +365,78 @@ class FinanceViewModel extends ChangeNotifier {
               await expenseDoc.update({
                 'assignedUsers': FieldValue.arrayUnion(
                     [updatedUserExpenseDetails])
+              });
+            }
+            notifyListeners();
+          }
+        }
+      }
+
+      if (recordData != null) {
+        List assignedUsers = recordData['assignedUsersRecords'];
+        // num remainingAmount = recordData['remainingAmountOwed'];
+        // num initialAmount = recordData['initialAmountOwed'];
+
+        Map<String, dynamic> currentUserRecord;
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          if (assignedUsers[i]['userId'] == userId) {
+            //Retrieves the users expense details and assigns it to a map
+            currentUserRecord = assignedUsers[i];
+
+            List payments = currentUserRecord['payments'];
+            num remainingAmount = currentUserRecord['remainingAmountOwed'];
+            num initialAmount = currentUserRecord['initialAmountOwed'];
+
+            Map<String, dynamic> entry = {
+              'amountPaid': amountPaid,
+              'datePaid': Timestamp.now()
+            };
+
+            //Remove the current user expense details (Firebase doesn't support directly updating specific items)
+            await expenseRecordDoc.update({
+              'assignedUsersRecords' : FieldValue.arrayRemove([currentUserRecord])
+            });
+
+            payments.add(entry);
+
+            Map<String, dynamic> updatedUserExpenseRecordDetails;
+
+            if (amountPaid != remainingAmount) {
+              //New map with updated user expense details
+              updatedUserExpenseRecordDetails = {
+                'userId': userId,
+                'initialAmountOwed': initialAmount,
+                'remainingAmountOwed': remainingAmount - amountPaid,
+                'paidOff': false,
+                'payments': payments
+              };
+
+
+              //num userAmount = num.parse(assignedUsers[i]['amount']);
+
+              //Updates the remaining expense amount
+              // await payments.update({
+              //   'remainingAmountOwed': remainingAmount - amountPaid
+              // });
+
+              //Updates the array with the new details
+              await expenseRecordDoc.update({
+                'assignedUsersRecords': FieldValue.arrayUnion(
+                    [updatedUserExpenseRecordDetails])
+              });
+            } else {
+              updatedUserExpenseRecordDetails = {
+                'userId': userId,
+                'initialAmountOwed': initialAmount,
+                'remainingAmountOwed': remainingAmount - amountPaid,
+                'paidOff': true,
+                'payments': payments
+              };
+              //Updates the array with the new details
+              await expenseRecordDoc.update({
+                'assignedUsersRecords': FieldValue.arrayUnion(
+                    [updatedUserExpenseRecordDetails])
               });
             }
             notifyListeners();

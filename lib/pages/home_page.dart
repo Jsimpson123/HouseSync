@@ -241,6 +241,31 @@ class _HomePageState extends State<HomePage> {
                                               color: homeViewModel.colour4)),
                                     ],
                                   ),
+                                  trailing: FutureBuilder<String?>(
+                                      future: homeViewModel.returnEventCreatorUsername(value[index].eventId),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<String?> snapshot) {
+                                        if ("${snapshot.data}" == "null") {
+                                          return const Text(
+                                              ""); //Due to a delay in the username loading
+                                        } else {
+                                          return FittedBox(
+                                            fit: BoxFit.fitHeight,
+                                            child: Column(
+                                              children: [
+                                                Icon(Icons.supervisor_account_sharp,
+                                                    size: 35),
+                                                Text(
+                                                    "${snapshot.data}",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: homeViewModel.colour4)),
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                      }),
                                 ));
                               }),
                             ),
@@ -253,7 +278,7 @@ class _HomePageState extends State<HomePage> {
               )
             ],
           )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Consumer<HomeViewModel>(builder: (context, viewModel, child) {
                   return SizedBox(
                     height: 60,
@@ -294,7 +319,7 @@ class _HomePageState extends State<HomePage> {
           if (events.containsKey(_selectedDay)) {
             events[_selectedDay]!.add(newEvent); //Adds the new event
           } else {
-            events[_selectedDay!] = [newEvent]; // Creates new list with event
+            events[_selectedDay!] = [newEvent]; //Creates new list with event
           }
         });
         enteredEventNameController.clear();
