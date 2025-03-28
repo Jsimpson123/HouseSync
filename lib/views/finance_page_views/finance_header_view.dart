@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
+import 'package:shared_accommodation_management_app/views/finance_page_views/expense_card_list_view.dart';
+
+import 'expense_records_view.dart';
 
 class FinanceHeaderView extends StatelessWidget {
   const FinanceHeaderView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    ExpenseCardListView expenseCardListView = ExpenseCardListView();
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
@@ -39,6 +43,13 @@ class FinanceHeaderView extends StatelessWidget {
                   ],
                 ),
               )),
+          Container(
+            margin: EdgeInsets.only(right: 100),
+            child: InkWell( onTap: () {
+              ExpenseRecordsView.expenseRecordsPopup(context);
+            },
+                child: Icon(Icons.calendar_month, size: 40)),
+          ),
         ],
       );
     });

@@ -199,7 +199,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('ExpenseDetails'),
+                title: Text('Expense Details'),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,

@@ -9,6 +9,9 @@ class FinanceViewModel extends ChangeNotifier {
   final List<Expense> _expenses = <Expense>[];
   List<Expense> get expenses => List.unmodifiable(_expenses);
 
+  final List<Expense> _expenseRecords = <Expense>[];
+  List<Expense> get expenseRecords => List.unmodifiable(_expenseRecords);
+
   int get numExpenses => _expenses.length;
 
   // final List<String> _assignedUsers = <String>[];
@@ -38,6 +41,7 @@ class FinanceViewModel extends ChangeNotifier {
     for (var doc in snapshot.docs) {
       _expenses.add(Expense.fromMap(doc.id, doc.data()));
     }
+
     notifyListeners();
   }
 
@@ -105,7 +109,6 @@ class FinanceViewModel extends ChangeNotifier {
               .get();
 
           List assignedExpenses = await expenseUserDoc.data()?['assignedExpenses'];
-          //FIX THIS CODE
           if (assignedExpenses.contains(expenseId)) {
             await _firestore.collection('users').doc(userIds[i]).update({
               'assignedExpenses': FieldValue.arrayRemove([expenseId])
@@ -122,7 +125,33 @@ class FinanceViewModel extends ChangeNotifier {
   Future<void> deleteExpenseUponClick(int expenseIndex) async {
     final expense = _expenses[expenseIndex];
 
-    await _firestore.collection('expenses').doc(expense.expenseId).delete();
+    //Retrieves an expense
+    final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expense.expenseId).get();
+
+    final data = expenseDoc.data();
+
+    if (expenseDoc.exists) {
+        await FirebaseFirestore.instance.collection('expenses').doc(expense.expenseId).delete();
+
+        List assignedUsers = data?['assignedUsers'];
+        List<dynamic> userIds = [];
+
+        for (int i = 0; i < assignedUsers.length; i++) {
+          userIds.add(data?['assignedUsers'][i]['userId']);
+
+          final expenseUserDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userIds[i])
+              .get();
+
+          List assignedExpenses = await expenseUserDoc.data()?['assignedExpenses'];
+          if (assignedExpenses.contains(expense.expenseId)) {
+            await _firestore.collection('users').doc(userIds[i]).update({
+              'assignedExpenses': FieldValue.arrayRemove([expense.expenseId])
+            });
+          }
+      }
+    }
     _expenses.removeAt(expenseIndex);
 
     notifyListeners();
@@ -374,8 +403,6 @@ class FinanceViewModel extends ChangeNotifier {
 
       if (recordData != null) {
         List assignedUsers = recordData['assignedUsersRecords'];
-        // num remainingAmount = recordData['remainingAmountOwed'];
-        // num initialAmount = recordData['initialAmountOwed'];
 
         Map<String, dynamic> currentUserRecord;
 
@@ -387,6 +414,7 @@ class FinanceViewModel extends ChangeNotifier {
             List payments = currentUserRecord['payments'];
             num remainingAmount = currentUserRecord['remainingAmountOwed'];
             num initialAmount = currentUserRecord['initialAmountOwed'];
+            String userName = currentUserRecord['userName'];
 
             Map<String, dynamic> entry = {
               'amountPaid': amountPaid,
@@ -406,19 +434,12 @@ class FinanceViewModel extends ChangeNotifier {
               //New map with updated user expense details
               updatedUserExpenseRecordDetails = {
                 'userId': userId,
+                'userName': userName,
                 'initialAmountOwed': initialAmount,
                 'remainingAmountOwed': remainingAmount - amountPaid,
                 'paidOff': false,
                 'payments': payments
               };
-
-
-              //num userAmount = num.parse(assignedUsers[i]['amount']);
-
-              //Updates the remaining expense amount
-              // await payments.update({
-              //   'remainingAmountOwed': remainingAmount - amountPaid
-              // });
 
               //Updates the array with the new details
               await expenseRecordDoc.update({
@@ -428,6 +449,7 @@ class FinanceViewModel extends ChangeNotifier {
             } else {
               updatedUserExpenseRecordDetails = {
                 'userId': userId,
+                'userName': userName,
                 'initialAmountOwed': initialAmount,
                 'remainingAmountOwed': remainingAmount - amountPaid,
                 'paidOff': true,
@@ -446,6 +468,26 @@ class FinanceViewModel extends ChangeNotifier {
     } catch (e) {
       print("Error retrieving Amount: $e");
     }
+  }
+
+  Future<String?> returnExpenseRecordName(String expenseId) async {
+    //Retrieves an expense
+    final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
+
+    if (expenseDoc.exists) {
+      try {
+        final expenseName = await expenseDoc.data()?['name'];
+        final data = expenseName.data();
+
+        if (data != null) {
+          return data['name'] as String?;
+        }
+      } catch (e) {
+        print("Error retrieving expense Record name: $e");
+      }
+      notifyListeners();
+    }
+    return null;
   }
 
   //Bottom sheet builder

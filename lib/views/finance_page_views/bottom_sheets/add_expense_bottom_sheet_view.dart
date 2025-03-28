@@ -250,6 +250,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
 
                                                                 assignedUsersRecord.add({
                                                                   'userId': viewModel.memberIds[index],
+                                                                  'userName': viewModel.members[index],
                                                                   'initialAmountOwed': num.parse(enteredUserAmountController.text),
                                                                   'remainingAmountOwed': num.parse(enteredUserAmountController.text),
                                                                   'paidOff': false,
