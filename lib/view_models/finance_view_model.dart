@@ -490,6 +490,26 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
+  Future<List> returnExpenseRecordPayments(String expenseId) async {
+
+    final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
+
+    final data = expenseDoc.data();
+    List assignedUsersRecords = data?['assignedUsersRecords'];
+
+    List<Map<String, dynamic>> allPayments = [];
+
+    for (int i = 0; i < assignedUsersRecords.length; i++) {
+      List payments = await assignedUsersRecords[i]['payments'];
+
+      //Gets payments from each users records
+      for (int j = 0; j < payments.length; j++) {
+        allPayments.add(payments[j]);
+      }
+    }
+    return allPayments;
+  }
+
   //Bottom sheet builder
   void displayBottomSheet(Widget bottomSheetView, BuildContext context) {
     showModalBottomSheet(

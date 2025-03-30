@@ -46,7 +46,7 @@ class FinanceHeaderView extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(right: 100),
             child: InkWell( onTap: () {
-              ExpenseRecordsView.expenseRecordsPopup(context);
+              ExpenseRecordsView.expenseRecordsPopup(context, ExpenseRecordsView());
             },
                 child: Icon(Icons.calendar_month, size: 40)),
           ),
