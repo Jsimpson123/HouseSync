@@ -470,25 +470,25 @@ class FinanceViewModel extends ChangeNotifier {
     }
   }
 
-  Future<String?> returnExpenseRecordName(String expenseId) async {
-    //Retrieves an expense
-    final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
-
-    if (expenseDoc.exists) {
-      try {
-        final expenseName = await expenseDoc.data()?['name'];
-        final data = expenseName.data();
-
-        if (data != null) {
-          return data['name'] as String?;
-        }
-      } catch (e) {
-        print("Error retrieving expense Record name: $e");
-      }
-      notifyListeners();
-    }
-    return null;
-  }
+  // Future<String?> returnExpenseRecordName(String expenseId) async {
+  //   //Retrieves an expense
+  //   final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
+  //
+  //   if (expenseDoc.exists) {
+  //     try {
+  //       final expenseName = await expenseDoc.data()?['name'];
+  //       final data = expenseName.data();
+  //
+  //       if (data != null) {
+  //         return data['name'] as String?;
+  //       }
+  //     } catch (e) {
+  //       print("Error retrieving expense Record name: $e");
+  //     }
+  //     notifyListeners();
+  //   }
+  //   return null;
+  // }
 
   Future<List> returnExpenseRecordPayments(String expenseId, String userId) async {
 

@@ -169,13 +169,10 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
         builder: (BuildContext context) {
           return Consumer<ShoppingViewModel>(
               builder: (context, viewModel, child) {
-            Future itemNamesFuture = viewModel
-                .returnShoppingListItemsNamesList(shoppingList.shoppingListId);
-            Future itemStatusesFuture =
-                viewModel.returnShoppingListItemsPurchaseStatusList(
-                    shoppingList.shoppingListId);
-            Future itemIdsFuture = viewModel
-                .returnShoppingListItemsIdsList(shoppingList.shoppingListId);
+            Future itemNamesFuture = viewModel.returnShoppingListItemsNamesList(shoppingList.shoppingListId);
+            Future itemStatusesFuture = viewModel.returnShoppingListItemsPurchaseStatusList(shoppingList.shoppingListId);
+            Future itemIdsFuture = viewModel.returnShoppingListItemsIdsList(shoppingList.shoppingListId);
+            Future itemQuantitiesFuture = viewModel.returnShoppingListItemsQuantitiesList(shoppingList.shoppingListId);
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -363,7 +360,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                         future: Future.wait([
                                           itemNamesFuture,
                                           itemStatusesFuture,
-                                          itemIdsFuture
+                                          itemIdsFuture,
+                                          itemQuantitiesFuture
                                         ]),
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<dynamic>>
@@ -389,11 +387,9 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                       //Makes items dismissible via swiping
                                                       key: UniqueKey(),
                                                       onDismissed: (direction) {
-                                                        viewModel
-                                                            .deleteShoppingItem(
+                                                        viewModel.deleteShoppingItem(
                                                                 shoppingList,
-                                                                snapshot.data?[
-                                                                    2][index]);
+                                                                snapshot.data?[2][index]);
                                                       },
                                                       background: Container(
                                                         margin: EdgeInsets
@@ -411,12 +407,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                       ),
                                                       child: Container(
                                                           decoration: BoxDecoration(
-                                                              color: viewModel
-                                                                  .colour1,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)),
+                                                              color: viewModel.colour1,
+                                                              borderRadius: BorderRadius.circular(20)),
                                                           child: ListTile(
                                                             leading: Checkbox(
                                                                 shape: RoundedRectangleBorder(
@@ -439,26 +431,31 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                     newValue) async {
                                                                   setState(() {
                                                                     snapshot.data?[1]
-                                                                            [
-                                                                            index] =
-                                                                        newValue;
+                                                                            [index] = newValue;
                                                                   });
                                                                   await viewModel.setItemValue(
                                                                       shoppingList,
-                                                                      snapshot.data?[
-                                                                              2]
-                                                                          [
-                                                                          index],
-                                                                      newValue!);
+                                                                      snapshot.data?[2][index], newValue!);
                                                                 }),
+                                                            trailing: SizedBox(
+                                                              width: 60,
+                                                              child: Row(
+                                                                children: [
+                                                                  const Icon(Icons.shopping_bag),
+                                                                  Text(
+                                                                          snapshot.data?[3]![index],
+                                                                          style: TextStyle(
+                                                                              color: viewModel.colour4,
+                                                                              fontSize: 16)),
+                                                                ],
+                                                              ),
+                                                            ),
+
                                                             title: Text(
-                                                                snapshot.data?[
-                                                                    0]![index],
-                                                                style: TextStyle(
-                                                                    color: viewModel
-                                                                        .colour4,
-                                                                    fontSize:
-                                                                        16)),
+                                                                    snapshot.data?[0]![index],
+                                                                    style: TextStyle(
+                                                                        color: viewModel.colour4,
+                                                                        fontSize: 16)),
                                                           )),
                                                     );
                                                   }),
@@ -474,7 +471,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                         backgroundColor: viewModel.colour3,
                                         foregroundColor: viewModel.colour1),
                                     onPressed: () {
-                                      addAdditionalItemsToShoppingListPopup(context, shoppingList);
+                                      addAdditionalItemsToShoppingListPopup(
+                                          context, shoppingList);
                                     },
                                     child: Icon(Icons.add)),
                               );
@@ -491,15 +489,19 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
         });
   }
 
-  Future<void> addAdditionalItemsToShoppingListPopup(BuildContext context, ShoppingList shoppingList) async {
+  Future<void> addAdditionalItemsToShoppingListPopup(
+      BuildContext context, ShoppingList shoppingList) async {
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
 
+    int quantity = 1;
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
+          return Consumer<ShoppingViewModel>(
+              builder: (context, viewModel, child) {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -512,33 +514,82 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                              decoration: const InputDecoration(
+                                  hintText: "Item Name",
+                                  border: OutlineInputBorder()),
+                              controller: enteredItemNameController,
+                              onSubmitted: (value) {}),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              TextField(
-                                  decoration: const InputDecoration(
-                                      hintText: "Item Name", border: OutlineInputBorder()),
-                                  controller: enteredItemNameController,
-                                  onSubmitted: (value) {}
-                              ),
                               IconButton(
-                                  onPressed: () {
-                                    if (enteredItemNameController.text.isNotEmpty) {
-                                      setState(() {
-                                        Map<String, dynamic> newItem = ({
-                                          'itemName': enteredItemNameController.text,
-                                          'isPurchased': false,
-                                          'itemId': Uuid().v4()
-                                        });
-                                        viewModel.addNewShoppingItem(shoppingList.shoppingListId, newItem);
-                                        showToast(message: "Added: " + enteredItemNameController.text);
-                                        enteredItemNameController.clear();
-                                      });
-                                    }
-                                  },
-                                  icon: Icon(Icons.check))
+                                padding: EdgeInsets.only(bottom: 30),
+                                icon: const Icon(Icons.minimize),
+                                iconSize: 60,
+                                onPressed: () {
+                                  if (enteredItemNameController
+                                          .text.isNotEmpty &&
+                                      quantity < 21 &&
+                                      quantity > 1) {
+                                    setStates(() {
+                                      quantity--;
+                                    });
+                                  }
+                                },
+                              ),
+                              Text(quantity.toString(),
+                                  style: const TextStyle(fontSize: 40)),
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                iconSize: 60,
+                                onPressed: () {
+                                  if (enteredItemNameController
+                                          .text.isNotEmpty &&
+                                      quantity > 0 &&
+                                      quantity < 20) {
+                                    setStates(() {
+                                      quantity++;
+                                    });
+                                  }
+                                  // else if (enteredItemNameController.text.isEmpty){
+                                  //   showToast(message: "Please enter the item name to change the quantity");
+                                  // }
+                                },
+                              ),
                             ],
-                          )
-                      ),
+                          ),
+                          IconButton(
+                              color: Colors.green,
+                              onPressed: () {
+                                if (enteredItemNameController.text.isNotEmpty &&
+                                    quantity > 0 &&
+                                    quantity < 21) {
+                                  setState(() {
+                                    Map<String, dynamic> newItem = ({
+                                      'itemName':
+                                          enteredItemNameController.text,
+                                      'quantity': quantity,
+                                      'isPurchased': false,
+                                      'itemId': Uuid().v4()
+                                    });
+                                    viewModel.addNewShoppingItem(
+                                        shoppingList.shoppingListId, newItem);
+                                    showToast(
+                                        message:
+                                            "Added: $quantity ${enteredItemNameController.text}");
+                                    enteredItemNameController.clear();
+                                    setStates(() {
+                                      quantity == 1;
+                                    });
+                                  });
+                                }
+                              },
+                              icon: const Icon(Icons.check))
+                        ],
+                      )),
                     ),
                   ),
                 ),

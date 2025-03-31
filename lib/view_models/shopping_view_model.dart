@@ -90,6 +90,7 @@ class ShoppingViewModel extends ChangeNotifier {
           //New map with updated item details
           Map<String, dynamic> updatedItemDetails = {
             'isPurchased': newValue,
+            'quantity': currentItemsDetails?['quantity'],
             'itemId': currentItemsDetails?['itemId'],
             'itemName': currentItemsDetails?['itemName']
           };
@@ -245,6 +246,27 @@ class ShoppingViewModel extends ChangeNotifier {
       }
     } catch (e) {
       print("Error retrieving item ids: $e");
+    }
+    return [];
+  }
+
+  Future <List<String>> returnShoppingListItemsQuantitiesList (String shoppingListId) async {
+    try {
+      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final docSnapshot = await shoppingDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        List items = data['items'];
+        List<String> itemQuantities = [];
+
+        for (int i = 0; i < items.length; i++) {
+          itemQuantities.add(data['items'][i]['quantity'].toString());
+        }
+        return itemQuantities;
+      }
+    } catch (e) {
+      print("Error retrieving item quantities: $e");
     }
     return [];
   }

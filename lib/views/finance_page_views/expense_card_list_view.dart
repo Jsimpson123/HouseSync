@@ -106,7 +106,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                           style: TextStyle(
                                                               fontSize: 24,
                                                               fontWeight: FontWeight.bold,
-                                                              color: Colors.green)),
+                                                              color: Colors.red)),
                                                   );
                                                 }
                                               }),
@@ -245,7 +245,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                         leading: Text(
                                                             "£" + snapshot.data?[1]![index],
                                                             style: TextStyle(
-                                                            color: Colors.green,
+                                                            color: Colors.red,
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 16)),
                                                         title: Text(
