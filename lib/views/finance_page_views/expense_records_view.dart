@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 import '../../view_models/finance_view_model.dart';
 
@@ -72,16 +73,16 @@ class ExpenseRecordsView {
                                                           : Text(""),
                                                           children: [
                                                             //... Allows the users to be displayed on new line
-                                                            ...record['assignedUsersRecords'].map((user) {
+                                                            ...record['assignedUsersRecords'].map((member) {
                                                               return InkWell(
                                                                 child: ListTile(
                                                                   leading: Icon(Icons.account_box),
-                                                                  title: Text(user['userName'],
+                                                                  title: Text(member['userName'],
                                                                     style: const TextStyle(
                                                                       fontSize: 20
                                                                     ),
                                                                   ),
-                                                                  trailing: user['paidOff'] == true
+                                                                  trailing: member['paidOff'] == true
                                                                   ? const Text("Paid Off",
                                                                     style: TextStyle(
                                                                         color: Colors.blue,
@@ -91,7 +92,9 @@ class ExpenseRecordsView {
                                                                   )
                                                                       : const Text("")
                                                                 ),
-                                                                onTap: () => expenseRecordsView.userExpenseRecordsHistoryPopup(context, record.id)
+                                                                onTap: () {
+                                                                  expenseRecordsView.userExpenseRecordsHistoryPopup(context, record.id, member['userId']);
+                                                                }
                                                               );
                                                             }),
                                                           ],
@@ -114,7 +117,7 @@ class ExpenseRecordsView {
   }
 
   //Change this method to work above
-  Future<void> userExpenseRecordsHistoryPopup(BuildContext context, String recordId) async {
+  Future<void> userExpenseRecordsHistoryPopup(BuildContext context, String recordId, String userId) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -149,7 +152,7 @@ class ExpenseRecordsView {
 
 
                                       child: FutureBuilder(
-                                          future: viewModel.returnExpenseRecordPayments(recordId),
+                                          future: viewModel.returnExpenseRecordPayments(recordId, userId),
                                           builder: (BuildContext context,
                                               AsyncSnapshot<List<dynamic>>
                                               snapshot) {

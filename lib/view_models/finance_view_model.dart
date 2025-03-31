@@ -490,7 +490,7 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  Future<List> returnExpenseRecordPayments(String expenseId) async {
+  Future<List> returnExpenseRecordPayments(String expenseId, String userId) async {
 
     final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
 
@@ -500,11 +500,15 @@ class FinanceViewModel extends ChangeNotifier {
     List<Map<String, dynamic>> allPayments = [];
 
     for (int i = 0; i < assignedUsersRecords.length; i++) {
-      List payments = await assignedUsersRecords[i]['payments'];
+      if (assignedUsersRecords[i]['userId'] == userId) {
+        List payments = await assignedUsersRecords[i]['payments'];
 
-      //Gets payments from each users records
-      for (int j = 0; j < payments.length; j++) {
-        allPayments.add(payments[j]);
+        //Gets payments from each users records
+        for (int j = 0; j < payments.length; j++) {
+          allPayments.add(
+            payments[j]
+          );
+        }
       }
     }
     return allPayments;
