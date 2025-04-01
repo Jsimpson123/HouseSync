@@ -195,7 +195,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                   borderRadius:
                                                   BorderRadius.circular(
                                                       20)),
-                                              child: ListTile(
+                                              child: user?.uid != member
+                                              ? ListTile(
                                                 title: Text(
                                                     viewModel.members[index],
                                                     style: TextStyle(
@@ -281,7 +282,9 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                   enteredUserAmountController,
                                                 ) : null,
 
-                                              )));
+                                              )
+                                          : null
+                                          ));
                                     }),
                               ),
                             ),

@@ -44,7 +44,6 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                   shrinkWrap: true,
                   itemCount: viewModel.memberIds.length,
                   itemBuilder: (context, index) {
-                    // final member = viewModel.houseSyncUsers[index];
                     return GestureDetector(
                         key: UniqueKey(),
                         child: Container(

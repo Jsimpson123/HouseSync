@@ -13,6 +13,7 @@ import '../features/appbar_display.dart';
 import '../view_models/user_view_model.dart';
 import '../views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
 import 'chores_page.dart';
+import 'create_or_join_group_page.dart';
 import 'home_page.dart';
 import 'login_page.dart';
 import 'medical_page.dart';
@@ -30,10 +31,11 @@ class _FinancePageState extends State<FinancePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<FinanceViewModel>(context, listen: false).loadExpenses();
     Provider.of<GroupViewModel>(context, listen: false).returnGroupMembersAsList(user!.uid);
+    Provider.of<GroupViewModel>(context, listen: false).returnAllGroupMembersAsList(user!.uid);
     Provider.of<GroupViewModel>(context, listen: false).memberIds;
     Provider.of<GroupViewModel>(context, listen: false).members;
-    Provider.of<FinanceViewModel>(context, listen: false).loadExpenses();
   }
 
   int index = 2;
@@ -108,8 +110,7 @@ class _FinancePageState extends State<FinancePage> {
             ),
             ListTile(
               title: Text("Group"),
-              onTap: () => userViewModel.displayBottomSheet(
-                  GroupDetailsBottomSheetView(), context),
+              onTap: () => groupDetails(context),
             ),
             ListTile(title: Text("Settings")),
 
@@ -167,5 +168,150 @@ class _FinancePageState extends State<FinancePage> {
                 icon: Icon(Icons.health_and_safety), label: "Medical")
           ],
         ));
+  }
+
+  Future<void> groupDetails(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
+            return AlertDialog(
+              scrollable: true,
+              //Group name
+              title: Row(
+                children: [
+                  FutureBuilder<String?>(
+                      future: viewModel.returnGroupName(user!.uid),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                        if ("${snapshot.data}" == "null") {
+                          return const Text(
+                              ""); //Due to a delay in the data loading
+                        } else {
+                          return Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: FittedBox(
+                                fit: BoxFit.fitHeight,
+                                child: Text("${snapshot.data}",
+                                    style: TextStyle(
+                                        fontSize: 42,
+                                        fontWeight: FontWeight.bold,
+                                        color: viewModel.colour4)),
+                              ),
+                            ),
+                          );
+                        }
+                      }),
+
+                  SizedBox(
+                    height: 100,
+                    child: FutureBuilder<String?>(
+                        future: viewModel.returnGroupCode(user!.uid),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String?> snapshot) {
+                          if ("${snapshot.data}" == "null") {
+                            return const Text(
+                                ""); //Due to a delay in the group code loading
+                          } else {
+                            return Expanded(
+                              flex: 1,
+                              child: FittedBox(
+                                fit: BoxFit.fitHeight,
+                                child: Text("Group Code: \n${snapshot.data}",
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: viewModel.colour4)),
+                              ),
+                            );
+                          }
+                        }),
+                  ),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: double.maxFinite,
+                  height: 400,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: viewModel.colour2,
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30))),
+                              padding: EdgeInsets.all(20),
+                              child: ListView.separated(
+                                  padding: EdgeInsets.all(15),
+                                  separatorBuilder: (context, index) {
+                                    return SizedBox(height: 15);
+                                  },
+                                  scrollDirection: Axis.vertical,
+                                  physics: ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: viewModel.memberIds.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                        key: UniqueKey(),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                color: viewModel.colour1,
+                                                borderRadius:
+                                                BorderRadius.circular(20)),
+                                            child: ListTile(
+                                              title: Row(
+                                                children: [
+                                                  Icon(Icons.account_box),
+                                                  Text(viewModel.members[index],
+                                                      style: TextStyle(
+                                                          color:
+                                                          viewModel.colour4,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          fontSize: 20)),
+                                                ],
+                                              ),
+                                              // onTap: () =>
+                                              //     viewSpecificUsersMedicalConditionsPopup(
+                                              //         context, viewModel.memberIds[index]),
+                                            )));
+                                  }),
+                            ),
+                          ),
+
+                          SizedBox(height: 20),
+
+                          //Leave group button
+                          ElevatedButton(
+                              onPressed: () {
+                                viewModel.leaveGroup(user!.uid);
+
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: viewModel.colour1,
+                                  backgroundColor: viewModel.colour3,
+                                  textStyle:
+                                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))),
+                              child: const Text("Leave Group")),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          });
+        });
   }
 }

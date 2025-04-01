@@ -12,11 +12,18 @@ class GroupViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<Group> _groups = <Group>[];
+
   List<String> _members = <String>[];
   List<dynamic> _memberIds = <String>[];
 
   List<String> get members => _members;
   List<dynamic> get memberIds => _memberIds;
+
+  List<String> _allMembers = <String>[];
+  List<dynamic> _allMemberIds = <String>[];
+
+  List<String> get allMembers => _allMembers;
+  List<dynamic> get allMemberIds => _allMemberIds;
 
   List<Group> get groups => List.unmodifiable(_groups);
 
