@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/finance_model.dart';
@@ -183,10 +184,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                     itemBuilder: (context, index) {
                                       String member =
                                       viewModel.memberIds[index];
-                                      bool isAssigned =
-                                      assignedUsers.contains(member);
-                                      TextEditingController
-                                      enteredUserAmountController = TextEditingController();
+                                      bool isAssigned = assignedUsers.contains(member);
+                                      TextEditingController enteredUserAmountController = TextEditingController();
                                       return GestureDetector(
                                           key: UniqueKey(),
                                           child: Container(
@@ -224,11 +223,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                         //If user isn't assigned
                                                           onPressed: () {
                                                             setStates(() {
-                                                              assignedUsers
-                                                                  .add(
-                                                                  member);
-                                                              controllers.add(
-                                                                  TextEditingController());
+                                                              assignedUsers.add(member);
+                                                              controllers.add(TextEditingController());
                                                             });
                                                           },
                                                           icon: Icon(Icons
@@ -237,16 +233,16 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                           ? IconButton(
                                                         //If user is assigned
                                                         onPressed: () {
-                                                          if (enteredUserAmountController.text.isEmpty) {
+                                                          if (enteredUserAmountController.text.isEmpty || enteredUserAmountController.text == "0") {
                                                             showToast(message: "Please enter the amount owed");
                                                           } else {
                                                             showToast(message: "Assigned: ${viewModel.members[index]}");
 
                                                             setState(() {
-                                                              if (double.parse(enteredUserAmountController.text) > 0) {
+                                                              if (num.parse(enteredUserAmountController.text) > 0) {
                                                                 assignedUserIds.add({
                                                                   'userId': viewModel.memberIds[index],
-                                                                  'amount': enteredUserAmountController.text
+                                                                  'amount': num.tryParse(enteredUserAmountController.text)
                                                                 });
 
                                                                 assignedUsersRecord.add({
@@ -272,14 +268,15 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
 
                                                 subtitle: isAssigned
                                                     ? TextField(
-                                                  decoration:
-                                                  const InputDecoration(
-                                                      hintText:
-                                                      "Amount Owed",
-                                                      border:
-                                                      OutlineInputBorder()),
-                                                  controller:
-                                                  enteredUserAmountController,
+                                                  decoration: const InputDecoration(
+                                                      hintText: "Amount Owed",
+                                                      border: OutlineInputBorder()),
+                                                  controller: enteredUserAmountController,
+                                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                                  inputFormatters: [
+                                                    //Regex to insure invalid user inputs cant be entered
+                                                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
+                                                  ],
                                                 ) : null,
 
                                               )

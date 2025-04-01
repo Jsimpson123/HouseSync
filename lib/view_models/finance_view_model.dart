@@ -94,7 +94,7 @@ class FinanceViewModel extends ChangeNotifier {
     if (expenseDoc.exists) {
       final expenseAmount = await expenseDoc.data()?['remainingExpenseAmount'];
 
-      if (expenseAmount == 0) {
+      if (expenseAmount <= 0) {
         await FirebaseFirestore.instance.collection('expenses').doc(expenseId).delete();
 
         List assignedUsers = data?['assignedUsers'];
@@ -302,7 +302,7 @@ class FinanceViewModel extends ChangeNotifier {
         List<dynamic> amounts = [];
 
         for (int i = 0; i < assignedUsers.length; i++) {
-          amounts.add(data['assignedUsers'][i]['amount']);
+          amounts.add(data['assignedUsers'][i]['amount'].toString());
         }
         return amounts;
       }
@@ -371,7 +371,7 @@ class FinanceViewModel extends ChangeNotifier {
             //Retrieves the users expense details and assigns it to a map
             currentUserExpenseDetails = assignedUsers[i];
             
-            num userAmount = num.parse(assignedUsers[i]['amount']);
+            num? userAmount = assignedUsers[i]['amount'];
 
             //Updates the total expense amount
             await expenseDoc.update({
@@ -383,11 +383,11 @@ class FinanceViewModel extends ChangeNotifier {
               'assignedUsers' : FieldValue.arrayRemove([currentUserExpenseDetails])
             });
 
-            if (amountPaid != userAmount) {
+            if (amountPaid != userAmount && amountPaid < userAmount!) {
               //New map with updated user expense details
               Map<String, dynamic> updatedUserExpenseDetails = {
                 'userId': userId,
-                'amount': (userAmount - amountPaid).toString()
+                'amount': (userAmount - amountPaid)
               };
 
               //Updates the array with the new details
@@ -430,7 +430,7 @@ class FinanceViewModel extends ChangeNotifier {
 
             Map<String, dynamic> updatedUserExpenseRecordDetails;
 
-            if (amountPaid != remainingAmount) {
+            if (amountPaid != remainingAmount && amountPaid < remainingAmount) {
               //New map with updated user expense details
               updatedUserExpenseRecordDetails = {
                 'userId': userId,

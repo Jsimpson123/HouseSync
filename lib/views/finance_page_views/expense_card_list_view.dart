@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 
@@ -87,7 +88,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                 if ("${snapshot.data}" == "null") {
                                                   return const Text(
                                                       ""); //Due to a delay in the amount loading
-                                                } else if ("${snapshot.data}" == "0") {
+                                                } else if (num.parse("${snapshot.data}") <= 0) {
                                                   //FIX THIS
                                                   setState(() async {
                                                     await viewModel.deleteExpense(expense.expenseId);
@@ -102,7 +103,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                   return FittedBox(
                                                       fit: BoxFit.fitHeight,
                                                       child: Text(
-                                                          "£${snapshot.data}",
+                                                          "£" + num.tryParse("${snapshot.data}")!.toStringAsFixed(2),
                                                           style: TextStyle(
                                                               fontSize: 24,
                                                               fontWeight: FontWeight.bold,
@@ -243,7 +244,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               20)),
                                                       child: ListTile(
                                                         leading: Text(
-                                                            "£" + snapshot.data?[1]![index],
+                                                            "£" + num.tryParse(snapshot.data?[1]![index])!.toStringAsFixed(2),
                                                             style: TextStyle(
                                                             color: Colors.red,
                                                             fontWeight: FontWeight.bold,
@@ -262,6 +263,11 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               hintText: "Amount Owed",
                                                               border: OutlineInputBorder()),
                                                           controller: enteredUserAmountController,
+                                                          keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                                          inputFormatters: [
+                                                            //Regex to insure invalid user inputs cant be entered
+                                                            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
+                                                          ],
                                                         ) : null,
 
                                                           //Add Icon only shows if the current user owes money
@@ -269,12 +275,25 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                             ? IconButton(
                                                             onPressed: () {
                                                               setState(() async {
-                                                                if (enteredUserAmountController.text.isNotEmpty) {
-                                                                  await viewModel.updateUserAmountPaid(
-                                                                      expenseId,
-                                                                      user!.uid,
-                                                                      num.parse(enteredUserAmountController.text)
-                                                                  );
+                                                                num? convertedAmount = num.tryParse(enteredUserAmountController.text);
+
+                                                                if (enteredUserAmountController.text.isNotEmpty && convertedAmount != 0 && convertedAmount != null) {
+                                                                  num? existingAmount = num.tryParse(snapshot.data?[1]![index]);
+
+                                                                  double convertedAmountRounded = double.parse(convertedAmount.toStringAsFixed(2));
+                                                                  double existingAmountRounded = double.parse(existingAmount!.toStringAsFixed(2));
+
+                                                                  if (convertedAmountRounded <= existingAmountRounded) {
+                                                                    await viewModel.updateUserAmountPaid(
+                                                                        expenseId,
+                                                                        user!.uid,
+                                                                        convertedAmountRounded
+                                                                    );
+                                                                  } else {
+                                                                    showToast(message: "Overpaid! Please enter a valid amount");
+                                                                  }
+                                                                } else {
+                                                                  showToast(message: "Invalid amount entered");
                                                                 }
                                                               });
 
