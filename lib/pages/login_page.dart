@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
           height: 10,
         ),
         SizedBox(
-          width: 750,
+          width: 400,
           child: TextField(
             key: Key('emailField'),
               controller: _emailController,
@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
         SizedBox(
-          width: 750,
+          width: 400,
           child: TextField(
             key: Key('passwordField'),
               controller: _passwordController,
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
     } else {
-      print("An error occured");
+      print("An error occurred");
     }
   }
 }

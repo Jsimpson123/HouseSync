@@ -135,26 +135,24 @@ class GroupViewModel extends ChangeNotifier {
   }
 
   Future<String?> returnGroupCode(String userId) async {
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final groupId = await userDoc.data()?['groupId'];
 
+    try {
     if (groupId != null) {
-      try {
-        final groupDoc =
-            FirebaseFirestore.instance.collection('groups').doc(groupId);
-        final docSnapshot = await groupDoc.get();
-        final data = docSnapshot.data();
+      final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
+      final docSnapshot = await groupDoc.get();
+      final data = docSnapshot.data();
 
-        if (data != null) {
-          return data['groupCode'] as String?;
-        }
+      if (data != null) {
+        return data['groupCode'] as String?;
+      }
+    }
       } catch (e) {
         print("Error retrieving group code: $e");
       }
       notifyListeners();
-    }
-    return null;
+      return null;
   }
 
   Future<String?> returnGroupName(String userId) async {

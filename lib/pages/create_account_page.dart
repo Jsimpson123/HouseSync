@@ -73,7 +73,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           height: 25,
         ),
         SizedBox(
-          width: 750,
+          width: 400,
           child: TextField(
               key: Key("registerUsernameField"),
               controller: _usernameController,
@@ -94,7 +94,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields
         const SizedBox(height: 25),
         SizedBox(
-          width: 750,
+          width: 400,
           child: TextField(
               key: Key("registerEmailField"),
               controller: _emailController,
@@ -115,7 +115,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields
         const SizedBox(height: 25),
         SizedBox(
-          width: 750,
+          width: 400,
           child: TextField(
               key: Key("registerPasswordField"),
               controller: _passwordController,

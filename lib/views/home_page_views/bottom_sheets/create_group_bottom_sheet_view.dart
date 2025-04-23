@@ -26,35 +26,49 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfield
           child: Container(
-              height: 100,
+              height: 150,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
+                    key: Key("groupNameTextField"),
                       decoration: const InputDecoration(
                           hintText: "Group Name", border: OutlineInputBorder()),
-                      controller: enteredGroupNameController,
-                      onSubmitted: (value) async {
+                      controller: enteredGroupNameController
+                  ),
+                  SizedBox(height: 15),
+
+                  ElevatedButton(
+                    key: Key("submitGroupNameButton"),
+                      child: Text("Submit"),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: viewModel.colour3,
+                          foregroundColor: viewModel.colour1,
+                          fixedSize: Size(100, 50)),
+                      onPressed: () async {
                         if (enteredGroupNameController.text.isNotEmpty) {
-                          Group newGroup = Group.newGroup(enteredGroupNameController.text);
+                          Group newGroup = Group.newGroup(
+                              enteredGroupNameController.text);
                           User? user = FirebaseAuth.instance.currentUser;
-                          bool groupCreated = await viewModel.createGroup(user!.uid, newGroup.name, viewModel.generateRandomGroupJoinCode());
+                          bool groupCreated = await viewModel.createGroup(
+                              user!.uid, newGroup.name,
+                              viewModel.generateRandomGroupJoinCode());
                           enteredGroupNameController.clear();
 
-                        setState(() {
-                          if (groupCreated) {
-                            //Executes only one time after the layout is completed
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                            //Upon creating a group, it brings the user to the Home page
-                            navigateToHome(context);
-                            });
-                          }
-                        });
+                          setState(() {
+                            if (groupCreated) {
+                              //Executes only one time after the layout is completed
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                //Upon creating a group, it brings the user to the Home page
+                                navigateToHome(context);
+                              });
+                            }
+                          });
                         }
                         Navigator.of(context)
                             .pop(); //Makes bottom task bar disappear
-                      }),
+                      })
                 ],
               )));
     });

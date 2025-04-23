@@ -18,6 +18,7 @@ class GroupFunctionsView extends StatelessWidget {
           children: [
             //Create group
             Expanded(
+              key: Key("createGroupButton"),
               flex: 1,
               child: InkWell(
                 child: Container(

@@ -31,7 +31,7 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfields
           child: Container(
-              height: 100,
+              height: 150,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -40,40 +40,35 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                       decoration: const InputDecoration(
                           hintText: "Group Code", border: OutlineInputBorder()),
                       controller: enteredGroupCodeController,
-                      onSubmitted: (value) async {
-                        if (enteredGroupCodeController.text.isNotEmpty) {
-                          bool groupExists = await viewModel.joinGroupViaCode(
-                              user!.uid, enteredGroupCodeController.text);
-                          enteredGroupCodeController.clear();
-
-                          setState(() {
-                            if (groupExists) {
-                              //Executes only one time after the layout is completed
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                //Upon joining a group, it brings the user to the Home page
-                                navigateToHome(context);
-                              });
-                            }
-                          });
-                        }
-                        Navigator.of(context).pop(); //Makes bottom task bar disappear
-                      }
                   ),
-                  SizedBox(width: 15),
 
-                  //TODO: Replace the commented code with the ability to click a button to invite other users
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       viewModel.deleteAllCompletedTasks();
-                  //     },
-                  //     style: ElevatedButton.styleFrom(
-                  //         foregroundColor: viewModel.colour1,
-                  //         backgroundColor: viewModel.colour3,
-                  //         textStyle:
-                  //         TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                  //         shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(20))),
-                  //     child: Text("Delete Completed"))
+                  SizedBox(height: 15),
+
+                  ElevatedButton(
+                      child: Text("Submit"),
+                      style: ElevatedButton.styleFrom(
+                          foregroundColor: viewModel.colour1,
+                          backgroundColor: viewModel.colour3,
+                        fixedSize: Size(100, 50)
+                      ),
+                      onPressed: () async {
+        if (enteredGroupCodeController.text.isNotEmpty) {
+          bool groupExists = await viewModel.joinGroupViaCode(
+              user!.uid, enteredGroupCodeController.text);
+          enteredGroupCodeController.clear();
+
+          setState(() {
+            if (groupExists) {
+              //Executes only one time after the layout is completed
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                //Upon joining a group, it brings the user to the Home page
+                navigateToHome(context);
+              });
+            }
+          });
+        }
+        Navigator.of(context).pop(); //Makes bottom task bar disappear
+      })
                 ],
               )));
     });
