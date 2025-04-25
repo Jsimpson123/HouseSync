@@ -157,6 +157,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   Future<void> groupDetails(BuildContext context) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -164,58 +167,59 @@ class _ShoppingPageState extends State<ShoppingPage> {
             return AlertDialog(
               scrollable: true,
               //Group name
-              title: Row(
-                children: [
-                  FutureBuilder<String?>(
-                      future: viewModel.returnGroupName(user!.uid),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                        if ("${snapshot.data}" == "null") {
-                          return const Text(
-                              ""); //Due to a delay in the data loading
-                        } else {
-                          return Expanded(
-                            flex: 2,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: FittedBox(
-                                fit: BoxFit.fitHeight,
-                                child: Text("${snapshot.data}",
-                                    style: TextStyle(
-                                        fontSize: 42,
-                                        fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
-                              ),
-                            ),
-                          );
-                        }
-                      }),
+              title: SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: FutureBuilder<String?>(
+                          future: viewModel.returnGroupName(user!.uid),
+                          builder:
+                              (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                            if ("${snapshot.data}" == "null") {
+                              return const Text(
+                                  ""); //Due to a delay in the data loading
+                            } else {
+                              return Expanded(
+                                // flex: 2,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text("${snapshot.data}",
+                                      style: TextStyle(
+                                          fontSize: isMobile ? 24 : 42,
+                                          fontWeight: FontWeight.bold,
+                                          color: viewModel.colour4)),
+                                ),
+                              );
+                            }
+                          }),
+                    ),
 
-                  SizedBox(
-                    height: 100,
-                    child: FutureBuilder<String?>(
-                        future: viewModel.returnGroupCode(user!.uid),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String?> snapshot) {
-                          if ("${snapshot.data}" == "null") {
-                            return const Text(
-                                ""); //Due to a delay in the group code loading
-                          } else {
-                            return Expanded(
-                              flex: 1,
-                              child: FittedBox(
-                                fit: BoxFit.fitHeight,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: FutureBuilder<String?>(
+                          future: viewModel.returnGroupCode(user!.uid),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if ("${snapshot.data}" == "null") {
+                              return const Text(
+                                  ""); //Due to a delay in the group code loading
+                            } else {
+                              return Expanded(
+                                // flex: 1,
                                 child: Text("Group Code: \n${snapshot.data}",
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: isMobile ? 14 : 24,
                                         fontWeight: FontWeight.bold,
                                         color: viewModel.colour4)),
-                              ),
-                            );
-                          }
-                        }),
-                  ),
-                ],
+                              );
+                            }
+                          }),
+                    ),
+                  ],
+                ),
               ),
               content: SingleChildScrollView(
                 child: SizedBox(

@@ -31,7 +31,7 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfields
           child: Container(
-              height: 150,
+              height: 160,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

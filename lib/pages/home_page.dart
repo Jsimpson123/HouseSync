@@ -425,6 +425,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> groupDetails(BuildContext context) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -432,58 +435,59 @@ class _HomePageState extends State<HomePage> {
             return AlertDialog(
               scrollable: true,
               //Group name
-              title: Row(
-                children: [
-                  FutureBuilder<String?>(
-                      future: viewModel.returnGroupName(user!.uid),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                        if ("${snapshot.data}" == "null") {
-                          return const Text(
-                              ""); //Due to a delay in the data loading
-                        } else {
-                          return Expanded(
-                            flex: 2,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: FittedBox(
-                                fit: BoxFit.fitHeight,
-                                child: Text("${snapshot.data}",
-                                    style: TextStyle(
-                                        fontSize: 42,
-                                        fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
-                              ),
-                            ),
-                          );
-                        }
-                      }),
+              title: SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: FutureBuilder<String?>(
+                          future: viewModel.returnGroupName(user!.uid),
+                          builder:
+                              (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                            if ("${snapshot.data}" == "null") {
+                              return const Text(
+                                  ""); //Due to a delay in the data loading
+                            } else {
+                              return Expanded(
+                                // flex: 2,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text("${snapshot.data}",
+                                      style: TextStyle(
+                                          fontSize: isMobile ? 24 : 42,
+                                          fontWeight: FontWeight.bold,
+                                          color: viewModel.colour4)),
+                                ),
+                              );
+                            }
+                          }),
+                    ),
 
-                  SizedBox(
-                    height: 100,
-                    child: FutureBuilder<String?>(
-                        future: viewModel.returnGroupCode(user!.uid),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String?> snapshot) {
-                          if ("${snapshot.data}" == "null") {
-                            return const Text(
-                                ""); //Due to a delay in the group code loading
-                          } else {
-                            return Expanded(
-                              flex: 1,
-                              child: FittedBox(
-                                fit: BoxFit.fitHeight,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: FutureBuilder<String?>(
+                          future: viewModel.returnGroupCode(user!.uid),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if ("${snapshot.data}" == "null") {
+                              return const Text(
+                                  ""); //Due to a delay in the group code loading
+                            } else {
+                              return Expanded(
+                                // flex: 1,
                                 child: Text("Group Code: \n${snapshot.data}",
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: isMobile ? 14 : 24,
                                         fontWeight: FontWeight.bold,
                                         color: viewModel.colour4)),
-                              ),
-                            );
-                          }
-                        }),
-                  ),
-                ],
+                              );
+                            }
+                          }),
+                    ),
+                  ],
+                ),
               ),
               content: SingleChildScrollView(
                 child: SizedBox(
@@ -518,7 +522,7 @@ class _HomePageState extends State<HomePage> {
                                             decoration: BoxDecoration(
                                                 color: viewModel.colour1,
                                                 borderRadius:
-                                                    BorderRadius.circular(20)),
+                                                BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Row(
                                                 children: [
@@ -526,9 +530,9 @@ class _HomePageState extends State<HomePage> {
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
                                                           color:
-                                                              viewModel.colour4,
+                                                          viewModel.colour4,
                                                           fontWeight:
-                                                              FontWeight.bold,
+                                                          FontWeight.bold,
                                                           fontSize: 20)),
                                                 ],
                                               ),
@@ -543,21 +547,21 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: 20),
 
                           //Leave group button
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          viewModel.leaveGroup(user!.uid);
+                          ElevatedButton(
+                              onPressed: () {
+                                viewModel.leaveGroup(user!.uid);
 
-                                          Navigator.push(
-                                              context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            foregroundColor: viewModel.colour1,
-                                            backgroundColor: viewModel.colour3,
-                                            textStyle:
-                                            const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20))),
-                                        child: const Text("Leave Group")),
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: viewModel.colour1,
+                                  backgroundColor: viewModel.colour3,
+                                  textStyle:
+                                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))),
+                              child: const Text("Leave Group")),
                         ],
                       ),
                     ),

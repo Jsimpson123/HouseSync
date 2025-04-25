@@ -181,55 +181,59 @@ class _FinancePageState extends State<FinancePage> {
             return AlertDialog(
               scrollable: true,
               //Group name
-              title: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                    child: FutureBuilder<String?>(
-                        future: viewModel.returnGroupName(user!.uid),
-                        builder:
-                            (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                          if ("${snapshot.data}" == "null") {
-                            return const Text(
-                                ""); //Due to a delay in the data loading
-                          } else {
-                            return Expanded(
-                              // flex: 2,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text("${snapshot.data}",
+              title: SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: FutureBuilder<String?>(
+                          future: viewModel.returnGroupName(user!.uid),
+                          builder:
+                              (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                            if ("${snapshot.data}" == "null") {
+                              return const Text(
+                                  ""); //Due to a delay in the data loading
+                            } else {
+                              return Expanded(
+                                // flex: 2,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text("${snapshot.data}",
+                                      style: TextStyle(
+                                          fontSize: isMobile ? 24 : 42,
+                                          fontWeight: FontWeight.bold,
+                                          color: viewModel.colour4)),
+                                ),
+                              );
+                            }
+                          }),
+                    ),
+
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: FutureBuilder<String?>(
+                          future: viewModel.returnGroupCode(user!.uid),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String?> snapshot) {
+                            if ("${snapshot.data}" == "null") {
+                              return const Text(
+                                  ""); //Due to a delay in the group code loading
+                            } else {
+                              return Expanded(
+                                // flex: 1,
+                                child: Text("Group Code: \n${snapshot.data}",
                                     style: TextStyle(
-                                        fontSize: isMobile ? 24 : 42,
+                                        fontSize: isMobile ? 14 : 24,
                                         fontWeight: FontWeight.bold,
                                         color: viewModel.colour4)),
-                              ),
-                            );
-                          }
-                        }),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                    child: FutureBuilder<String?>(
-                        future: viewModel.returnGroupCode(user!.uid),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String?> snapshot) {
-                          if ("${snapshot.data}" == "null") {
-                            return const Text(
-                                ""); //Due to a delay in the group code loading
-                          } else {
-                            return Expanded(
-                              // flex: 1,
-                              child: Text("Group Code: \n${snapshot.data}",
-                                  style: TextStyle(
-                                      fontSize: isMobile ? 14 : 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: viewModel.colour4)),
-                            );
-                          }
-                        }),
-                  ),
-                ],
+                              );
+                            }
+                          }),
+                    ),
+                  ],
+                ),
               ),
               content: SingleChildScrollView(
                 child: SizedBox(

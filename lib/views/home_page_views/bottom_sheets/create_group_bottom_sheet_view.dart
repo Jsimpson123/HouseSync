@@ -26,7 +26,7 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfield
           child: Container(
-              height: 150,
+              height: 160,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
