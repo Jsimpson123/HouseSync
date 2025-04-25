@@ -164,7 +164,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 200,
+                    height: 230,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -218,6 +218,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                           ),
                           IconButton(
                             color: Colors.green,
+                              iconSize: isMobile ? 50 : 60,
                               onPressed: () {
                                 if (enteredItemNameController.text.isNotEmpty && quantity > 0 && quantity < 21) {
                                   setState(() {

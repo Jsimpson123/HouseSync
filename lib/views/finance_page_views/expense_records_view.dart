@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,7 @@ class ExpenseRecordsView {
         context: context,
         builder: (BuildContext context) {
           //Checks screen size to see if it is mobile or desktop
-          double screenWidth = MediaQuery
-              .of(context)
-              .size
-              .width;
+          double screenWidth = MediaQuery.of(context).size.width;
           bool isMobile = screenWidth < 600;
           return Consumer<FinanceViewModel>(
               builder: (context, viewModel, child) {
@@ -69,24 +67,38 @@ class ExpenseRecordsView {
                                                                     style: TextStyle(
                                                                         fontWeight: FontWeight.bold,
                                                                         color: viewModel.colour4,
-                                                                        fontSize: 24))
+                                                                        fontSize: isMobile? 16 : 24))
                                                           : Text(""),
                                                           children: [
                                                             //... Allows the users to be displayed on new line
                                                             ...record['assignedUsersRecords'].map((member) {
                                                               return InkWell(
                                                                 child: ListTile(
-                                                                  leading: Icon(Icons.account_box),
-                                                                  title: Text(member['userName'],
-                                                                    style: const TextStyle(
-                                                                      fontSize: 20
-                                                                    ),
+                                                                  leading: Row(
+                                                                    mainAxisSize: MainAxisSize.min,
+                                                                    children: [
+                                                                      Icon(Icons.account_box,
+                                                                        size: isMobile ? 16 : 24,
+                                                                      ),
+                                                                      Text(member['userName'],
+                                                                        style: TextStyle(
+                                                                            fontSize: isMobile ? 14 : 20
+                                                                        ),
+                                                                        softWrap: false,
+                                                                      ),
+                                                                    ],
                                                                   ),
+                                                                  // title: Text(member['userName'],
+                                                                  //   style: TextStyle(
+                                                                  //     fontSize: isMobile ? 14 : 20
+                                                                  //   ),
+                                                                  //   softWrap: false,
+                                                                  // ),
                                                                   trailing: member['paidOff'] == true
-                                                                  ? const Text("Paid Off",
+                                                                  ? Text("Paid Off",
                                                                     style: TextStyle(
                                                                         color: Colors.blue,
-                                                                        fontSize: 22,
+                                                                        fontSize: isMobile ? 12 : 22,
                                                                         fontWeight: FontWeight.bold
                                                                     ),
                                                                   )
@@ -122,10 +134,7 @@ class ExpenseRecordsView {
         context: context,
         builder: (BuildContext context) {
           //Checks screen size to see if it is mobile or desktop
-          double screenWidth = MediaQuery
-              .of(context)
-              .size
-              .width;
+          double screenWidth = MediaQuery.of(context).size.width;
           bool isMobile = screenWidth < 600;
           return Consumer<FinanceViewModel>(
               builder: (context, viewModel, child) {
@@ -176,16 +185,16 @@ class ExpenseRecordsView {
                                                             borderRadius: BorderRadius.circular(20)),
                                                         child: ListTile(
                                                           title: Text("£${payment['amountPaid']}",
-                                                            style: const TextStyle(
+                                                            style: TextStyle(
                                                                 fontWeight: FontWeight.bold,
                                                                 color: Colors.green,
-                                                                fontSize: 24
+                                                                fontSize: isMobile ? 14 : 24
                                                             ),
                                                           ),
-                                                          trailing: Text("${payment['datePaid'].toDate()}",
-                                                            style: const TextStyle(
+                                                          trailing: Text(DateFormat('MMM d, h:mm a').format(payment['datePaid'].toDate()),
+                                                            style: TextStyle(
                                                               fontWeight: FontWeight.bold,
-                                                                fontSize: 24
+                                                                fontSize: isMobile ? 12 : 22
                                                             ),
                                                           ),
                                                         )));

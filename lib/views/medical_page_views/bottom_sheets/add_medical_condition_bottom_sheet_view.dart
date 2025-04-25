@@ -39,7 +39,7 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfields
           child: Container(
-              height: 300,
+              height: 350,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -59,6 +59,8 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                       hintText: "Description",
                       border: OutlineInputBorder()),
                     controller: enteredMedicalConditionDescController,
+                    maxLines: 4,
+                    minLines: 3,
                     keyboardType: TextInputType.multiline,
                       onChanged: (_) => setState(() {})
                   ),

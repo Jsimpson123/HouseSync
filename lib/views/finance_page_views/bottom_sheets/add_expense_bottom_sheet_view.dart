@@ -24,9 +24,9 @@ GroupViewModel groupViewModel = GroupViewModel();
 User? user = FirebaseAuth.instance.currentUser;
 
 final TextEditingController enteredExpenseNameController =
-TextEditingController();
+    TextEditingController();
 final TextEditingController enteredExpenseAmountController =
-TextEditingController();
+    TextEditingController();
 
 List<TextEditingController> controllers = [];
 
@@ -45,8 +45,7 @@ bool isAddButtonEnabled() {
 }
 
 bool isSubmitButtonEnabled() {
-  return enteredExpenseNameController.text.isNotEmpty
-      &&
+  return enteredExpenseNameController.text.isNotEmpty &&
       assignedUserIds.isNotEmpty;
 }
 
@@ -67,7 +66,6 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   //ExpenseName
                   TextField(
                       decoration: const InputDecoration(
@@ -84,7 +82,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                       alignment: Alignment.center,
                       child: FittedBox(
                         child: Text(
-                        ("£$remainingExpenseAmount"),
+                          ("£$remainingExpenseAmount"),
                           style: TextStyle(
                               fontSize: 28,
                               color: viewModel.colour3,
@@ -113,43 +111,51 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                           fixedSize: Size(150, 100)),
                       onPressed: !isSubmitButtonEnabled()
                           ? null
-                          : ()  async {
-                        //If the required fields have data then create the expense
-                        if (enteredExpenseNameController.text.isNotEmpty
-                            && initialExpenseAmount > 0
-                            && assignedUserIds.isNotEmpty)
-                          {
-                            Expense newExpense = Expense.newExpense(user!.uid, enteredExpenseNameController.text, initialExpenseAmount, remainingExpenseAmount, assignedUserIds, assignedUsersRecord);
+                          : () async {
+                              //If the required fields have data then create the expense
+                              if (enteredExpenseNameController
+                                      .text.isNotEmpty &&
+                                  initialExpenseAmount > 0 &&
+                                  assignedUserIds.isNotEmpty) {
+                                Expense newExpense = Expense.newExpense(
+                                    user!.uid,
+                                    enteredExpenseNameController.text,
+                                    initialExpenseAmount,
+                                    remainingExpenseAmount,
+                                    assignedUserIds,
+                                    assignedUsersRecord);
 
-                            //Sending data to the db
-                            await viewModel.createExpense(newExpense);
+                                //Sending data to the db
+                                await viewModel.createExpense(newExpense);
 
-                            setState(() {
-                              //Resets everything to ensure values don't remain when creating a new expense
-                              Navigator.of(context).pop();
-                              enteredExpenseNameController.clear();
-                              enteredExpenseAmountController.clear();
-                              assignedUsers.clear();
-                              assignedUserIds.clear();
-                              controllers.clear();
-                              initialExpenseAmount = 0;
-                              remainingExpenseAmount = 0;
-                            });
-                          }
+                                setState(() {
+                                  //Resets everything to ensure values don't remain when creating a new expense
+                                  Navigator.of(context).pop();
+                                  enteredExpenseNameController.clear();
+                                  enteredExpenseAmountController.clear();
+                                  assignedUsers.clear();
+                                  assignedUserIds.clear();
+                                  controllers.clear();
+                                  initialExpenseAmount = 0;
+                                  remainingExpenseAmount = 0;
+                                });
+                              }
 
-                        //Refreshes the page to allow users to be visible again when assigning
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    FinancePage()));
-                      })
+                              //Refreshes the page to allow users to be visible again when assigning
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FinancePage()));
+                            })
                 ],
               )));
     });
   }
 
   Future<void> assignUsersToExpensePopup(BuildContext context) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -183,105 +189,156 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                     itemCount: viewModel.members.length,
                                     itemBuilder: (context, index) {
                                       String member =
-                                      viewModel.memberIds[index];
-                                      bool isAssigned = assignedUsers.contains(member);
-                                      TextEditingController enteredUserAmountController = TextEditingController();
+                                          viewModel.memberIds[index];
+                                      // bool isAssigned =
+                                      //     assignedUsers.contains(member);
+                                      TextEditingController
+                                          enteredUserAmountController =
+                                          TextEditingController();
                                       return GestureDetector(
                                           key: UniqueKey(),
                                           child: Container(
                                               decoration: BoxDecoration(
                                                   color: viewModel.colour1,
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      20)),
+                                                      BorderRadius.circular(
+                                                          20)),
                                               child: user?.uid != member
-                                              ? ListTile(
-                                                title: Text(
-                                                    viewModel.members[index],
-                                                    style: TextStyle(
-                                                        color:
-                                                        viewModel.colour4,
-                                                        fontSize: 16)),
+                                                  ? ListTile(
+                                                      title: Row(
+                                                        children: [
+                                                          Icon(Icons.account_box,
+                                                              size: isMobile ? 18 : 24),
+                                                          SizedBox(width: 2),
+                                                          Expanded(
+                                                            child: Text(
+                                                                viewModel.members[index],
+                                                                style: TextStyle(
+                                                                    color: viewModel.colour4,
+                                                                    fontSize: isMobile? 14 : 16),
+                                                              maxLines: 1,
+                                                              softWrap: false,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
 
-                                                //Assignment or unassignment button
-                                                trailing: Wrap(
-                                                    spacing: 12,
-                                                    children: <Widget>[
-                                                      isAssigned
-                                                          ? IconButton(
-                                                        //If user is assigned
-                                                          onPressed: () {
-                                                            setStates(() {
-                                                              int index = assignedUsers.indexOf(member);
-                                                              assignedUsers.remove(member);
-                                                              controllers.removeAt(index);
-                                                            });
-                                                          },
-                                                          icon: Icon(Icons
-                                                              .remove_circle))
-                                                          : IconButton(
-                                                        //If user isn't assigned
-                                                          onPressed: () {
-                                                            setStates(() {
-                                                              assignedUsers.add(member);
-                                                              controllers.add(TextEditingController());
-                                                            });
-                                                          },
-                                                          icon: Icon(Icons
-                                                              .add_box)),
-                                                      isAssigned
-                                                          ? IconButton(
-                                                        //If user is assigned
-                                                        onPressed: () {
-                                                          if (enteredUserAmountController.text.isEmpty || enteredUserAmountController.text == "0") {
-                                                            showToast(message: "Please enter the amount owed");
-                                                          } else {
-                                                            showToast(message: "Assigned: ${viewModel.members[index]}");
+                                                      //Assignment or unassignment button
+                                                      trailing: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          children: [
+                                                            // isAssigned
+                                                            //     ? IconButton(
+                                                            //         //If user is assigned
+                                                            //         onPressed:
+                                                            //             () {
+                                                            //           setStates(
+                                                            //               () {
+                                                            //             int index = assignedUsers.indexOf(member);
+                                                            //             assignedUsers.remove(member);
+                                                            //             controllers.removeAt(index);
+                                                            //           });
+                                                            //         },
+                                                            //         icon: Icon(Icons.remove_circle,
+                                                            //             size: isMobile ? 18 :24
+                                                            //         ),
+                                                            //   padding: EdgeInsets.zero,
+                                                            //     constraints: BoxConstraints.tightFor(width: 16, height: 16)
+                                                            // )
 
-                                                            setState(() {
-                                                              if (num.parse(enteredUserAmountController.text) > 0) {
-                                                                assignedUserIds.add({
-                                                                  'userId': viewModel.memberIds[index],
-                                                                  'amount': num.tryParse(enteredUserAmountController.text)
-                                                                });
+                                                          // IconButton(
+                                                          //           //If user isn't assigned
+                                                          //           onPressed:
+                                                          //               () {
+                                                          //             setStates(
+                                                          //                 () {
+                                                          //               assignedUsers
+                                                          //                   .add(member);
+                                                          //               controllers
+                                                          //                   .add(TextEditingController());
+                                                          //             });
+                                                          //           },
+                                                          //           icon: Icon(Icons.add_box,
+                                                          //               size: isMobile ? 18 :24
+                                                          //           ),
+                                                          //     padding: EdgeInsets.zero,
+                                                          //       constraints: BoxConstraints.tightFor(width: 16, height: 16)
+                                                          //   ),
+                                                             IconButton(
+                                                                    //If user is assigned
+                                                                    onPressed:
+                                                                        () {
+                                                                      if (enteredUserAmountController
+                                                                              .text
+                                                                              .isEmpty ||
+                                                                          enteredUserAmountController.text ==
+                                                                              "0") {
+                                                                        showToast(
+                                                                            message:
+                                                                                "Please enter the amount owed");
+                                                                      } else {
+                                                                        showToast(
+                                                                            message:
+                                                                                "Assigned: ${viewModel.members[index]}");
 
-                                                                assignedUsersRecord.add({
-                                                                  'userId': viewModel.memberIds[index],
-                                                                  'userName': viewModel.members[index],
-                                                                  'initialAmountOwed': num.parse(enteredUserAmountController.text),
-                                                                  'remainingAmountOwed': num.parse(enteredUserAmountController.text),
-                                                                  'paidOff': false,
-                                                                  'payments': userPayments
-                                                                });
-                                                              }
-                                                              viewModel.removeMember(index);
-                                                              initialExpenseAmount = initialExpenseAmount + num.parse(enteredUserAmountController.text);
-                                                              remainingExpenseAmount = initialExpenseAmount;
-                                                            });
-                                                          }
-                                                        },
-                                                        icon: Icon(
-                                                            Icons.check),
-                                                      )
-                                                          : SizedBox.shrink()
-                                                    ]),
+                                                                        setState(
+                                                                            () {
+                                                                          if (num.parse(enteredUserAmountController.text) >
+                                                                              0) {
+                                                                            assignedUserIds.add({
+                                                                              'userId': viewModel.memberIds[index],
+                                                                              'amount': num.tryParse(enteredUserAmountController.text)
+                                                                            });
 
-                                                subtitle: isAssigned
-                                                    ? TextField(
-                                                  decoration: const InputDecoration(
-                                                      hintText: "Amount Owed",
-                                                      border: OutlineInputBorder()),
-                                                  controller: enteredUserAmountController,
-                                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                                  inputFormatters: [
-                                                    //Regex to insure invalid user inputs cant be entered
-                                                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
-                                                  ],
-                                                ) : null,
+                                                                            assignedUsersRecord.add({
+                                                                              'userId': viewModel.memberIds[index],
+                                                                              'userName': viewModel.members[index],
+                                                                              'initialAmountOwed': num.parse(enteredUserAmountController.text),
+                                                                              'remainingAmountOwed': num.parse(enteredUserAmountController.text),
+                                                                              'paidOff': false,
+                                                                              'payments': userPayments
+                                                                            });
+                                                                          }
+                                                                          viewModel
+                                                                              .removeMember(index);
+                                                                          initialExpenseAmount =
+                                                                              initialExpenseAmount + num.parse(enteredUserAmountController.text);
+                                                                          remainingExpenseAmount =
+                                                                              initialExpenseAmount;
+                                                                        });
+                                                                      }
+                                                                    },
+                                                                    icon: Icon(Icons.check,
+                                                                      size: isMobile ? 18 :24
+                                                                    ),
+                                                              padding: EdgeInsets.zero,
+                                                                constraints: BoxConstraints.tightFor(width: 16, height: 16)
+                                                                  )
+                                                                // : SizedBox
+                                                                //     .shrink()
+                                                          ]),
 
-                                              )
-                                          : null
-                                          ));
+                                                      subtitle: TextField(
+                                                            decoration: const InputDecoration(
+                                                                hintText: "Owed",
+                                                                border: OutlineInputBorder(),
+                                                            ),
+                                                            controller: enteredUserAmountController,
+                                                            keyboardType: TextInputType
+                                                                .numberWithOptions(
+                                                                    decimal:
+                                                                        true),
+                                                            inputFormatters: [
+                                                              //Regex to insure invalid user inputs cant be entered
+                                                              FilteringTextInputFormatter
+                                                                  .allow(RegExp(
+                                                                      r'^\d*\.?\d{0,2}$')),
+                                                            ],
+                                                          )
+                                                          // : null,
+                                                    )
+                                                  : null));
                                     }),
                               ),
                             ),

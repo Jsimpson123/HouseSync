@@ -170,6 +170,9 @@ class _ChoresPageState extends State<ChoresPage> {
   }
 
   Future<void> groupDetails(BuildContext context) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -179,55 +182,62 @@ class _ChoresPageState extends State<ChoresPage> {
               //Group name
               title: Row(
                 children: [
-                  FutureBuilder<String?>(
+                  Flexible(
+                    flex: 2,
+                    child: FutureBuilder<String?>(
                       future: viewModel.returnGroupName(user!.uid),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                         if ("${snapshot.data}" == "null") {
-                          return const Text(
-                              ""); //Due to a delay in the data loading
+                          return const SizedBox.shrink();
                         } else {
-                          return Expanded(
-                            flex: 2,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: FittedBox(
-                                fit: BoxFit.fitHeight,
-                                child: Text("${snapshot.data}",
-                                    style: TextStyle(
-                                        fontSize: 42,
-                                        fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
+                              return Text(
+                                "${snapshot.data}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: isMobile ? 24 : 42,
+                                  fontWeight: FontWeight.bold,
+                                  color: viewModel.colour4,
+                                ),
+                              );
+                        }
+                      },
+                    ),
+                  ),
+
+
+                  Flexible(
+                    child: FutureBuilder<String?>(
+                      future: viewModel.returnGroupCode(user!.uid),
+                      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                        if ("${snapshot.data}" == "null") {
+                          return const SizedBox.shrink();
+                        } else {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "Group Code:",
+                                style: TextStyle(
+                                  fontSize: isMobile ? 14 : 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: viewModel.colour4,
+                                ),
                               ),
-                            ),
+                              Text(
+                                "${snapshot.data}",
+                                style: TextStyle(
+                                  fontSize: isMobile ? 18 : 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: viewModel.colour4,
+                                ),
+                              ),
+                            ],
                           );
                         }
-                      }),
-
-                  SizedBox(
-                    height: 100,
-                    child: FutureBuilder<String?>(
-                        future: viewModel.returnGroupCode(user!.uid),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String?> snapshot) {
-                          if ("${snapshot.data}" == "null") {
-                            return const Text(
-                                ""); //Due to a delay in the group code loading
-                          } else {
-                            return Expanded(
-                              flex: 1,
-                              child: FittedBox(
-                                fit: BoxFit.fitHeight,
-                                child: Text("Group Code: \n${snapshot.data}",
-                                    style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
-                              ),
-                            );
-                          }
-                        }),
+                      },
+                    ),
                   ),
+
                 ],
               ),
               content: SingleChildScrollView(

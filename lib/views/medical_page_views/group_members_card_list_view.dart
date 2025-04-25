@@ -140,26 +140,47 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                             borderRadius: BorderRadius.circular(10)),
                                                         child: Column(
                                                           children: [
-                                                            IntrinsicHeight(
-                                                              child: Stack(
-                                                                  children: [
-                                                                    const Positioned(
-                                                                      left: 0,
-                                                                      child: Icon(
-                                                                        Icons.medical_information_outlined,
-                                                                        size: 30,
-                                                                      ),
-                                                                    ),
-                                                                    Align(
-                                                                      child: Text(
-                                                                          snapshot.data?[0]![index],
+                                                            Stack(
+                                                              children: [
+                                                                // Icon pinned to the left
+                                                                Positioned(
+                                                                  left: 0,
+                                                                  top: 0,
+                                                                  child: Icon(
+                                                                    Icons.medical_information_outlined,
+                                                                    size: isMobile ? 20 : 30,
+                                                                  ),
+                                                                ),
+
+                                                                //Centring text
+                                                                Align(
+                                                                  alignment: Alignment.center,
+                                                                  child: Row(
+                                                                    mainAxisSize: MainAxisSize.max,
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      //Makes text seem centred
+                                                                      SizedBox(width: isMobile ? 30 : 40),
+                                                                      Flexible(
+                                                                        child: Text(
+                                                                          snapshot.data?[0]![index] ?? '',
+                                                                          textAlign: TextAlign.center,
+                                                                          softWrap: true,
                                                                           style: TextStyle(
-                                                                              color: viewModel.colour4,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: isMobile ? 20 : 24)),
-                                                                    ),
-                                                                  ]),
+                                                                            color: viewModel.colour4,
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: isMobile ? 20 : 24,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      //For symmetry
+                                                                      SizedBox(width: isMobile ? 30 : 40),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
+
                                                             //Separating line
                                                             Container(
                                                               decoration: const BoxDecoration(
@@ -170,14 +191,16 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                             ),
                                                             SizedBox(height: 30),
                                                             Expanded(
-                                                              child:
-                                                                  SingleChildScrollView(
-                                                                child: Center(
-                                                                  child: Text(
-                                                                      snapshot.data?[1]![index],
-                                                                      style: TextStyle(
-                                                                          color: viewModel.colour4,
-                                                                          fontSize: isMobile ? 14 : 16)),
+                                                              child: SingleChildScrollView(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                                                  child: Center(
+                                                                    child: Text(
+                                                                        snapshot.data?[1]![index],
+                                                                        style: TextStyle(
+                                                                            color: viewModel.colour4,
+                                                                            fontSize: isMobile ? 14 : 16)),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),

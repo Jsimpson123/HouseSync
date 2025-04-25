@@ -65,7 +65,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
                                                                 color: viewModel.colour4,
-                                                                fontSize: 24,
+                                                                fontSize: isMobile ? 20 : 24,
                                                                 fontWeight: FontWeight.bold)),
                                                       ),
                                             ),
@@ -79,7 +79,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                         //     ),
                                         //   ),
                                         // ),
-                                        SizedBox(height: 15),
+                                        SizedBox(height: isMobile ? 10 : 15),
                                         Center(
                                           child: FutureBuilder<num?>(
                                               future: viewModel.returnAssignedExpenseAmount(expense.expenseId),
@@ -105,7 +105,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                       child: Text(
                                                           "£" + num.tryParse("${snapshot.data}")!.toStringAsFixed(2),
                                                           style: TextStyle(
-                                                              fontSize: 24,
+                                                              fontSize: isMobile ? 20 : 24,
                                                               fontWeight: FontWeight.bold,
                                                               color: Colors.red)),
                                                   );
@@ -113,7 +113,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                               }),
                                         ),
                                     
-                                        SizedBox(height: 15),
+                                        SizedBox(height: isMobile ? 10 : 15),
                                         Center(
                                           child: FutureBuilder<String?>(
                                               future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
@@ -128,11 +128,11 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                     child: Column(
                                                       children: [
                                                         Icon(Icons.supervisor_account_sharp,
-                                                          size: 35),
+                                                          size: isMobile ? 25 : 35),
                                                         Text(
                                                             "${snapshot.data}",
                                                             style: TextStyle(
-                                                                fontSize: 18,
+                                                                fontSize: isMobile? 14 : 18,
                                                                 fontWeight: FontWeight.bold,
                                                                 color: viewModel.colour4)),
                                                       ],
@@ -243,24 +243,44 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                           BorderRadius.circular(
                                                               20)),
                                                       child: ListTile(
+                                                          //Prevents overflow
+                                                          dense: true,
+                                                          contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
                                                         leading: Text(
                                                             "£" + num.tryParse(snapshot.data?[1]![index])!.toStringAsFixed(2),
                                                             style: TextStyle(
                                                             color: Colors.red,
                                                             fontWeight: FontWeight.bold,
-                                                            fontSize: 16)),
-                                                        title: Text(
-                                                            snapshot.data?[0]![index],
-                                                            style: TextStyle(
-                                                                color:
-                                                                viewModel.colour4,
-                                                                fontSize: 16)),
+                                                            fontSize: isMobile ? 14 : 16
+                                                            )),
+                                                        title: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Icon(
+                                                                Icons.account_box,
+                                                                size: isMobile ? 18 : 24,
+                                                            ),
+                                                            SizedBox(width: 2),
+                                                            Expanded(
+                                                              child: Text(
+                                                                  snapshot.data?[0]![index],
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                      viewModel.colour4,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      fontSize: isMobile ? 14 : 16
+                                                                  ),
+                                                                softWrap: false,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
 
                                                         //TextField only shows if the current user owes money
                                                         subtitle: user?.uid == snapshot.data?[2][index]
                                                             ? TextField(
                                                           decoration: const InputDecoration(
-                                                              hintText: "Amount Owed",
+                                                              hintText: "Paid",
                                                               border: OutlineInputBorder()),
                                                           controller: enteredUserAmountController,
                                                           keyboardType: TextInputType.numberWithOptions(decimal: true),

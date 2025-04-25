@@ -66,11 +66,11 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                   IntrinsicHeight(
                                       child: Stack(
                                     children: [
-                                      const Positioned(
+                                      Positioned(
                                         left: 0,
                                         child: Icon(
                                           Icons.shopping_cart,
-                                          size: 30,
+                                          size: isMobile ? 20 : 30,
                                         ),
                                       ),
                                       Align(
@@ -80,7 +80,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: viewModel.colour4,
-                                                fontSize: 24,
+                                                fontSize: isMobile ? 20 : 24,
                                                 fontWeight: FontWeight.bold)),
                                       ),
                                     ],
@@ -99,7 +99,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                       Center(
                                         child: Text("Items:",
                                             style: TextStyle(
-                                                fontSize: 24,
+                                                fontSize: isMobile ? 20 : 24,
                                                 fontWeight: FontWeight.bold,
                                                 color: viewModel.colour4)),
                                       ),
@@ -121,7 +121,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                   child: Text(
                                                       "${snapshot.data}",
                                                       style: TextStyle(
-                                                          fontSize: 24,
+                                                          fontSize: isMobile ? 20 : 24,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: viewModel
@@ -130,7 +130,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                               }
                                             }),
                                       ),
-                                      SizedBox(height: 52),
+                                      SizedBox(height: isMobile ? 25 : 52),
                                       ElevatedButton(
                                           onPressed: () {
                                             viewModel.deleteShoppingList(index);
@@ -164,6 +164,9 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
 
   Future<void> shoppingListDetailsPopup(
       BuildContext context, ShoppingList shoppingList) async {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -180,7 +183,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 400,
+                    height: isMobile ? 600 : 400,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -410,52 +413,60 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                               color: viewModel.colour1,
                                                               borderRadius: BorderRadius.circular(20)),
                                                           child: ListTile(
-                                                            leading: Checkbox(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            5)),
-                                                                side: BorderSide(
-                                                                    width: 2,
-                                                                    color: viewModel
-                                                                        .colour3),
-                                                                checkColor:
-                                                                    viewModel
-                                                                        .colour1,
-                                                                activeColor:
-                                                                    viewModel
-                                                                        .colour3,
-                                                                value:
-                                                                    isChecked,
-                                                                onChanged: (bool?
-                                                                    newValue) async {
-                                                                  setState(() {
-                                                                    snapshot.data?[1]
-                                                                            [index] = newValue;
-                                                                  });
-                                                                  await viewModel.setItemValue(
-                                                                      shoppingList,
-                                                                      snapshot.data?[2][index], newValue!);
-                                                                }),
+                                                            // contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                                                            leading: SizedBox(
+                                                              width: isMobile ? 30 : 40,
+                                                              child: Align(
+                                                                alignment: Alignment.centerLeft,
+                                                                child: Checkbox(
+                                                                    shape: RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(5)),
+                                                                    side: BorderSide(
+                                                                        width: 2,
+                                                                        color: viewModel.colour3),
+                                                                    checkColor: viewModel.colour1,
+                                                                    activeColor: viewModel.colour3,
+                                                                    value: isChecked,
+                                                                    onChanged: (bool?
+                                                                        newValue) async {
+                                                                      setState(() {
+                                                                        snapshot.data?[1]
+                                                                                [index] = newValue;
+                                                                      });
+                                                                      await viewModel.setItemValue(
+                                                                          shoppingList,
+                                                                          snapshot.data?[2][index], newValue!);
+                                                                    }),
+                                                              ),
+                                                            ),
                                                             trailing: SizedBox(
-                                                              width: 60,
+                                                              width: isMobile ? 40 : 60,
                                                               child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.end,
                                                                 children: [
-                                                                  const Icon(Icons.shopping_bag),
+                                                                  Icon(Icons.shopping_bag,
+                                                                    size: isMobile ? 16 : 24,
+                                                                  ),
                                                                   Text(
                                                                           snapshot.data?[3]![index],
                                                                           style: TextStyle(
                                                                               color: viewModel.colour4,
-                                                                              fontSize: 16)),
+                                                                              fontSize: isMobile ? 14 : 16)),
                                                                 ],
                                                               ),
                                                             ),
 
-                                                            title: Text(
-                                                                    snapshot.data?[0]![index],
-                                                                    style: TextStyle(
-                                                                        color: viewModel.colour4,
-                                                                        fontSize: 16)),
+                                                            title: SingleChildScrollView(
+                                                              scrollDirection: Axis.horizontal,
+                                                              child: Text(
+                                                                      snapshot.data?[0]![index],
+                                                                      style: TextStyle(
+                                                                          color: viewModel.colour4,
+                                                                          fontSize: isMobile ? 14 : 16),
+                                                                      softWrap: false,
+                                                              ),
+                                                            ),
                                                           )),
                                                     );
                                                   }),
@@ -509,7 +520,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 200,
+                    height: 230,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -563,6 +574,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                           ),
                           IconButton(
                               color: Colors.green,
+                              iconSize: isMobile ? 50 : 60,
                               onPressed: () {
                                 if (enteredItemNameController.text.isNotEmpty &&
                                     quantity > 0 &&
