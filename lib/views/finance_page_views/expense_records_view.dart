@@ -9,7 +9,11 @@ import 'package:shared_accommodation_management_app/views/finance_page_views/bot
 import '../../view_models/finance_view_model.dart';
 
 class ExpenseRecordsView {
-  static void expenseRecordsPopup(BuildContext context, ExpenseRecordsView expenseRecordsView) {
+  static Future<void> expenseRecordsPopup(BuildContext context, ExpenseRecordsView expenseRecordsView) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -41,7 +45,10 @@ class ExpenseRecordsView {
 
 
                                       child: StreamBuilder<QuerySnapshot>(
-                                          stream: FirebaseFirestore.instance.collection('expenseRecords').snapshots(),
+                                          stream: FirebaseFirestore.instance
+                                              .collection('expenseRecords')
+                                              .where('groupId', isEqualTo: groupId)
+                                              .snapshots(),
                                           builder: (context, snapshot) {
 
                                             var records = snapshot.data?.docs;
@@ -88,12 +95,6 @@ class ExpenseRecordsView {
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                  // title: Text(member['userName'],
-                                                                  //   style: TextStyle(
-                                                                  //     fontSize: isMobile ? 14 : 20
-                                                                  //   ),
-                                                                  //   softWrap: false,
-                                                                  // ),
                                                                   trailing: member['paidOff'] == true
                                                                   ? Text("Paid Off",
                                                                     style: TextStyle(

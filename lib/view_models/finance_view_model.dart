@@ -45,6 +45,27 @@ class FinanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future <void> loadExpenseRecords() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+    final groupId = await userDoc.data()?['groupId'];
+
+    final expenseGroupQuery = FirebaseFirestore.instance
+        .collection('expenses')
+        .where('groupId', isEqualTo: groupId)
+        .get();
+
+    final snapshot = await expenseGroupQuery;
+    _expenses.clear();
+
+    for (var doc in snapshot.docs) {
+      _expenses.add(Expense.fromMap(doc.id, doc.data()));
+    }
+
+    notifyListeners();
+  }
+
   Future<bool> createExpense(Expense newExpense) async {
     newExpense.generateId();
 

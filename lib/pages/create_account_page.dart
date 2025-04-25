@@ -50,6 +50,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   SingleChildScrollView createRegisterPageBody() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -73,7 +75,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           height: 25,
         ),
         SizedBox(
-          width: 400,
+          width: isMobile ? 300 : 400,
           child: TextField(
               key: Key("registerUsernameField"),
               controller: _usernameController,
@@ -94,7 +96,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields
         const SizedBox(height: 25),
         SizedBox(
-          width: 400,
+          width: isMobile ? 300 : 400,
           child: TextField(
               key: Key("registerEmailField"),
               controller: _emailController,
@@ -115,7 +117,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields
         const SizedBox(height: 25),
         SizedBox(
-          width: 400,
+          width: isMobile ? 300 : 400,
           child: TextField(
               key: Key("registerPasswordField"),
               controller: _passwordController,

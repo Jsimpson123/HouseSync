@@ -41,6 +41,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   SingleChildScrollView createLoginPageBody() {
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -66,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           height: 10,
         ),
         SizedBox(
-          width: 400,
+          width: isMobile ? 300 : 400,
           child: TextField(
             key: Key('emailField'),
               controller: _emailController,
@@ -85,9 +88,9 @@ class _LoginPageState extends State<LoginPage> {
               )),
         ),
         //Spacing between the TextFields and login button
-        const SizedBox(height: 25),
+        const SizedBox(height: 15),
         SizedBox(
-          width: 400,
+          width: isMobile ? 300 : 400,
           child: TextField(
             key: Key('passwordField'),
               controller: _passwordController,
@@ -122,8 +125,28 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               )),
         ),
+        const SizedBox(height: 3),
+        SizedBox(
+          width: isMobile ? 300 : 400,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+                key: Key("forgotPasswordButton"),
+                onPressed: () {
+                  if (_emailController.text.isNotEmpty) {
+                    sendForgotPasswordEmail(_emailController.text);
+                  } else {
+                    showToast(message: "message");
+                  }
+                },
+                child: const Text("Forgot Password?", style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold))),
+          ),
+        ),
+
         //Spacing between the TextFields
-        const SizedBox(height: 10),
+        const SizedBox(height: 3),
         ElevatedButton(
           key: Key("loginButton"),
             onPressed: () {
@@ -137,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                     WidgetStateProperty.resolveWith((state) => Colors.white),
                 textStyle:
                     WidgetStateProperty.all<TextStyle>(TextStyle(fontSize: 30)),
-                minimumSize: WidgetStateProperty.all<Size>(Size(200, 100)))),
+                minimumSize: WidgetStateProperty.all<Size>(Size(200, 90)))),
         //Spacing between the login button and create account text
         const SizedBox(height: 15),
 
@@ -177,5 +200,19 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       print("An error occurred");
     }
+  }
+  void sendForgotPasswordEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showToast(message: "Reset password email sent");
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        showToast(message: "Invalid email");
+      } else {
+        showToast(message: "An error occurred: ${e.code}");
+      }
+    }
+    return null;
   }
 }
