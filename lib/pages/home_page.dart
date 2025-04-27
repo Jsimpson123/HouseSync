@@ -231,73 +231,164 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     itemCount: value.length,
                                     itemBuilder: (context, index) {
-                                      return Container(
+                                      final eventCreatorId = value[index].eventCreatorId;
+                                      if (user?.uid == eventCreatorId) {
+                                      return Dismissible(
+                                        //Makes events dismissible via swiping
+                                        key: UniqueKey(),
+                                        onDismissed: (direction) {
+                                          final eventToDelete = value[index];
+                                          homeViewModel.deleteEvent(eventToDelete.eventId);
+
+                                          setState(() {
+                                            value.removeAt(index);
+                                          });
+                                        },
+                                        background: Container(
+                                          margin: EdgeInsets.symmetric(horizontal: 5),
                                           decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.blueAccent,
-                                                    spreadRadius: 2)
-                                              ],
-                                              color: homeViewModel.colour1,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: ListTile(
-                                            // onTap: () => print(''),
-                                            title: Text(value[index].title,
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color:
-                                                        homeViewModel.colour4)),
-                                            subtitle: Row(
-                                              children: [
-                                                Icon(
-                                                    Icons.access_time_outlined),
-                                                Text(
-                                                    value[index]
-                                                        .time
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: homeViewModel
-                                                            .colour4)),
-                                              ],
-                                            ),
-                                            trailing: FutureBuilder<String?>(
-                                                future: homeViewModel
-                                                    .returnEventCreatorUsername(
-                                                        value[index].eventId),
-                                                builder: (BuildContext context,
-                                                    AsyncSnapshot<String?>
-                                                        snapshot) {
-                                                  if ("${snapshot.data}" ==
-                                                      "null") {
-                                                    return const Text(
-                                                        ""); //Due to a delay in the username loading
-                                                  } else {
-                                                    return FittedBox(
-                                                      fit: BoxFit.fitHeight,
-                                                      child: Column(
-                                                        children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .supervisor_account_sharp,
-                                                              size: 35),
-                                                          Text(
-                                                              "${snapshot.data}",
-                                                              style: TextStyle(
-                                                                  fontSize: 18,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: homeViewModel
-                                                                      .colour4)),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }
-                                                }),
-                                          ));
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.circular(10)),
+                                          child: Center(child: Icon(Icons.delete)),
+                                        ),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.blueAccent,
+                                                      spreadRadius: 2)
+                                                ],
+                                                color: homeViewModel.colour1,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: ListTile(
+                                              // onTap: () => print(''),
+                                              title: Text(value[index].title,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:
+                                                          homeViewModel.colour4)),
+                                              subtitle: Row(
+                                                children: [
+                                                  Icon(
+                                                      Icons.access_time_outlined),
+                                                  Text(
+                                                      value[index]
+                                                          .time
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: homeViewModel
+                                                              .colour4)),
+                                                ],
+                                              ),
+                                              trailing: FutureBuilder<String?>(
+                                                  future: homeViewModel
+                                                      .returnEventCreatorUsername(
+                                                          value[index].eventId),
+                                                  builder: (BuildContext context,
+                                                      AsyncSnapshot<String?>
+                                                          snapshot) {
+                                                    if ("${snapshot.data}" ==
+                                                        "null") {
+                                                      return const Text(
+                                                          ""); //Due to a delay in the username loading
+                                                    } else {
+                                                      return FittedBox(
+                                                        fit: BoxFit.fitHeight,
+                                                        child: Column(
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .supervisor_account_sharp,
+                                                                size: 35),
+                                                            Text(
+                                                                "${snapshot.data}",
+                                                                style: TextStyle(
+                                                                    fontSize: 18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: homeViewModel
+                                                                        .colour4)),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }
+                                                  }),
+                                            )),
+                                      );
+
+                                    } else {
+                                        return Container(
+                                            decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.blueAccent,
+                                                      spreadRadius: 2)
+                                                ],
+                                                color: homeViewModel.colour1,
+                                                borderRadius:
+                                                BorderRadius.circular(20)),
+                                            child: ListTile(
+                                              // onTap: () => print(''),
+                                              title: Text(value[index].title,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold,
+                                                      color:
+                                                      homeViewModel.colour4)),
+                                              subtitle: Row(
+                                                children: [
+                                                  Icon(
+                                                      Icons.access_time_outlined),
+                                                  Text(
+                                                      value[index]
+                                                          .time
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: homeViewModel
+                                                              .colour4)),
+                                                ],
+                                              ),
+                                              trailing: FutureBuilder<String?>(
+                                                  future: homeViewModel
+                                                      .returnEventCreatorUsername(
+                                                      value[index].eventId),
+                                                  builder: (BuildContext context,
+                                                      AsyncSnapshot<String?>
+                                                      snapshot) {
+                                                    if ("${snapshot.data}" ==
+                                                        "null") {
+                                                      return const Text(
+                                                          ""); //Due to a delay in the username loading
+                                                    } else {
+                                                      return FittedBox(
+                                                        fit: BoxFit.fitHeight,
+                                                        child: Column(
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .supervisor_account_sharp,
+                                                                size: 35),
+                                                            Text(
+                                                                "${snapshot.data}",
+                                                                style: TextStyle(
+                                                                    fontSize: 18,
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                    color: homeViewModel
+                                                                        .colour4)),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }
+                                                  }),
+                                            ));
+                                      }
                                     }),
                               ),
                             ),
@@ -309,11 +400,11 @@ class _HomePageState extends State<HomePage> {
             ],
           )),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton:
-          Consumer<HomeViewModel>(builder: (context, viewModel, child) {
+      floatingActionButton: Consumer<HomeViewModel>(builder: (context, viewModel, child) {
         return SizedBox(
           height: 60,
           child: ElevatedButton(
+            key: Key("createEventButton"),
               style: ElevatedButton.styleFrom(
                   backgroundColor: viewModel.colour3,
                   foregroundColor: viewModel.colour1),
@@ -328,56 +419,70 @@ class _HomePageState extends State<HomePage> {
                                       MediaQuery.of(context).viewInsets.bottom),
                               //Ensures the keyboard doesn't cover the textfields
                               child: Container(
-                                  height: 100,
+                                  height: 150,
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       TextField(
+                                        key: Key("eventTextField"),
                                           decoration: const InputDecoration(
                                               hintText: "Event Name",
                                               border: OutlineInputBorder()),
                                           controller:
                                               enteredEventNameController,
                                           onSubmitted: (value) async {
-                                            if (enteredEventNameController
-                                                .text.isNotEmpty) {
-                                              Event newEvent = Event.newEvent(
-                                                  user!.uid,
-                                                  enteredEventNameController
-                                                      .text,
-                                                  _focusedDay);
-
-                                              TimeOfDay? selectedTime =
-                                                  await showTimePicker(
-                                                      context: context,
-                                                      initialTime:
-                                                          TimeOfDay.now());
-
-                                              viewModel.addCalendarEvent(
-                                                  newEvent,
-                                                  user.uid,
-                                                  selectedTime!);
-                                              // events.addAll({_selectedDay! : [newEvent]});
-                                              setState(() {
-                                                if (events.containsKey(
-                                                    _selectedDay)) {
-                                                  events[_selectedDay]!.add(
-                                                      newEvent); //Adds the new event
-                                                } else {
-                                                  events[_selectedDay!] = [
-                                                    newEvent
-                                                  ]; //Creates new list with event
-                                                }
-                                              });
-                                              enteredEventNameController
-                                                  .clear();
-                                            }
-                                            Navigator.of(context)
-                                                .pop(); //Makes bottom event bar disappear
-                                            // _selectedEvents.value = _getEventsForDay(_selectedDay!);
-                                            _loadEventsForDay(_selectedDay!);
                                           }),
+
+                                      SizedBox(height: 15),
+
+                                      ElevatedButton(
+                                        key: Key("submitEventButton"),
+                                        child: Text("Submit"),
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: viewModel.colour3,
+                                            foregroundColor: viewModel.colour1,
+                                            fixedSize: Size(100, 50)),
+                                        onPressed: () async {
+                                          if (enteredEventNameController
+                                              .text.isNotEmpty) {
+                                            Event newEvent = Event.newEvent(
+                                                user!.uid,
+                                                enteredEventNameController
+                                                    .text,
+                                                _focusedDay);
+
+                                            TimeOfDay? selectedTime =
+                                                await showTimePicker(
+                                                context: context,
+                                                initialTime:
+                                                TimeOfDay.now());
+
+                                            viewModel.addCalendarEvent(
+                                                newEvent,
+                                                user.uid,
+                                                selectedTime!);
+                                            // events.addAll({_selectedDay! : [newEvent]});
+                                            setState(() {
+                                              if (events.containsKey(
+                                                  _selectedDay)) {
+                                                events[_selectedDay]!.add(
+                                                    newEvent); //Adds the new event
+                                              } else {
+                                                events[_selectedDay!] = [
+                                                  newEvent
+                                                ]; //Creates new list with event
+                                              }
+                                            });
+                                            enteredEventNameController
+                                                .clear();
+                                          }
+                                          Navigator.of(context)
+                                              .pop(); //Makes bottom event bar disappear
+                                          // _selectedEvents.value = _getEventsForDay(_selectedDay!);
+                                          _loadEventsForDay(_selectedDay!);
+                                        }
+                                      ),
                                     ],
                                   )));
                         }), context)
@@ -413,7 +518,7 @@ class _HomePageState extends State<HomePage> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
+                icon: Icon(Icons.dry_cleaning_sharp), label: "Chores", key: Key("choresPage")),
             BottomNavigationBarItem(
                 icon: Icon(Icons.monetization_on), label: "Finance"),
             BottomNavigationBarItem(

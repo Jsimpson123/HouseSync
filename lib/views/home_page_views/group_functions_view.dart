@@ -66,6 +66,7 @@ class GroupFunctionsView extends StatelessWidget {
                         child: FittedBox(
                           child: Text(
                             "Join Group",
+                            key: Key("joinGroupButton"),
                             style: TextStyle(
                                 fontSize: 28,
                                 color: viewModel.colour3,

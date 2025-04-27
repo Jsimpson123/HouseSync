@@ -15,24 +15,44 @@ class AddTaskBottomSheetView extends StatelessWidget {
                   .viewInsets
                   .bottom), //Ensures the keyboard doesn't cover the textfields
           child: Container(
-              height: 100,
+              height: 150,
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
+                    key: Key("choreTextField"),
                     decoration: const InputDecoration(
                         hintText: "Task Name", border: OutlineInputBorder()),
                     controller: enteredTaskNameController,
                     onSubmitted: (value) {
-                      if (enteredTaskNameController.text.isNotEmpty) {
-                        Task newTask = Task.newTask(enteredTaskNameController.text);
-                        viewModel.addTask(newTask);
-                        enteredTaskNameController.clear();
-                      }
-                      Navigator.of(context).pop(); //Makes bottom task bar disappear
+                      // if (enteredTaskNameController.text.isNotEmpty) {
+                      //   Task newTask = Task.newTask(enteredTaskNameController.text);
+                      //   viewModel.addTask(newTask);
+                      //   enteredTaskNameController.clear();
+                      // }
+                      // Navigator.of(context).pop(); //Makes bottom task bar disappear
                     }
                   ),
+
+                  SizedBox(height: 15),
+
+                  ElevatedButton(
+                  key: Key("submitChoreButton"),
+                  child: Text("Submit"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: viewModel.colour3,
+                    foregroundColor: viewModel.colour1,
+                    fixedSize: Size(100, 50)),
+                  onPressed: () {
+                    if (enteredTaskNameController.text.isNotEmpty) {
+                      Task newTask = Task.newTask(enteredTaskNameController.text);
+                      viewModel.addTask(newTask);
+                      enteredTaskNameController.clear();
+                    }
+                    Navigator.of(context).pop(); //Makes bottom task bar disappear
+                  }
+                  )
                 ],
               )));
     });

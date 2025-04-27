@@ -48,7 +48,9 @@ class _TaskListViewState extends State<TaskListView> {
                       color: viewModel.colour1,
                       borderRadius: BorderRadius.circular(20)),
                   child: ListTile(
+                    key: Key("listtile$index"),
                     leading: Checkbox(
+                      key: Key("checkbox$index"),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                         side: BorderSide(width: 2, color: viewModel.colour3),
@@ -66,6 +68,7 @@ class _TaskListViewState extends State<TaskListView> {
                                 FontWeight.bold)),
                     trailing: task.assignedUser != null
                         ? IconButton(
+                        key: Key("unassignButton$index"),
                             //If true
                             onPressed: () async {
                               bool userAssigned =
@@ -80,6 +83,7 @@ class _TaskListViewState extends State<TaskListView> {
                             },
                             icon: Icon(Icons.remove_circle))
                         : IconButton(
+                      key: Key("assignButton$index"),
                             //If false
                             onPressed: () async {
                               bool userUnassigned = await viewModel.assignCurrentUserToTask(

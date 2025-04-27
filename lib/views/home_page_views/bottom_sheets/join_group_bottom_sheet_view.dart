@@ -18,11 +18,8 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController enteredGroupCodeController = TextEditingController();
-
-    GroupViewModel groupViewModel = GroupViewModel();
+    
     User? user = FirebaseAuth.instance.currentUser;
-
-    // String groupCode = groupViewModel.returnGroupCode(user!.uid).toString();
 
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
       return Padding(
@@ -37,6 +34,7 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
+                    key: Key("groupCodeTextField"),
                       decoration: const InputDecoration(
                           hintText: "Group Code", border: OutlineInputBorder()),
                       controller: enteredGroupCodeController,
@@ -45,6 +43,7 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                   SizedBox(height: 15),
 
                   ElevatedButton(
+                    key: Key("submitGroupCodeButton"),
                       child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
                           foregroundColor: viewModel.colour1,

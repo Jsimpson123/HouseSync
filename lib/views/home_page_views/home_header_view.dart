@@ -67,11 +67,24 @@ class HomeHeaderView extends StatelessWidget {
                       alignment: isMobile ? Alignment.centerRight : Alignment.bottomRight,
                       child: FittedBox(
                         fit: BoxFit.fitHeight,
-                        child: Text("Group Code: \n${snapshot.data}",
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: viewModel.colour4)),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          child: Column(
+                            children: [
+                              Text("Group Code:",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: viewModel.colour4)),
+                              Text("${snapshot.data}",
+                                  key: Key("groupCodeText"),
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: viewModel.colour4)),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   );

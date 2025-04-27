@@ -79,6 +79,12 @@ class HomeViewModel extends ChangeNotifier {
     return events;
   }
 
+  Future<void> deleteEvent(String eventId) async {
+    await FirebaseFirestore.instance.collection('calendarEvents').doc(eventId).delete();
+
+    notifyListeners();
+  }
+
   Future<String?> returnEventCreatorUsername (String eventId) async {
     try {
       final eventDoc = FirebaseFirestore.instance.collection('calendarEvents').doc(eventId);

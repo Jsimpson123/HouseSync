@@ -10,6 +10,7 @@ class AddTaskView extends StatelessWidget {
       return SizedBox(
         height: 60,
         child: ElevatedButton(
+          key: Key("createChoreButton"),
             style: ElevatedButton.styleFrom(
                 backgroundColor: viewModel.colour3,
                 foregroundColor: viewModel.colour1

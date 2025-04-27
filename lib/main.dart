@@ -14,6 +14,7 @@ import 'package:shared_accommodation_management_app/view_models/medical_view_mod
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
+import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,7 +57,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)),
-      home: LoginPage(),
+      home: user == null ? LoginPage() : HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

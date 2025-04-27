@@ -20,6 +20,7 @@ void main() {
   late FirebaseAuth auth;
 
   String rand = "";
+  String? groupCode = "";
 
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,11 @@ void main() {
   tearDown(() async {
     await FirebaseAuth.instance.signOut();
   });
+
+  Future<String?> getTextFromFinder(WidgetTester tester, Finder finder) async {
+    final textWidget = tester.widget<Text>(finder);
+    return textWidget.data;
+  }
 
     testWidgets('User can register', (WidgetTester tester) async {
       //Launches the app
@@ -152,5 +158,108 @@ void main() {
 
     //Verifies the user is on the home page
     expect(find.text("Home"), findsAny);
+
+    await Future.delayed(Duration(seconds: 2));
+
+    final Finder groupText = find.byKey(Key('groupCodeText'));
+
+    groupCode = await getTextFromFinder(tester, groupText);
+    expect(groupCode, isNotNull);
+    expect(groupCode?.isNotEmpty, true);
+    print("groupcode: " + groupCode!);
+  });
+
+  testWidgets('User can create account and join a group', (WidgetTester tester) async {
+    //Launches the app
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+                create: (context) => FirebaseAuthFunctionality()
+            ),
+            ChangeNotifierProvider.value(
+              value: GroupViewModel(),
+            ),
+            ChangeNotifierProvider(
+                create: (context) => HomeViewModel()
+            ),
+            ChangeNotifierProvider(
+                create: (context) => UserViewModel()
+            )
+          ], child: MyApp(),
+        ),
+      ),
+    );
+
+    await Future.delayed(Duration(seconds: 2));
+
+    //Verifies the user is on the login page
+    expect(find.text("Welcome"), findsOneWidget);
+
+    String random = Uuid().v4();
+    rand = random;
+
+    //Find register button
+    final Finder registerButton = find.byKey(Key('registerButton'));
+
+    //Click the button to navigate to register page
+    await tester.tap(registerButton);
+    await tester.pumpAndSettle();
+
+    //Ensures the text exists
+    expect(find.text("Create Account"), findsOneWidget);
+
+    //Finds widgets on the screen
+    final Finder registerUsernameField = find.byKey(Key('registerUsernameField'));
+    final Finder registerEmailField = find.byKey(Key('registerEmailField'));
+    final Finder registerPasswordField = find.byKey(Key('registerPasswordField'));
+    final Finder registerNowButton = find.byKey(Key('registerNowButton'));
+
+    //Creates a new account
+    await tester.enterText(registerUsernameField, 'TestUser2');
+    await tester.enterText(registerEmailField, '$random@test123.com');
+    await tester.enterText(registerPasswordField, 'TestPassword123');
+    await tester.tap(registerNowButton);
+    await tester.pumpAndSettle();
+
+    //Gives Firebase time
+    await Future.delayed(Duration(seconds: 2));
+
+    //Verifies the user is registered
+    expect(auth.currentUser, isNotNull);
+    expect(auth.currentUser?.email, '$random@test123.com');
+
+    await tester.pumpAndSettle();
+
+    //Verifies the user is on the correct page
+    expect(find.text("Join Group"), findsOneWidget);
+
+    //Finds the button and clicks it
+    final Finder joinGroupButton = find.byKey(Key('joinGroupButton'));
+    await tester.tap(joinGroupButton);
+    await tester.pumpAndSettle();
+
+    //Enters the group name and clicks submit
+    final Finder groupCodeTextField = find.byKey(Key('groupCodeTextField'));
+    final Finder submitGroupNameButton = find.byKey(Key('submitGroupCodeButton'));
+
+    expect(groupCodeTextField, findsOneWidget);
+
+    await tester.enterText(groupCodeTextField, groupCode!);
+    await tester.tap(submitGroupNameButton);
+    await tester.pumpAndSettle();
+
+    await Future.delayed(Duration(seconds: 2));
+    await tester.pumpAndSettle();
+
+    //Verifies the user is on the home page
+    expect(find.text("Home"), findsAny);
+
+    final Finder groupText = find.byKey(Key('groupCodeText'));
+
+    groupCode = await getTextFromFinder(tester, groupText);
+
+    expect(find.text(groupCode!), findsAny);
   });
 }
