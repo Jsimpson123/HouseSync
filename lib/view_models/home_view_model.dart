@@ -70,13 +70,25 @@ class HomeViewModel extends ChangeNotifier {
           eventId: data['eventId'],
           title: data['title'],
           eventCreatorId: data['eventCreatorId'],
-          date: (data['date'] as Timestamp).toDate(),
+          date: data['date'] is Timestamp
+              ? (data['date'] as Timestamp).toDate() //If its a timestamp, convert to date
+              : (data['date'] as DateTime), //if its a DateTime, use it
           time: (data['time'])
       );
 
     }).toList();
 
     return events;
+  }
+
+  Future<void> updateEvent(String eventId, String newTitle, DateTime newTime) async {
+    await FirebaseFirestore.instance
+        .collection('calendarEvents')
+        .doc(eventId)
+        .update({
+      'title': newTitle,
+      'time': '${newTime.hour}:${newTime.minute.toString()}',
+    });
   }
 
   Future<void> deleteEvent(String eventId) async {

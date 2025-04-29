@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -231,6 +232,7 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     itemCount: value.length,
                                     itemBuilder: (context, index) {
+                                      final TextEditingController enteredEventNameController = TextEditingController();
                                       final eventCreatorId = value[index].eventCreatorId;
                                       if (user?.uid == eventCreatorId) {
                                       return Dismissible(
@@ -262,7 +264,125 @@ class _HomePageState extends State<HomePage> {
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
                                             child: ListTile(
-                                              // onTap: () => print(''),
+                                              onTap: () async {
+                                                //Sets the text to the current event title
+                                                enteredEventNameController.text = value[index].title;
+
+                                                //Splits the time in two parts, before and after the colon
+                                                List<String> parts = value[index].time.split(":");
+
+                                                //Sets the selected time to the previously selected hour and minute
+                                                TimeOfDay selectedTime = TimeOfDay(
+                                                  hour: int.parse(parts[0]),
+                                                  minute: int.parse(parts[1]),
+                                                );
+
+                                                //Holds the value of the original date and time
+                                                DateTime originalDateTime = value[index].date;
+
+                                                //Boolean for checking if the user changes the time of tge event
+                                                bool isTimeChanged = false;
+
+                                                homeViewModel.displayBottomSheet(
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: MediaQuery.of(context)
+                                                              .viewInsets
+                                                              .bottom), //Ensures the keyboard doesn't cover the textfields
+                                                      child: Container(
+                                                          height: 250,
+                                                          padding: const EdgeInsets.all(16.0),
+                                                          child: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              Text("Update Event Details",
+                                                                  style: TextStyle(
+                                                                      fontSize: 20,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color: userViewModel.colour4)
+                                                              ),
+
+                                                              SizedBox(height: 15),
+
+                                                              TextField(
+                                                                key: Key("updatedEventNameTextField"),
+                                                                decoration: const InputDecoration(
+                                                                    hintText: "New Event Name", border: OutlineInputBorder()),
+                                                                controller: enteredEventNameController,
+                                                              ),
+
+                                                              SizedBox(height: 15),
+
+                                                              IconButton(
+                                                                  onPressed: () async {
+                                                                    //Shows the time picker, setting it to the previously set time
+                                                                    TimeOfDay? selectedTimePicker =
+                                                                    await showTimePicker(
+                                                                        context: context,
+                                                                        initialTime: selectedTime
+                                                                    );
+
+                                                                    //If the user chooses a new time, the selected time changes, and the boolean becomes true
+                                                                    if (selectedTimePicker != null) {
+                                                                      selectedTime = selectedTimePicker;
+                                                                      isTimeChanged = true;
+                                                                    }
+                                                                  },
+                                                                  icon: Icon(
+                                                                    Icons.more_time,
+                                                                  )
+                                                              ),
+
+                                                              SizedBox(height: 15),
+
+                                                              ElevatedButton(
+                                                                  key: Key("submitNewEventDetailsButton"),
+                                                                  child: Text("Submit"),
+                                                                  style: ElevatedButton.styleFrom(
+                                                                      foregroundColor: homeViewModel.colour1,
+                                                                      backgroundColor: homeViewModel.colour3,
+                                                                      fixedSize: Size(100, 50)
+                                                                  ),
+                                                                  onPressed: () async {
+                                                                    DateTime updatedTime;
+
+                                                                    //Only runs if the user selects a new time
+                                                                    if (isTimeChanged) {
+                                                                      //Creates a new DateTime with changed time
+                                                                      updatedTime = DateTime(
+                                                                        originalDateTime.year,
+                                                                        originalDateTime.month,
+                                                                        originalDateTime.day,
+                                                                        selectedTime.hour,
+                                                                        selectedTime.minute,
+                                                                      );
+                                                                    } else {
+                                                                      //Keeps the original DateTime
+                                                                      updatedTime = originalDateTime;
+                                                                    }
+
+                                                                    //Sends the updated details to the database
+                                                                    await HomeViewModel().updateEvent(
+                                                                      value[index].eventId,
+                                                                      enteredEventNameController.text,
+                                                                      updatedTime,
+                                                                    );
+
+                                                                    //Updates on screen
+                                                                    setState(() {
+                                                                      value[index].title = enteredEventNameController.text;
+                                                                      value[index].time = '${selectedTime.hour}:${selectedTime.minute.toString()}';
+                                                                    });
+                                                                    Navigator.of(context).pop(); //Makes bottom event bar disappear
+
+                                                                    showToast(message: "New Event: ${enteredEventNameController.text}");
+                                                                    showToast(message: "New Time: ${selectedTime.hour}:${selectedTime.minute.toString()}");
+                                                                  })
+                                                            ],
+                                                          ))),
+                                                    context
+                                                );
+                                              },
                                               title: Text(value[index].title,
                                                   style: TextStyle(
                                                       fontSize: 20,
@@ -332,7 +452,6 @@ class _HomePageState extends State<HomePage> {
                                                 borderRadius:
                                                 BorderRadius.circular(20)),
                                             child: ListTile(
-                                              // onTap: () => print(''),
                                               title: Text(value[index].title,
                                                   style: TextStyle(
                                                       fontSize: 20,

@@ -33,7 +33,7 @@ class _FinancePageState extends State<FinancePage> {
     super.initState();
     Provider.of<FinanceViewModel>(context, listen: false).loadExpenses();
     Provider.of<GroupViewModel>(context, listen: false).returnGroupMembersAsList(user!.uid);
-    Provider.of<GroupViewModel>(context, listen: false).returnAllGroupMembersAsList(user!.uid);
+    // Provider.of<GroupViewModel>(context, listen: false).returnAllGroupMembersAsList(user!.uid);
     Provider.of<GroupViewModel>(context, listen: false).memberIds;
     Provider.of<GroupViewModel>(context, listen: false).members;
   }

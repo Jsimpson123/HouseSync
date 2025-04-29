@@ -188,10 +188,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                     },
                                     itemCount: viewModel.members.length,
                                     itemBuilder: (context, index) {
-                                      String member =
-                                          viewModel.memberIds[index];
-                                      // bool isAssigned =
-                                      //     assignedUsers.contains(member);
+                                      String member = viewModel.memberIds[index];
                                       TextEditingController
                                           enteredUserAmountController =
                                           TextEditingController();
@@ -228,43 +225,6 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                           mainAxisSize: MainAxisSize.min,
                                                           mainAxisAlignment: MainAxisAlignment.end,
                                                           children: [
-                                                            // isAssigned
-                                                            //     ? IconButton(
-                                                            //         //If user is assigned
-                                                            //         onPressed:
-                                                            //             () {
-                                                            //           setStates(
-                                                            //               () {
-                                                            //             int index = assignedUsers.indexOf(member);
-                                                            //             assignedUsers.remove(member);
-                                                            //             controllers.removeAt(index);
-                                                            //           });
-                                                            //         },
-                                                            //         icon: Icon(Icons.remove_circle,
-                                                            //             size: isMobile ? 18 :24
-                                                            //         ),
-                                                            //   padding: EdgeInsets.zero,
-                                                            //     constraints: BoxConstraints.tightFor(width: 16, height: 16)
-                                                            // )
-
-                                                          // IconButton(
-                                                          //           //If user isn't assigned
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             setStates(
-                                                          //                 () {
-                                                          //               assignedUsers
-                                                          //                   .add(member);
-                                                          //               controllers
-                                                          //                   .add(TextEditingController());
-                                                          //             });
-                                                          //           },
-                                                          //           icon: Icon(Icons.add_box,
-                                                          //               size: isMobile ? 18 :24
-                                                          //           ),
-                                                          //     padding: EdgeInsets.zero,
-                                                          //       constraints: BoxConstraints.tightFor(width: 16, height: 16)
-                                                          //   ),
                                                              IconButton(
                                                                     //If user is assigned
                                                                     onPressed:
@@ -315,8 +275,6 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                               padding: EdgeInsets.zero,
                                                                 constraints: BoxConstraints.tightFor(width: 16, height: 16)
                                                                   )
-                                                                // : SizedBox
-                                                                //     .shrink()
                                                           ]),
 
                                                       subtitle: TextField(

@@ -230,8 +230,7 @@ class GroupViewModel extends ChangeNotifier {
 
     if (groupId != null) {
       try {
-        final groupDoc =
-        FirebaseFirestore.instance.collection('groups').doc(groupId);
+        final groupDoc = FirebaseFirestore.instance.collection('groups').doc(groupId);
         final docSnapshot = await groupDoc.get();
         final data = docSnapshot.data();
 
