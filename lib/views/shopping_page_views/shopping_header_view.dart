@@ -22,28 +22,28 @@ class ShoppingHeaderView extends StatelessWidget {
               },
             ),
           ),
+          SizedBox(width: 25,),
+          Icon(Icons.shopping_cart, size: 45,),
+          SizedBox(width: 5,),
           Expanded(
               flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(left: 15),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: Text("Shopping",
-                              style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.w900,
-                                  color: viewModel.colour4)),
-                        ),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text("Shopping",
+                            style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w900,
+                                color: viewModel.colour4)),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               )),
         ],
       );

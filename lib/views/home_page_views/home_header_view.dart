@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_accommodation_management_app/global/common/AppColours.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
@@ -10,11 +11,10 @@ class HomeHeaderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Checks screen size to see if it is mobile or desktop
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
+
+    final brightness = Theme.of(context).brightness;
 
     GroupViewModel groupViewModel = GroupViewModel();
     User? user = FirebaseAuth.instance.currentUser;
@@ -34,28 +34,28 @@ class HomeHeaderView extends StatelessWidget {
               },
             ),
           ),
+          SizedBox(width: 25,),
+          Icon(Icons.home, size: 45,),
+          SizedBox(width: 5,),
           Expanded(
               flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(left: 15),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: Text("Home",
-                              style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.w900,
-                                  color: viewModel.colour4)),
-                        ),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text("Home",
+                            style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w900,
+                                color: AppColours.colour4(brightness))),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               )),
           FutureBuilder<String?>(
               future: groupViewModel.returnGroupCode(user!.uid),
@@ -79,13 +79,13 @@ class HomeHeaderView extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: viewModel.colour4)),
+                                      color: AppColours.colour4(brightness))),
                               Text("${snapshot.data}",
                                   key: Key("groupCodeText"),
                                   style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
-                                      color: viewModel.colour4)),
+                                      color: AppColours.colour4(brightness))),
                             ],
                           ),
                         ),

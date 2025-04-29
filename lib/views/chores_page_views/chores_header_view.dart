@@ -24,37 +24,45 @@ class ChoresHeaderView extends StatelessWidget {
               },
             ),
           ),
+          SizedBox(
+            width: 25,
+          ),
+          Icon(
+            Icons.cleaning_services,
+            size: 45,
+          ),
+          SizedBox(
+            width: 5,
+          ),
           Expanded(
               flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(left: 15),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: Text("Chores",
-                              style: TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.w900,
-                                  color: viewModel.colour4)),
-                        ),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Text("Chores",
+                            style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w900,
+                                color: viewModel.colour4)),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               )),
           // Delete Icon
-              Container(
-                margin: EdgeInsets.only(right: 100),
-                child: InkWell( onTap: () {
+          Container(
+            margin: EdgeInsets.only(right: 100),
+            child: InkWell(
+                onTap: () {
                   viewModel.displayBottomSheet(DeleteTaskBottomSheetView(), context);
                 },
                 child: Icon(Icons.delete, size: 40)),
-              ),
+          ),
         ],
       );
     });

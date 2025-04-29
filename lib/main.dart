@@ -44,21 +44,38 @@ void main() async {
     ChangeNotifierProvider(
         create: (context) => HomeViewModel()
     ),
-  ], child: const MyApp()));
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  static final ValueNotifier<ThemeMode> notifier = ValueNotifier(ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Shared Accommodation Management Tool",
-      theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)),
-      home: user == null ? LoginPage() : HomePage(),
-      debugShowCheckedModeBanner: false,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: notifier,
+        builder: (_, mode, __) {
+          return MaterialApp(
+            title: "Shared Accommodation Management Tool",
+            theme: ThemeData(
+                useMaterial3: true,
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.dark(
+                primary: Colors.teal,
+                onSurface: Colors.white,
+                onPrimary: Colors.black,
+                surface: Colors.grey.shade900,
+              ),
+            ),
+            themeMode: mode,
+            home: user == null ? LoginPage() : HomePage(),
+            debugShowCheckedModeBanner: false,
+          );
+        }
     );
   }
 }

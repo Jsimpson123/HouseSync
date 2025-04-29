@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/views/chores_page_views/chores_header_view.dart';
 import 'package:shared_accommodation_management_app/views/chores_page_views/task_list_view.dart';
+import 'package:shared_accommodation_management_app/views/home_page_views/settings_view.dart';
 
 import '../view_models/group_view_model.dart';
 import '../view_models/task_view_model.dart';
@@ -110,7 +111,9 @@ class _ChoresPageState extends State<ChoresPage> {
               title: Text("Group"),
               onTap: () => groupDetails(context),
             ),
-            ListTile(title: Text("Settings")),
+            ListTile(title: Text("Settings"),
+              onTap: () => SettingsView.settingsPopup(context, SettingsView()),
+            ),
 
             ListTile(
                 title: Text("Logout"),

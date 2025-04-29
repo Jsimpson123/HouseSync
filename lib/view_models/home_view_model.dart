@@ -6,9 +6,6 @@ import 'package:shared_accommodation_management_app/models/event_model.dart';
 class HomeViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // final List<Event> _events = <Event>[];
-  // List<Event> get events => List.unmodifiable(_events);
-
   //Stores the created calendar events
   final Map<DateTime, List<Event>> _events = {};
   Map <DateTime, List<Event>> get events => Map.unmodifiable(_events);

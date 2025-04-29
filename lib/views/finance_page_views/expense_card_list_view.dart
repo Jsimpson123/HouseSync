@@ -106,7 +106,9 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                               }),
                                         ),
                                     
-                                        SizedBox(height: isMobile ? 10 : 15),
+                                        SizedBox(height: isMobile ? 10 : 12),
+                                        Icon(Icons.supervisor_account_sharp,
+                                            size: isMobile ? 25 : 45),
                                         Center(
                                           child: FutureBuilder<List?>(
                                               future: viewModel.returnAssignedExpenseUsernamesList(expense.expenseId),

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
+import '../../../global/common/AppColours.dart';
 import '../../../pages/home_page.dart';
 
 class CreateGroupBottomSheetView extends StatefulWidget {
@@ -16,8 +17,9 @@ class CreateGroupBottomSheetView extends StatefulWidget {
 class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
   @override
   Widget build(BuildContext context) {
-    final TextEditingController enteredGroupNameController =
-        TextEditingController();
+    final brightness = Theme.of(context).brightness;
+
+    final TextEditingController enteredGroupNameController = TextEditingController();
 
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
       return Padding(
@@ -43,8 +45,8 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                     key: Key("submitGroupNameButton"),
                       child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: viewModel.colour3,
-                          foregroundColor: viewModel.colour1,
+                          backgroundColor: AppColours.colour3(brightness),
+                          foregroundColor: AppColours.colour1(brightness),
                           fixedSize: Size(100, 50)),
                       onPressed: () async {
                         if (enteredGroupNameController.text.isNotEmpty) {

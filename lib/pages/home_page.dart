@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/features/appbar_display.dart';
+import 'package:shared_accommodation_management_app/global/common/AppColours.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/pages/chores_page.dart';
 import 'package:shared_accommodation_management_app/pages/finance_page.dart';
@@ -80,6 +81,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     UserViewModel userViewModel = UserViewModel();
 
     final TextEditingController enteredEventNameController = TextEditingController();
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: userViewModel.colour2),
+              decoration: BoxDecoration(color: AppColours.colour2(brightness)),
 
               //User icon
               currentAccountPicture: const Expanded(
@@ -114,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: userViewModel.colour4),
+                                color: AppColours.colour4(brightness)),
                           ),
                         ),
                       );
@@ -135,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: userViewModel.colour4)),
+                                  color: AppColours.colour4(brightness))),
                         ),
                       );
                     }
@@ -210,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                     builder: (context, value, _) {
                       return Container(
                         decoration: BoxDecoration(
-                            color: userViewModel.colour2,
+                            color: AppColours.colour2(brightness),
                             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                         child: Column(
                           children: [
@@ -218,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: userViewModel.colour4)),
+                                    color: AppColours.colour4(brightness))),
                             Expanded(
                               child: SizedBox(
                                 height: 200,
@@ -257,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                                                     BoxShadow(
                                                         color: Colors.blueAccent, spreadRadius: 2)
                                                   ],
-                                                  color: homeViewModel.colour1,
+                                                  color: AppColours.colour1(brightness),
                                                   borderRadius: BorderRadius.circular(20)),
                                               child: ListTile(
                                                 onTap: () async {
@@ -341,8 +343,7 @@ class _HomePageState extends State<HomePage> {
                                                                       style:
                                                                           ElevatedButton.styleFrom(
                                                                               foregroundColor:
-                                                                                  homeViewModel
-                                                                                      .colour1,
+                                                                              AppColours.colour1(brightness),
                                                                               backgroundColor:
                                                                                   homeViewModel
                                                                                       .colour3,
@@ -402,14 +403,14 @@ class _HomePageState extends State<HomePage> {
                                                     style: TextStyle(
                                                         fontSize: 20,
                                                         fontWeight: FontWeight.bold,
-                                                        color: homeViewModel.colour4)),
+                                                        color: AppColours.colour4(brightness))),
                                                 subtitle: Row(
                                                   children: [
                                                     Icon(Icons.access_time_outlined),
                                                     Text(value[index].time.toString(),
                                                         style: TextStyle(
                                                             fontSize: 16,
-                                                            color: homeViewModel.colour4)),
+                                                            color: AppColours.colour4(brightness))),
                                                   ],
                                                 ),
                                                 trailing: FutureBuilder<String?>(
@@ -433,7 +434,7 @@ class _HomePageState extends State<HomePage> {
                                                                       fontSize: 18,
                                                                       fontWeight: FontWeight.bold,
                                                                       color:
-                                                                          homeViewModel.colour4)),
+                                                                          AppColours.colour4(brightness))),
                                                             ],
                                                           ),
                                                         );
@@ -448,21 +449,21 @@ class _HomePageState extends State<HomePage> {
                                                   BoxShadow(
                                                       color: Colors.blueAccent, spreadRadius: 2)
                                                 ],
-                                                color: homeViewModel.colour1,
+                                                color: AppColours.colour1(brightness),
                                                 borderRadius: BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Text(value[index].title,
                                                   style: TextStyle(
                                                       fontSize: 20,
                                                       fontWeight: FontWeight.bold,
-                                                      color: homeViewModel.colour4)),
+                                                      color: AppColours.colour4(brightness))),
                                               subtitle: Row(
                                                 children: [
                                                   Icon(Icons.access_time_outlined),
                                                   Text(value[index].time.toString(),
                                                       style: TextStyle(
                                                           fontSize: 16,
-                                                          color: homeViewModel.colour4)),
+                                                          color: AppColours.colour4(brightness))),
                                                 ],
                                               ),
                                               trailing: FutureBuilder<String?>(
@@ -484,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                                                                 style: TextStyle(
                                                                     fontSize: 18,
                                                                     fontWeight: FontWeight.bold,
-                                                                    color: homeViewModel.colour4)),
+                                                                    color: AppColours.colour4(brightness))),
                                                           ],
                                                         ),
                                                       );
@@ -509,7 +510,7 @@ class _HomePageState extends State<HomePage> {
           child: ElevatedButton(
               key: Key("createEventButton"),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: viewModel.colour3, foregroundColor: viewModel.colour1),
+                  backgroundColor: AppColours.colour3(brightness), foregroundColor: AppColours.colour1(brightness)),
               onPressed: () => {
                     if (_selectedDay != null)
                       {
@@ -536,8 +537,8 @@ class _HomePageState extends State<HomePage> {
                                           key: Key("submitEventButton"),
                                           child: Text("Submit"),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: viewModel.colour3,
-                                              foregroundColor: viewModel.colour1,
+                                              backgroundColor: AppColours.colour3(brightness),
+                                              foregroundColor: AppColours.colour1(brightness),
                                               fixedSize: Size(100, 50)),
                                           onPressed: () async {
                                             if (enteredEventNameController.text.isNotEmpty) {
@@ -614,6 +615,8 @@ class _HomePageState extends State<HomePage> {
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
+
+    final brightness = Theme.of(context).brightness;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -642,7 +645,7 @@ class _HomePageState extends State<HomePage> {
                                       style: TextStyle(
                                           fontSize: isMobile ? 24 : 42,
                                           fontWeight: FontWeight.bold,
-                                          color: viewModel.colour4)),
+                                          color: AppColours.colour4(brightness))),
                                 ),
                               );
                             }
@@ -662,7 +665,7 @@ class _HomePageState extends State<HomePage> {
                                     style: TextStyle(
                                         fontSize: isMobile ? 14 : 24,
                                         fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
+                                        color: AppColours.colour4(brightness))),
                               );
                             }
                           }),
@@ -683,7 +686,7 @@ class _HomePageState extends State<HomePage> {
                           Expanded(
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: viewModel.colour2,
+                                  color: AppColours.colour2(brightness),
                                   borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                               padding: EdgeInsets.all(20),
                               child: ListView.separated(
@@ -700,7 +703,7 @@ class _HomePageState extends State<HomePage> {
                                         key: UniqueKey(),
                                         child: Container(
                                             decoration: BoxDecoration(
-                                                color: viewModel.colour1,
+                                                color: AppColours.colour1(brightness),
                                                 borderRadius: BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Row(
@@ -708,7 +711,7 @@ class _HomePageState extends State<HomePage> {
                                                   Icon(Icons.account_box),
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
-                                                          color: viewModel.colour4,
+                                                          color: AppColours.colour4(brightness),
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: 20)),
                                                 ],
@@ -734,8 +737,8 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) => CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
-                                  foregroundColor: viewModel.colour1,
-                                  backgroundColor: viewModel.colour3,
+                                  foregroundColor: AppColours.colour1(brightness),
+                                  backgroundColor: AppColours.colour3(brightness),
                                   textStyle:
                                       const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                   shape: RoundedRectangleBorder(

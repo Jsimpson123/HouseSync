@@ -68,7 +68,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             Positioned(
                                               left: 0,
                                               child: Icon(
-                                                Icons.shopping_cart,
+                                                Icons.shopping_cart_outlined,
                                                 size: isMobile ? 20 : 30,
                                               ),
                                             ),
