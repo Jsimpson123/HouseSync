@@ -12,11 +12,17 @@ class ChoresHeaderView extends StatelessWidget {
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: IconButton(
+              icon: Icon(
+                Icons.menu,
+                size: 42,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
           ),
           Expanded(
               flex: 2,

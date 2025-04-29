@@ -22,7 +22,8 @@ class _TaskListViewState extends State<TaskListView> {
         decoration: BoxDecoration(
             color: viewModel.colour2,
             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-        child: ListView.separated(
+        child: viewModel.numTasks > 0 ?
+        ListView.separated(
             padding: EdgeInsets.all(15),
             separatorBuilder: (context, index) {
               return SizedBox(height: 15);
@@ -38,21 +39,18 @@ class _TaskListViewState extends State<TaskListView> {
                 },
                 background: Container(
                   margin: EdgeInsets.symmetric(horizontal: 5),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10)),
+                  decoration:
+                      BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
                   child: Center(child: Icon(Icons.delete)),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: viewModel.colour1,
-                      borderRadius: BorderRadius.circular(20)),
+                      color: viewModel.colour1, borderRadius: BorderRadius.circular(20)),
                   child: ListTile(
                     key: Key("listtile$index"),
                     leading: Checkbox(
-                      key: Key("checkbox$index"),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
+                        key: Key("checkbox$index"),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                         side: BorderSide(width: 2, color: viewModel.colour3),
                         checkColor: viewModel.colour1,
                         activeColor: viewModel.colour3,
@@ -61,19 +59,15 @@ class _TaskListViewState extends State<TaskListView> {
                           viewModel.setTaskValue(task);
                         }),
                     title: Text(viewModel.getTaskTitle(index),
-                        style:
-                            TextStyle(
-                                color: viewModel.colour4,
-                                fontSize: 20, fontWeight:
-                                FontWeight.bold)),
+                        style: TextStyle(
+                            color: viewModel.colour4, fontSize: 20, fontWeight: FontWeight.bold)),
                     trailing: task.assignedUser != null
                         ? IconButton(
-                        key: Key("unassignButton$index"),
+                            key: Key("unassignButton$index"),
                             //If true
                             onPressed: () async {
-                              bool userAssigned =
-                                  await viewModel.unAssignCurrentUserFromTask(
-                                      user!.uid, task.taskId, index);
+                              bool userAssigned = await viewModel.unAssignCurrentUserFromTask(
+                                  user!.uid, task.taskId, index);
 
                               setState(() {
                                 if (userAssigned) {
@@ -83,11 +77,11 @@ class _TaskListViewState extends State<TaskListView> {
                             },
                             icon: Icon(Icons.remove_circle))
                         : IconButton(
-                      key: Key("assignButton$index"),
+                            key: Key("assignButton$index"),
                             //If false
                             onPressed: () async {
-                              bool userUnassigned = await viewModel.assignCurrentUserToTask(
-                                  user!.uid, task.taskId);
+                              bool userUnassigned =
+                                  await viewModel.assignCurrentUserToTask(user!.uid, task.taskId);
 
                               setState(() {
                                 if (userUnassigned) {
@@ -98,38 +92,62 @@ class _TaskListViewState extends State<TaskListView> {
                             icon: Icon(Icons.add_box)),
                     subtitle: task.assignedUser != null
                         ? Row(
-                          children: [
-                            Icon(Icons.account_box),
-                            FutureBuilder<String?>(
-                                //If true
-                                future: viewModel.returnAssignedTaskUsername(task.taskId),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<String?> snapshot) {
-                                  if ("${snapshot.data}" == "null") {
-                                    return const Text(
-                                        ""); //Due to a delay in the username loading
-                                  } else {
-                                    return Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: FittedBox(
-                                          fit: BoxFit.fitHeight,
-                                          child: Text(
-                                              "${snapshot.data}",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  // fontWeight: FontWeight.bold,
-                                                  color: viewModel.colour4)),
-                                        ),
-                                      );
-                                  }
-                                }),
-                          ],
-                        )
+                            children: [
+                              Chip(
+                                avatar: Icon(Icons.account_box),
+                                label: FutureBuilder<String?>(
+                                    //If true
+                                    future: viewModel.returnAssignedTaskUsername(task.taskId),
+                                    builder:
+                                        (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                                      if ("${snapshot.data}" == "null") {
+                                        return const Text(
+                                            ""); //Due to a delay in the username loading
+                                      } else {
+                                        return Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: FittedBox(
+                                            fit: BoxFit.fitHeight,
+                                            child: Text("${snapshot.data}",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: viewModel.colour4)),
+                                          ),
+                                        );
+                                      }
+                                    }),
+                                backgroundColor: Colors.lightBlue[100],
+                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(color: Colors.grey.shade300),
+                                ),
+                              ),
+                            ],
+                          )
                         : null, //If false
                   ),
                 ),
               );
-            }),
+            }) : Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.cleaning_services_outlined, size: 60, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                "You're all caught up!",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Tap the + button to add your first chore.",
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+        )
       );
     });
   }

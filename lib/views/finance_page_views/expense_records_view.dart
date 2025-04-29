@@ -51,6 +51,12 @@ class ExpenseRecordsView {
                                               .snapshots(),
                                           builder: (context, snapshot) {
 
+                                            if (snapshot.data == null) {
+                                              return Scaffold(
+                                                body: Center(child: CircularProgressIndicator()),
+                                              );
+                                            }
+
                                             var records = snapshot.data?.docs;
 
                                             return ListView.separated(
@@ -81,19 +87,21 @@ class ExpenseRecordsView {
                                                             ...record['assignedUsersRecords'].map((member) {
                                                               return InkWell(
                                                                 child: ListTile(
-                                                                  leading: Row(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    children: [
-                                                                      Icon(Icons.account_box,
-                                                                        size: isMobile ? 16 : 24,
-                                                                      ),
-                                                                      Text(member['userName'],
+                                                                  leading: Chip(
+                                                                    avatar: Icon(Icons.account_box),
+                                                                    label: Text(
+                                                                        member['userName'],
                                                                         style: TextStyle(
-                                                                            fontSize: isMobile ? 14 : 20
-                                                                        ),
-                                                                        softWrap: false,
-                                                                      ),
-                                                                    ],
+                                                                          fontSize: 16,
+                                                                          fontWeight: FontWeight.bold,
+                                                                          color: viewModel.colour4,)
+                                                                    ),
+                                                                    backgroundColor: Colors.lightBlue[100],
+                                                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                      side: BorderSide(color: Colors.grey.shade300),
+                                                                    ),
                                                                   ),
                                                                   trailing: member['paidOff'] == true
                                                                   ? Text("Paid Off",

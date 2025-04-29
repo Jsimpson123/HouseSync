@@ -33,149 +33,154 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
         children: [
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
-                  color: viewModel.colour2,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30))),
-              child: GridView.builder(
-                  padding: EdgeInsets.all(15),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: isMobile ? 0.8 : 2.7,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: viewModel.shoppingLists.length,
-                  itemBuilder: (context, index) {
-                    final shoppingList = viewModel.shoppingLists[index];
-                    return InkWell(
-                      onTap: () =>
-                          shoppingListDetailsPopup(context, shoppingList),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: viewModel.colour1,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Card(
-                            color: Colors.white,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  IntrinsicHeight(
-                                      child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        child: Icon(
-                                          Icons.shopping_cart,
-                                          size: isMobile ? 20 : 30,
+                decoration: BoxDecoration(
+                    color: viewModel.colour2,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+                child: viewModel.shoppingLists.length > 0
+                    ? GridView.builder(
+                        padding: EdgeInsets.all(15),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: isMobile ? 0.8 : 2.7,
+                        ),
+                        scrollDirection: Axis.vertical,
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: viewModel.shoppingLists.length,
+                        itemBuilder: (context, index) {
+                          final shoppingList = viewModel.shoppingLists[index];
+                          return InkWell(
+                            onTap: () => shoppingListDetailsPopup(context, shoppingList),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    color: viewModel.colour1,
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Card(
+                                  color: Colors.white,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        IntrinsicHeight(
+                                            child: Stack(
+                                          children: [
+                                            Positioned(
+                                              left: 0,
+                                              child: Icon(
+                                                Icons.shopping_cart,
+                                                size: isMobile ? 20 : 30,
+                                              ),
+                                            ),
+                                            Align(
+                                              child: Text(viewModel.getShoppingListTitle(index),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: viewModel.colour4,
+                                                      fontSize: isMobile ? 20 : 24,
+                                                      fontWeight: FontWeight.bold)),
+                                            ),
+                                          ],
+                                        )),
+                                        //Separating line
+                                        // Container(
+                                        //   decoration: BoxDecoration(
+                                        //     border: Border(
+                                        //       bottom: BorderSide(color: Colors.black),
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        SizedBox(height: 30),
+                                        Column(
+                                          children: [
+                                            Center(
+                                              child: Text("Items:",
+                                                  style: TextStyle(
+                                                      fontSize: isMobile ? 20 : 24,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: viewModel.colour4)),
+                                            ),
+                                            Center(
+                                              child: FutureBuilder<int?>(
+                                                  future: viewModel.returnShoppingListLength(
+                                                      shoppingList.shoppingListId),
+                                                  builder: (BuildContext context,
+                                                      AsyncSnapshot<int?> snapshot) {
+                                                    if ("${snapshot.data}" == "null") {
+                                                      return const Text(""); //Due to a delay
+                                                    } else {
+                                                      return FittedBox(
+                                                        fit: BoxFit.fitHeight,
+                                                        child: Text("${snapshot.data}",
+                                                            style: TextStyle(
+                                                                fontSize: isMobile ? 20 : 24,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: viewModel.colour4)),
+                                                      );
+                                                    }
+                                                  }),
+                                            ),
+                                            SizedBox(height: isMobile ? 25 : 52),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  viewModel.deleteShoppingList(index);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    foregroundColor: viewModel.colour1,
+                                                    backgroundColor: Colors.red,
+                                                    textStyle: TextStyle(
+                                                        fontWeight: FontWeight.w700, fontSize: 16),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(20))),
+                                                child: const Text("Delete"))
+                                          ],
                                         ),
-                                      ),
-                                      Align(
-                                        child: Text(
-                                            viewModel
-                                                .getShoppingListTitle(index),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: viewModel.colour4,
-                                                fontSize: isMobile ? 20 : 24,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ],
-                                  )),
-                                  //Separating line
-                                  // Container(
-                                  //   decoration: BoxDecoration(
-                                  //     border: Border(
-                                  //       bottom: BorderSide(color: Colors.black),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                  SizedBox(height: 30),
-                                  Column(
-                                    children: [
-                                      Center(
-                                        child: Text("Items:",
-                                            style: TextStyle(
-                                                fontSize: isMobile ? 20 : 24,
-                                                fontWeight: FontWeight.bold,
-                                                color: viewModel.colour4)),
-                                      ),
-                                      Center(
-                                        child: FutureBuilder<int?>(
-                                            future: viewModel
-                                                .returnShoppingListLength(
-                                                    shoppingList
-                                                        .shoppingListId),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<int?> snapshot) {
-                                              if ("${snapshot.data}" ==
-                                                  "null") {
-                                                return const Text(
-                                                    ""); //Due to a delay
-                                              } else {
-                                                return FittedBox(
-                                                  fit: BoxFit.fitHeight,
-                                                  child: Text(
-                                                      "${snapshot.data}",
-                                                      style: TextStyle(
-                                                          fontSize: isMobile ? 20 : 24,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: viewModel
-                                                              .colour4)),
-                                                );
-                                              }
-                                            }),
-                                      ),
-                                      SizedBox(height: isMobile ? 25 : 52),
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            viewModel.deleteShoppingList(index);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                              foregroundColor:
-                                                  viewModel.colour1,
-                                              backgroundColor: Colors.red,
-                                              textStyle: TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 16),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20))),
-                                          child: const Text("Delete"))
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                )),
+                          );
+                        })
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.shopping_cart, size: 60, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text(
+                              "There are currently no created shopping lists!",
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                          )),
-                    );
-                  }),
-            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Tap the + button to add your first shopping list.",
+                              style: TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )),
           ),
         ],
       );
     });
   }
 
-  Future<void> shoppingListDetailsPopup(
-      BuildContext context, ShoppingList shoppingList) async {
+  Future<void> shoppingListDetailsPopup(BuildContext context, ShoppingList shoppingList) async {
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<ShoppingViewModel>(
-              builder: (context, viewModel, child) {
-            Future itemNamesFuture = viewModel.returnShoppingListItemsNamesList(shoppingList.shoppingListId);
-            Future itemStatusesFuture = viewModel.returnShoppingListItemsPurchaseStatusList(shoppingList.shoppingListId);
-            Future itemIdsFuture = viewModel.returnShoppingListItemsIdsList(shoppingList.shoppingListId);
-            Future itemQuantitiesFuture = viewModel.returnShoppingListItemsQuantitiesList(shoppingList.shoppingListId);
+          return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
+            Future itemNamesFuture =
+                viewModel.returnShoppingListItemsNamesList(shoppingList.shoppingListId);
+            Future itemStatusesFuture =
+                viewModel.returnShoppingListItemsPurchaseStatusList(shoppingList.shoppingListId);
+            Future itemIdsFuture =
+                viewModel.returnShoppingListItemsIdsList(shoppingList.shoppingListId);
+            Future itemQuantitiesFuture =
+                viewModel.returnShoppingListItemsQuantitiesList(shoppingList.shoppingListId);
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -201,8 +206,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: viewModel.colour2,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
+                                          borderRadius: BorderRadius.circular(10)),
                                       child: Column(children: [
                                         Expanded(
                                           flex: 2,
@@ -211,38 +215,27 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             child: FittedBox(
                                               fit: BoxFit.fitWidth,
                                               child: ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                    minWidth: 1, minHeight: 1),
+                                                constraints:
+                                                    BoxConstraints(minWidth: 1, minHeight: 1),
                                                 child: FutureBuilder<int?>(
                                                     future: viewModel
                                                         .returnShoppingListItemsIdsListLength(
-                                                            shoppingList
-                                                                .shoppingListId),
-                                                    builder:
-                                                        (BuildContext context,
-                                                            AsyncSnapshot<int?>
-                                                                snapshot) {
-                                                      if ("${snapshot.data}" ==
-                                                          "null") {
+                                                            shoppingList.shoppingListId),
+                                                    builder: (BuildContext context,
+                                                        AsyncSnapshot<int?> snapshot) {
+                                                      if ("${snapshot.data}" == "null") {
                                                         return const Text(
                                                             ""); //Due to a delay in the number loading
                                                       } else {
                                                         return Align(
-                                                          alignment: Alignment
-                                                              .bottomLeft,
+                                                          alignment: Alignment.bottomLeft,
                                                           child: FittedBox(
-                                                            fit: BoxFit
-                                                                .fitHeight,
-                                                            child: Text(
-                                                                "${snapshot.data}",
+                                                            fit: BoxFit.fitHeight,
+                                                            child: Text("${snapshot.data}",
                                                                 style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: viewModel
-                                                                        .colour4)),
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: viewModel.colour4)),
                                                           ),
                                                         );
                                                       }
@@ -261,8 +254,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                 "Total Items",
                                                 style: TextStyle(
                                                     color: viewModel.colour4,
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                                    fontWeight: FontWeight.w600),
                                               ),
                                             ),
                                           ),
@@ -279,8 +271,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                           color: viewModel.colour2,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
+                                          borderRadius: BorderRadius.circular(10)),
                                       child: Column(children: [
                                         Expanded(
                                           flex: 2,
@@ -289,38 +280,27 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             child: FittedBox(
                                               fit: BoxFit.fitWidth,
                                               child: ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                    minWidth: 1, minHeight: 1),
+                                                constraints:
+                                                    BoxConstraints(minWidth: 1, minHeight: 1),
                                                 child: FutureBuilder<int?>(
                                                     future: viewModel
                                                         .returnShoppingListNotPurchasedItemsLength(
-                                                            shoppingList
-                                                                .shoppingListId),
-                                                    builder:
-                                                        (BuildContext context,
-                                                            AsyncSnapshot<int?>
-                                                                snapshot) {
-                                                      if ("${snapshot.data}" ==
-                                                          "null") {
+                                                            shoppingList.shoppingListId),
+                                                    builder: (BuildContext context,
+                                                        AsyncSnapshot<int?> snapshot) {
+                                                      if ("${snapshot.data}" == "null") {
                                                         return const Text(
                                                             ""); //Due to a delay in the number loading
                                                       } else {
                                                         return Align(
-                                                          alignment: Alignment
-                                                              .bottomLeft,
+                                                          alignment: Alignment.bottomLeft,
                                                           child: FittedBox(
-                                                            fit: BoxFit
-                                                                .fitHeight,
-                                                            child: Text(
-                                                                "${snapshot.data}",
+                                                            fit: BoxFit.fitHeight,
+                                                            child: Text("${snapshot.data}",
                                                                 style: TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: viewModel
-                                                                        .colour4)),
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: viewModel.colour4)),
                                                           ),
                                                         );
                                                       }
@@ -339,8 +319,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                 "Remaining items",
                                                 style: TextStyle(
                                                     color: viewModel.colour4,
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                                    fontWeight: FontWeight.w600),
                                               ),
                                             ),
                                           ),
@@ -357,8 +336,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     decoration: BoxDecoration(
                                         color: viewModel.colour2,
                                         borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(30),
-                                            bottom: Radius.circular(30))),
+                                            top: Radius.circular(30), bottom: Radius.circular(30))),
                                     child: FutureBuilder(
                                         future: Future.wait([
                                           itemNamesFuture,
@@ -367,51 +345,41 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                           itemQuantitiesFuture
                                         ]),
                                         builder: (BuildContext context,
-                                            AsyncSnapshot<List<dynamic>>
-                                                snapshot) {
+                                            AsyncSnapshot<List<dynamic>> snapshot) {
                                           if ("${snapshot.data}" == "null") {
                                             return const Text("");
                                           } else {
                                             return Expanded(
-                                              child: ListView.separated(
+                                              child: snapshot.data?[0]!.length > 0
+                                                ? ListView.separated(
                                                   padding: EdgeInsets.all(15),
                                                   shrinkWrap: true,
-                                                  separatorBuilder:
-                                                      (context, index) {
+                                                  separatorBuilder: (context, index) {
                                                     return SizedBox(height: 15);
                                                   },
-                                                  itemCount:
-                                                      snapshot.data?[0]!.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    bool isChecked = snapshot
-                                                        .data?[1][index];
+                                                  itemCount: snapshot.data?[0]!.length,
+                                                  itemBuilder: (context, index) {
+                                                    bool isChecked = snapshot.data?[1][index];
                                                     return Dismissible(
                                                       //Makes items dismissible via swiping
                                                       key: UniqueKey(),
                                                       onDismissed: (direction) {
                                                         viewModel.deleteShoppingItem(
-                                                                shoppingList,
-                                                                snapshot.data?[2][index]);
+                                                            shoppingList, snapshot.data?[2][index]);
                                                       },
                                                       background: Container(
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 5),
+                                                        margin: EdgeInsets.symmetric(horizontal: 5),
                                                         decoration: BoxDecoration(
                                                             color: Colors.red,
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
-                                                        child: Center(
-                                                            child: Icon(
-                                                                Icons.delete)),
+                                                                BorderRadius.circular(10)),
+                                                        child: Center(child: Icon(Icons.delete)),
                                                       ),
                                                       child: Container(
                                                           decoration: BoxDecoration(
                                                               color: viewModel.colour1,
-                                                              borderRadius: BorderRadius.circular(20)),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(20)),
                                                           child: ListTile(
                                                             // contentPadding: EdgeInsets.symmetric(horizontal: 16),
                                                             leading: SizedBox(
@@ -421,38 +389,42 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                 child: Checkbox(
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius:
-                                                                            BorderRadius.circular(5)),
+                                                                            BorderRadius.circular(
+                                                                                5)),
                                                                     side: BorderSide(
                                                                         width: 2,
                                                                         color: viewModel.colour3),
                                                                     checkColor: viewModel.colour1,
                                                                     activeColor: viewModel.colour3,
                                                                     value: isChecked,
-                                                                    onChanged: (bool?
-                                                                        newValue) async {
+                                                                    onChanged:
+                                                                        (bool? newValue) async {
                                                                       setState(() {
-                                                                        snapshot.data?[1]
-                                                                                [index] = newValue;
+                                                                        snapshot.data?[1][index] =
+                                                                            newValue;
                                                                       });
                                                                       await viewModel.setItemValue(
                                                                           shoppingList,
-                                                                          snapshot.data?[2][index], newValue!);
+                                                                          snapshot.data?[2][index],
+                                                                          newValue!);
                                                                     }),
                                                               ),
                                                             ),
                                                             trailing: SizedBox(
                                                               width: isMobile ? 40 : 60,
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment.end,
                                                                 children: [
-                                                                  Icon(Icons.shopping_bag,
+                                                                  Icon(
+                                                                    Icons.shopping_bag,
                                                                     size: isMobile ? 16 : 24,
                                                                   ),
-                                                                  Text(
-                                                                          snapshot.data?[3]![index],
-                                                                          style: TextStyle(
-                                                                              color: viewModel.colour4,
-                                                                              fontSize: isMobile ? 14 : 16)),
+                                                                  Text(snapshot.data?[3]![index],
+                                                                      style: TextStyle(
+                                                                          color: viewModel.colour4,
+                                                                          fontSize:
+                                                                              isMobile ? 14 : 16)),
                                                                 ],
                                                               ),
                                                             ),
@@ -460,21 +432,37 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                             title: SingleChildScrollView(
                                                               scrollDirection: Axis.horizontal,
                                                               child: Text(
-                                                                      snapshot.data?[0]![index],
-                                                                      style: TextStyle(
-                                                                          color: viewModel.colour4,
-                                                                          fontSize: isMobile ? 14 : 16),
-                                                                      softWrap: false,
+                                                                snapshot.data?[0]![index],
+                                                                style: TextStyle(
+                                                                    color: viewModel.colour4,
+                                                                    fontSize: isMobile ? 14 : 16),
+                                                                softWrap: false,
                                                               ),
                                                             ),
                                                           )),
                                                     );
-                                                  }),
+                                                  }) : Center(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.shopping_basket_sharp, size: 60, color: Colors.grey),
+                                                    SizedBox(height: 16),
+                                                    Text(
+                                                      "There are currently no added items.",
+                                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    Text(
+                                                      "Tap the + button if you wish to add an item.",
+                                                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
                                             );
                                           }
                                         }))),
-                            Consumer<ShoppingViewModel>(
-                                builder: (context, viewModel, child) {
+                            Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
                               return SizedBox(
                                 height: 60,
                                 child: ElevatedButton(
@@ -482,8 +470,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                         backgroundColor: viewModel.colour3,
                                         foregroundColor: viewModel.colour1),
                                     onPressed: () {
-                                      addAdditionalItemsToShoppingListPopup(
-                                          context, shoppingList);
+                                      addAdditionalItemsToShoppingListPopup(context, shoppingList);
                                     },
                                     child: Icon(Icons.add)),
                               );
@@ -511,8 +498,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<ShoppingViewModel>(
-              builder: (context, viewModel, child) {
+          return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -529,8 +515,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                         children: [
                           TextField(
                               decoration: const InputDecoration(
-                                  hintText: "Item Name",
-                                  border: OutlineInputBorder()),
+                                  hintText: "Item Name", border: OutlineInputBorder()),
                               controller: enteredItemNameController,
                               onSubmitted: (value) {}),
                           Row(
@@ -541,8 +526,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                 icon: const Icon(Icons.minimize),
                                 iconSize: 60,
                                 onPressed: () {
-                                  if (enteredItemNameController
-                                          .text.isNotEmpty &&
+                                  if (enteredItemNameController.text.isNotEmpty &&
                                       quantity < 21 &&
                                       quantity > 1) {
                                     setStates(() {
@@ -551,14 +535,12 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                   }
                                 },
                               ),
-                              Text(quantity.toString(),
-                                  style: const TextStyle(fontSize: 40)),
+                              Text(quantity.toString(), style: const TextStyle(fontSize: 40)),
                               IconButton(
                                 icon: const Icon(Icons.add),
                                 iconSize: 60,
                                 onPressed: () {
-                                  if (enteredItemNameController
-                                          .text.isNotEmpty &&
+                                  if (enteredItemNameController.text.isNotEmpty &&
                                       quantity > 0 &&
                                       quantity < 20) {
                                     setStates(() {
@@ -581,8 +563,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     quantity < 21) {
                                   setState(() {
                                     Map<String, dynamic> newItem = ({
-                                      'itemName':
-                                          enteredItemNameController.text,
+                                      'itemName': enteredItemNameController.text,
                                       'quantity': quantity,
                                       'isPurchased': false,
                                       'itemId': Uuid().v4()

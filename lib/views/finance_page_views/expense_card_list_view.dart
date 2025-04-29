@@ -33,7 +33,8 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                   decoration: BoxDecoration(
                       color: viewModel.colour2,
                       borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-                  child: GridView.builder(
+                  child: viewModel.expenses.length > 0
+                  ? GridView.builder(
                       padding: EdgeInsets.all(15),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -71,14 +72,6 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                             ),
                                           ],
                                         ),
-                                        //Separating line
-                                        // Container(
-                                        //   decoration: BoxDecoration(
-                                        //     border: Border(
-                                        //       bottom: BorderSide(color: Colors.black),
-                                        //     ),
-                                        //   ),
-                                        // ),
                                         SizedBox(height: isMobile ? 10 : 15),
                                         Center(
                                           child: FutureBuilder<num?>(
@@ -115,32 +108,45 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                     
                                         SizedBox(height: isMobile ? 10 : 15),
                                         Center(
-                                          child: FutureBuilder<String?>(
-                                              future: viewModel.returnAssignedExpenseUsernames(expense.expenseId),
+                                          child: FutureBuilder<List?>(
+                                              future: viewModel.returnAssignedExpenseUsernamesList(expense.expenseId),
                                               builder: (BuildContext context,
-                                                  AsyncSnapshot<String?> snapshot) {
+                                                  AsyncSnapshot<List?> snapshot) {
                                                 if ("${snapshot.data}" == "null") {
                                                   return const Text(
                                                       ""); //Due to a delay in the username loading
                                                 } else {
-                                                  return FittedBox(
-                                                    fit: BoxFit.fitHeight,
-                                                    child: Column(
-                                                      children: [
-                                                        Icon(Icons.supervisor_account_sharp,
-                                                          size: isMobile ? 25 : 35),
-                                                        Text(
-                                                            "${snapshot.data}",
-                                                            style: TextStyle(
-                                                                fontSize: isMobile? 14 : 18,
-                                                                fontWeight: FontWeight.bold,
-                                                                color: viewModel.colour4)),
-                                                      ],
-                                                    ),
+                                                  List assignedUsers = snapshot.data!;
+
+                                                  //Can overflow if tajes up too much space
+                                                  return Wrap(
+                                                    spacing: 8,
+                                                    runSpacing: 4,
+                                                    children: [
+                                                      for (int i = 0; i < assignedUsers.length; i++)
+                                                        Chip(
+                                                          avatar: Icon(Icons.account_box),
+                                                          label: Text(
+                                                            assignedUsers[i],
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: viewModel.colour4,)
+                                                          ),
+                                                          backgroundColor: Colors.lightBlue[100],
+                                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(20),
+                                                            side: BorderSide(color: Colors.grey.shade300),
+                                                          ),
+                                                        ),
+                                                    ],
                                                   );
                                                 }
                                               }),
                                         ),
+
+                                        SizedBox(height: 15,),
 
                                         FutureBuilder(
                                           future: viewModel.returnExpenseCreatorId(expense.expenseId),
@@ -176,7 +182,24 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                             )
                           ),
                         );
-                    }),
+                    }) : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.attach_money, size: 60, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          "All expenses paid off!",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Tap the + button to add an expense.",
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  )
                 ),
               ),
             ],

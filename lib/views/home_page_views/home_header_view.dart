@@ -4,18 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
-import 'package:shared_accommodation_management_app/views/home_page_views/side_bar.dart';
-
-import '../../view_models/home_view_model.dart';
-import '../../view_models/task_view_model.dart';
-import 'bottom_sheets/create_group_bottom_sheet_view.dart';
 
 class HomeHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     //Checks screen size to see if it is mobile or desktop
-    double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     bool isMobile = screenWidth < 600;
 
     GroupViewModel groupViewModel = GroupViewModel();
@@ -24,11 +22,17 @@ class HomeHeaderView extends StatelessWidget {
     return Consumer<UserViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: IconButton(
+              icon: Icon(
+                Icons.menu,
+                size: 42,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
           ),
           Expanded(
               flex: 2,

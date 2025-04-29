@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     ChoresPage(),
     FinancePage(),
     ShoppingPage(),
-    MedicalPage()
+    MedicalPage(),
   ];
 
   late final ValueNotifier<List<Event>> _selectedEvents;
@@ -82,8 +82,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     UserViewModel userViewModel = UserViewModel();
 
-    final TextEditingController enteredEventNameController =
-        TextEditingController();
+    final TextEditingController enteredEventNameController = TextEditingController();
     User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -96,26 +95,27 @@ class _HomePageState extends State<HomePage> {
               //User icon
               currentAccountPicture: const Expanded(
                   child: FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Icon(Icons.account_circle_rounded))),
+                fit: BoxFit.fitHeight,
+                child: Icon(Icons.account_circle_rounded),
+              )),
 
               //Username
               accountName: FutureBuilder<String?>(
                   future: userViewModel.returnCurrentUsername(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
-                      return const Text(
-                          ""); //Due to a delay in the username loading
+                      return const Text(""); //Due to a delay in the username loading
                     } else {
                       return Expanded(
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
-                          child: Text("${snapshot.data}",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: userViewModel.colour4)),
+                          child: Text(
+                            "${snapshot.data}",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: userViewModel.colour4),
+                          ),
                         ),
                       );
                     }
@@ -124,11 +124,9 @@ class _HomePageState extends State<HomePage> {
               //Email
               accountEmail: FutureBuilder<String?>(
                   future: userViewModel.returnCurrentEmail(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
-                      return const Text(
-                          ""); //Due to a delay in the email loading
+                      return const Text(""); //Due to a delay in the email loading
                     } else {
                       return Expanded(
                         child: FittedBox(
@@ -150,10 +148,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(title: Text("Settings")),
             ListTile(
                 title: Text("Logout"),
-                onTap: () async => await FirebaseAuth.instance.signOut().then(
-                    (value) => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false))),
+                onTap: () async => await FirebaseAuth.instance.signOut().then((value) =>
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()), (route) => false))),
           ],
         ),
       ),
@@ -169,11 +166,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              // Expanded(flex: 1, child: Container(color: Colors.green)),
               Expanded(
                   flex: 5,
                   child: SingleChildScrollView(
                     child: TableCalendar(
+                        rowHeight: 35,
+                        daysOfWeekHeight: 28,
                         focusedDay: _focusedDay,
                         firstDay: DateTime.utc(2010, 10, 16),
                         lastDay: DateTime.utc(2030, 3, 14),
@@ -213,8 +211,7 @@ class _HomePageState extends State<HomePage> {
                       return Container(
                         decoration: BoxDecoration(
                             color: userViewModel.colour2,
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(30))),
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                         child: Column(
                           children: [
                             Text("Events",
@@ -232,255 +229,248 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     itemCount: value.length,
                                     itemBuilder: (context, index) {
-                                      final TextEditingController enteredEventNameController = TextEditingController();
+                                      final TextEditingController enteredEventNameController =
+                                          TextEditingController();
                                       final eventCreatorId = value[index].eventCreatorId;
                                       if (user?.uid == eventCreatorId) {
-                                      return Dismissible(
-                                        //Makes events dismissible via swiping
-                                        key: UniqueKey(),
-                                        onDismissed: (direction) {
-                                          final eventToDelete = value[index];
-                                          homeViewModel.deleteEvent(eventToDelete.eventId);
+                                        return Dismissible(
+                                          //Makes events dismissible via swiping
+                                          key: UniqueKey(),
+                                          onDismissed: (direction) {
+                                            final eventToDelete = value[index];
+                                            homeViewModel.deleteEvent(eventToDelete.eventId);
 
-                                          setState(() {
-                                            value.removeAt(index);
-                                          });
-                                        },
-                                        background: Container(
-                                          margin: EdgeInsets.symmetric(horizontal: 5),
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius: BorderRadius.circular(10)),
-                                          child: Center(child: Icon(Icons.delete)),
-                                        ),
-                                        child: Container(
+                                            setState(() {
+                                              value.removeAt(index);
+                                            });
+                                          },
+                                          background: Container(
+                                            margin: EdgeInsets.symmetric(horizontal: 5),
                                             decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.blueAccent,
-                                                      spreadRadius: 2)
-                                                ],
-                                                color: homeViewModel.colour1,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            child: ListTile(
-                                              onTap: () async {
-                                                //Sets the text to the current event title
-                                                enteredEventNameController.text = value[index].title;
+                                                color: Colors.red,
+                                                borderRadius: BorderRadius.circular(10)),
+                                            child: Center(child: Icon(Icons.delete)),
+                                          ),
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.blueAccent, spreadRadius: 2)
+                                                  ],
+                                                  color: homeViewModel.colour1,
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              child: ListTile(
+                                                onTap: () async {
+                                                  //Sets the text to the current event title
+                                                  enteredEventNameController.text =
+                                                      value[index].title;
 
-                                                //Splits the time in two parts, before and after the colon
-                                                List<String> parts = value[index].time.split(":");
+                                                  //Splits the time in two parts, before and after the colon
+                                                  List<String> parts = value[index].time.split(":");
 
-                                                //Sets the selected time to the previously selected hour and minute
-                                                TimeOfDay selectedTime = TimeOfDay(
-                                                  hour: int.parse(parts[0]),
-                                                  minute: int.parse(parts[1]),
-                                                );
+                                                  //Sets the selected time to the previously selected hour and minute
+                                                  TimeOfDay selectedTime = TimeOfDay(
+                                                    hour: int.parse(parts[0]),
+                                                    minute: int.parse(parts[1]),
+                                                  );
 
-                                                //Holds the value of the original date and time
-                                                DateTime originalDateTime = value[index].date;
+                                                  //Holds the value of the original date and time
+                                                  DateTime originalDateTime = value[index].date;
 
-                                                //Boolean for checking if the user changes the time of tge event
-                                                bool isTimeChanged = false;
+                                                  //Boolean for checking if the user changes the time of tge event
+                                                  bool isTimeChanged = false;
 
-                                                homeViewModel.displayBottomSheet(
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: MediaQuery.of(context)
-                                                              .viewInsets
-                                                              .bottom), //Ensures the keyboard doesn't cover the textfields
-                                                      child: Container(
-                                                          height: 250,
-                                                          padding: const EdgeInsets.all(16.0),
-                                                          child: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              Text("Update Event Details",
-                                                                  style: TextStyle(
-                                                                      fontSize: 20,
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: userViewModel.colour4)
-                                                              ),
-
-                                                              SizedBox(height: 15),
-
-                                                              TextField(
-                                                                key: Key("updatedEventNameTextField"),
-                                                                decoration: const InputDecoration(
-                                                                    hintText: "New Event Name", border: OutlineInputBorder()),
-                                                                controller: enteredEventNameController,
-                                                              ),
-
-                                                              SizedBox(height: 15),
-
-                                                              IconButton(
-                                                                  onPressed: () async {
-                                                                    //Shows the time picker, setting it to the previously set time
-                                                                    TimeOfDay? selectedTimePicker =
-                                                                    await showTimePicker(
-                                                                        context: context,
-                                                                        initialTime: selectedTime
-                                                                    );
-
-                                                                    //If the user chooses a new time, the selected time changes, and the boolean becomes true
-                                                                    if (selectedTimePicker != null) {
-                                                                      selectedTime = selectedTimePicker;
-                                                                      isTimeChanged = true;
-                                                                    }
-                                                                  },
-                                                                  icon: Icon(
-                                                                    Icons.more_time,
-                                                                  )
-                                                              ),
-
-                                                              SizedBox(height: 15),
-
-                                                              ElevatedButton(
-                                                                  key: Key("submitNewEventDetailsButton"),
-                                                                  child: Text("Submit"),
-                                                                  style: ElevatedButton.styleFrom(
-                                                                      foregroundColor: homeViewModel.colour1,
-                                                                      backgroundColor: homeViewModel.colour3,
-                                                                      fixedSize: Size(100, 50)
+                                                  homeViewModel.displayBottomSheet(
+                                                      Padding(
+                                                          padding: EdgeInsets.only(
+                                                              bottom: MediaQuery.of(context)
+                                                                  .viewInsets
+                                                                  .bottom),
+                                                          //Ensures the keyboard doesn't cover the textfields
+                                                          child: Container(
+                                                              height: 250,
+                                                              padding: const EdgeInsets.all(16.0),
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Text("Update Event Details",
+                                                                      style: TextStyle(
+                                                                          fontSize: 20,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color: userViewModel
+                                                                              .colour4)),
+                                                                  SizedBox(height: 15),
+                                                                  TextField(
+                                                                    key: Key(
+                                                                        "updatedEventNameTextField"),
+                                                                    decoration: const InputDecoration(
+                                                                        hintText: "New Event Name",
+                                                                        border:
+                                                                            OutlineInputBorder()),
+                                                                    controller:
+                                                                        enteredEventNameController,
                                                                   ),
-                                                                  onPressed: () async {
-                                                                    DateTime updatedTime;
+                                                                  SizedBox(height: 15),
+                                                                  IconButton(
+                                                                      onPressed: () async {
+                                                                        //Shows the time picker, setting it to the previously set time
+                                                                        TimeOfDay?
+                                                                            selectedTimePicker =
+                                                                            await showTimePicker(
+                                                                                context: context,
+                                                                                initialTime:
+                                                                                    selectedTime);
 
-                                                                    //Only runs if the user selects a new time
-                                                                    if (isTimeChanged) {
-                                                                      //Creates a new DateTime with changed time
-                                                                      updatedTime = DateTime(
-                                                                        originalDateTime.year,
-                                                                        originalDateTime.month,
-                                                                        originalDateTime.day,
-                                                                        selectedTime.hour,
-                                                                        selectedTime.minute,
-                                                                      );
-                                                                    } else {
-                                                                      //Keeps the original DateTime
-                                                                      updatedTime = originalDateTime;
-                                                                    }
+                                                                        //If the user chooses a new time, the selected time changes, and the boolean becomes true
+                                                                        if (selectedTimePicker !=
+                                                                            null) {
+                                                                          selectedTime =
+                                                                              selectedTimePicker;
+                                                                          isTimeChanged = true;
+                                                                        }
+                                                                      },
+                                                                      icon: Icon(
+                                                                        Icons.more_time,
+                                                                      )),
+                                                                  SizedBox(height: 15),
+                                                                  ElevatedButton(
+                                                                      key: Key(
+                                                                          "submitNewEventDetailsButton"),
+                                                                      child: Text("Submit"),
+                                                                      style:
+                                                                          ElevatedButton.styleFrom(
+                                                                              foregroundColor:
+                                                                                  homeViewModel
+                                                                                      .colour1,
+                                                                              backgroundColor:
+                                                                                  homeViewModel
+                                                                                      .colour3,
+                                                                              fixedSize:
+                                                                                  Size(100, 50)),
+                                                                      onPressed: () async {
+                                                                        DateTime updatedTime;
 
-                                                                    //Sends the updated details to the database
-                                                                    await HomeViewModel().updateEvent(
-                                                                      value[index].eventId,
-                                                                      enteredEventNameController.text,
-                                                                      updatedTime,
-                                                                    );
+                                                                        //Only runs if the user selects a new time
+                                                                        if (isTimeChanged) {
+                                                                          //Creates a new DateTime with changed time
+                                                                          updatedTime = DateTime(
+                                                                            originalDateTime.year,
+                                                                            originalDateTime.month,
+                                                                            originalDateTime.day,
+                                                                            selectedTime.hour,
+                                                                            selectedTime.minute,
+                                                                          );
+                                                                        } else {
+                                                                          //Keeps the original DateTime
+                                                                          updatedTime =
+                                                                              originalDateTime;
+                                                                        }
 
-                                                                    //Updates on screen
-                                                                    setState(() {
-                                                                      value[index].title = enteredEventNameController.text;
-                                                                      value[index].time = '${selectedTime.hour}:${selectedTime.minute.toString()}';
-                                                                    });
-                                                                    Navigator.of(context).pop(); //Makes bottom event bar disappear
+                                                                        //Sends the updated details to the database
+                                                                        await HomeViewModel()
+                                                                            .updateEvent(
+                                                                          value[index].eventId,
+                                                                          enteredEventNameController
+                                                                              .text,
+                                                                          updatedTime,
+                                                                        );
 
-                                                                    showToast(message: "New Event: ${enteredEventNameController.text}");
-                                                                    showToast(message: "New Time: ${selectedTime.hour}:${selectedTime.minute.toString()}");
-                                                                  })
+                                                                        //Updates on screen
+                                                                        setState(() {
+                                                                          value[index].title =
+                                                                              enteredEventNameController
+                                                                                  .text;
+                                                                          value[index].time =
+                                                                              '${selectedTime.hour}:${selectedTime.minute.toString()}';
+                                                                        });
+                                                                        Navigator.of(context)
+                                                                            .pop(); //Makes bottom event bar disappear
+
+                                                                        showToast(
+                                                                            message:
+                                                                                "New Event: ${enteredEventNameController.text}");
+                                                                        showToast(
+                                                                            message:
+                                                                                "New Time: ${selectedTime.hour}:${selectedTime.minute.toString()}");
+                                                                      })
+                                                                ],
+                                                              ))),
+                                                      context);
+                                                },
+                                                title: Text(value[index].title,
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: homeViewModel.colour4)),
+                                                subtitle: Row(
+                                                  children: [
+                                                    Icon(Icons.access_time_outlined),
+                                                    Text(value[index].time.toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: homeViewModel.colour4)),
+                                                  ],
+                                                ),
+                                                trailing: FutureBuilder<String?>(
+                                                    future:
+                                                        homeViewModel.returnEventCreatorUsername(
+                                                            value[index].eventId),
+                                                    builder: (BuildContext context,
+                                                        AsyncSnapshot<String?> snapshot) {
+                                                      if ("${snapshot.data}" == "null") {
+                                                        return const Text(
+                                                            ""); //Due to a delay in the username loading
+                                                      } else {
+                                                        return FittedBox(
+                                                          fit: BoxFit.fitHeight,
+                                                          child: Column(
+                                                            children: [
+                                                              Icon(Icons.supervisor_account_sharp,
+                                                                  size: 35),
+                                                              Text("${snapshot.data}",
+                                                                  style: TextStyle(
+                                                                      fontSize: 18,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      color:
+                                                                          homeViewModel.colour4)),
                                                             ],
-                                                          ))),
-                                                    context
-                                                );
-                                              },
-                                              title: Text(value[index].title,
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
-                                                      color:
-                                                          homeViewModel.colour4)),
-                                              subtitle: Row(
-                                                children: [
-                                                  Icon(
-                                                      Icons.access_time_outlined),
-                                                  Text(
-                                                      value[index]
-                                                          .time
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: homeViewModel
-                                                              .colour4)),
-                                                ],
-                                              ),
-                                              trailing: FutureBuilder<String?>(
-                                                  future: homeViewModel
-                                                      .returnEventCreatorUsername(
-                                                          value[index].eventId),
-                                                  builder: (BuildContext context,
-                                                      AsyncSnapshot<String?>
-                                                          snapshot) {
-                                                    if ("${snapshot.data}" ==
-                                                        "null") {
-                                                      return const Text(
-                                                          ""); //Due to a delay in the username loading
-                                                    } else {
-                                                      return FittedBox(
-                                                        fit: BoxFit.fitHeight,
-                                                        child: Column(
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .supervisor_account_sharp,
-                                                                size: 35),
-                                                            Text(
-                                                                "${snapshot.data}",
-                                                                style: TextStyle(
-                                                                    fontSize: 18,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: homeViewModel
-                                                                        .colour4)),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }
-                                                  }),
-                                            )),
-                                      );
-
-                                    } else {
+                                                          ),
+                                                        );
+                                                      }
+                                                    }),
+                                              )),
+                                        );
+                                      } else {
                                         return Container(
                                             decoration: BoxDecoration(
                                                 boxShadow: [
                                                   BoxShadow(
-                                                      color: Colors.blueAccent,
-                                                      spreadRadius: 2)
+                                                      color: Colors.blueAccent, spreadRadius: 2)
                                                 ],
                                                 color: homeViewModel.colour1,
-                                                borderRadius:
-                                                BorderRadius.circular(20)),
+                                                borderRadius: BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Text(value[index].title,
                                                   style: TextStyle(
                                                       fontSize: 20,
                                                       fontWeight: FontWeight.bold,
-                                                      color:
-                                                      homeViewModel.colour4)),
+                                                      color: homeViewModel.colour4)),
                                               subtitle: Row(
                                                 children: [
-                                                  Icon(
-                                                      Icons.access_time_outlined),
-                                                  Text(
-                                                      value[index]
-                                                          .time
-                                                          .toString(),
+                                                  Icon(Icons.access_time_outlined),
+                                                  Text(value[index].time.toString(),
                                                       style: TextStyle(
                                                           fontSize: 16,
-                                                          color: homeViewModel
-                                                              .colour4)),
+                                                          color: homeViewModel.colour4)),
                                                 ],
                                               ),
                                               trailing: FutureBuilder<String?>(
-                                                  future: homeViewModel
-                                                      .returnEventCreatorUsername(
+                                                  future: homeViewModel.returnEventCreatorUsername(
                                                       value[index].eventId),
                                                   builder: (BuildContext context,
-                                                      AsyncSnapshot<String?>
-                                                      snapshot) {
-                                                    if ("${snapshot.data}" ==
-                                                        "null") {
+                                                      AsyncSnapshot<String?> snapshot) {
+                                                    if ("${snapshot.data}" == "null") {
                                                       return const Text(
                                                           ""); //Due to a delay in the username loading
                                                     } else {
@@ -488,19 +478,13 @@ class _HomePageState extends State<HomePage> {
                                                         fit: BoxFit.fitHeight,
                                                         child: Column(
                                                           children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .supervisor_account_sharp,
+                                                            Icon(Icons.supervisor_account_sharp,
                                                                 size: 35),
-                                                            Text(
-                                                                "${snapshot.data}",
+                                                            Text("${snapshot.data}",
                                                                 style: TextStyle(
                                                                     fontSize: 18,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                    color: homeViewModel
-                                                                        .colour4)),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: homeViewModel.colour4)),
                                                           ],
                                                         ),
                                                       );
@@ -523,19 +507,17 @@ class _HomePageState extends State<HomePage> {
         return SizedBox(
           height: 60,
           child: ElevatedButton(
-            key: Key("createEventButton"),
+              key: Key("createEventButton"),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: viewModel.colour3,
-                  foregroundColor: viewModel.colour1),
+                  backgroundColor: viewModel.colour3, foregroundColor: viewModel.colour1),
               onPressed: () => {
                     if (_selectedDay != null)
                       {
-                        viewModel.displayBottomSheet(Consumer<HomeViewModel>(
-                            builder: (context, viewModel, child) {
+                        viewModel.displayBottomSheet(
+                            Consumer<HomeViewModel>(builder: (context, viewModel, child) {
                           return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
+                              padding:
+                                  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                               //Ensures the keyboard doesn't cover the textfields
                               child: Container(
                                   height: 150,
@@ -544,64 +526,47 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       TextField(
-                                        key: Key("eventTextField"),
+                                          key: Key("eventTextField"),
                                           decoration: const InputDecoration(
-                                              hintText: "Event Name",
-                                              border: OutlineInputBorder()),
-                                          controller:
-                                              enteredEventNameController,
-                                          onSubmitted: (value) async {
-                                          }),
-
+                                              hintText: "Event Name", border: OutlineInputBorder()),
+                                          controller: enteredEventNameController,
+                                          onSubmitted: (value) async {}),
                                       SizedBox(height: 15),
-
                                       ElevatedButton(
-                                        key: Key("submitEventButton"),
-                                        child: Text("Submit"),
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: viewModel.colour3,
-                                            foregroundColor: viewModel.colour1,
-                                            fixedSize: Size(100, 50)),
-                                        onPressed: () async {
-                                          if (enteredEventNameController
-                                              .text.isNotEmpty) {
-                                            Event newEvent = Event.newEvent(
-                                                user!.uid,
-                                                enteredEventNameController
-                                                    .text,
-                                                _focusedDay);
+                                          key: Key("submitEventButton"),
+                                          child: Text("Submit"),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: viewModel.colour3,
+                                              foregroundColor: viewModel.colour1,
+                                              fixedSize: Size(100, 50)),
+                                          onPressed: () async {
+                                            if (enteredEventNameController.text.isNotEmpty) {
+                                              Event newEvent = Event.newEvent(user!.uid,
+                                                  enteredEventNameController.text, _focusedDay);
 
-                                            TimeOfDay? selectedTime =
-                                                await showTimePicker(
-                                                context: context,
-                                                initialTime:
-                                                TimeOfDay.now());
+                                              TimeOfDay? selectedTime = await showTimePicker(
+                                                  context: context, initialTime: TimeOfDay.now());
 
-                                            viewModel.addCalendarEvent(
-                                                newEvent,
-                                                user.uid,
-                                                selectedTime!);
-                                            // events.addAll({_selectedDay! : [newEvent]});
-                                            setState(() {
-                                              if (events.containsKey(
-                                                  _selectedDay)) {
-                                                events[_selectedDay]!.add(
-                                                    newEvent); //Adds the new event
-                                              } else {
-                                                events[_selectedDay!] = [
-                                                  newEvent
-                                                ]; //Creates new list with event
-                                              }
-                                            });
-                                            enteredEventNameController
-                                                .clear();
-                                          }
-                                          Navigator.of(context)
-                                              .pop(); //Makes bottom event bar disappear
-                                          // _selectedEvents.value = _getEventsForDay(_selectedDay!);
-                                          _loadEventsForDay(_selectedDay!);
-                                        }
-                                      ),
+                                              viewModel.addCalendarEvent(
+                                                  newEvent, user.uid, selectedTime!);
+                                              // events.addAll({_selectedDay! : [newEvent]});
+                                              setState(() {
+                                                if (events.containsKey(_selectedDay)) {
+                                                  events[_selectedDay]!
+                                                      .add(newEvent); //Adds the new event
+                                                } else {
+                                                  events[_selectedDay!] = [
+                                                    newEvent
+                                                  ]; //Creates new list with event
+                                                }
+                                              });
+                                              enteredEventNameController.clear();
+                                            }
+                                            Navigator.of(context)
+                                                .pop(); //Makes bottom event bar disappear
+                                            // _selectedEvents.value = _getEventsForDay(_selectedDay!);
+                                            _loadEventsForDay(_selectedDay!);
+                                          }),
                                     ],
                                   )));
                         }), context)
@@ -638,12 +603,9 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.dry_cleaning_sharp), label: "Chores", key: Key("choresPage")),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.monetization_on), label: "Finance"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart), label: "Shopping"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.health_and_safety), label: "Medical")
+            BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Finance"),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Shopping"),
+            BottomNavigationBarItem(icon: Icon(Icons.health_and_safety), label: "Medical")
           ],
         ));
   }
@@ -668,11 +630,9 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment.centerLeft,
                       child: FutureBuilder<String?>(
                           future: viewModel.returnGroupName(user!.uid),
-                          builder:
-                              (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                             if ("${snapshot.data}" == "null") {
-                              return const Text(
-                                  ""); //Due to a delay in the data loading
+                              return const Text(""); //Due to a delay in the data loading
                             } else {
                               return Expanded(
                                 // flex: 2,
@@ -688,16 +648,13 @@ class _HomePageState extends State<HomePage> {
                             }
                           }),
                     ),
-
                     Align(
                       alignment: Alignment.centerRight,
                       child: FutureBuilder<String?>(
                           future: viewModel.returnGroupCode(user!.uid),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                             if ("${snapshot.data}" == "null") {
-                              return const Text(
-                                  ""); //Due to a delay in the group code loading
+                              return const Text(""); //Due to a delay in the group code loading
                             } else {
                               return Expanded(
                                 // flex: 1,
@@ -727,8 +684,7 @@ class _HomePageState extends State<HomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: viewModel.colour2,
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(30))),
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                               padding: EdgeInsets.all(20),
                               child: ListView.separated(
                                   padding: EdgeInsets.all(15),
@@ -745,18 +701,15 @@ class _HomePageState extends State<HomePage> {
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: viewModel.colour1,
-                                                borderRadius:
-                                                BorderRadius.circular(20)),
+                                                borderRadius: BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Row(
                                                 children: [
                                                   Icon(Icons.account_box),
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
-                                                          color:
-                                                          viewModel.colour4,
-                                                          fontWeight:
-                                                          FontWeight.bold,
+                                                          color: viewModel.colour4,
+                                                          fontWeight: FontWeight.bold,
                                                           fontSize: 20)),
                                                 ],
                                               ),
@@ -776,13 +729,15 @@ class _HomePageState extends State<HomePage> {
                                 viewModel.leaveGroup(user!.uid);
 
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: viewModel.colour1,
                                   backgroundColor: viewModel.colour3,
                                   textStyle:
-                                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                      const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20))),
                               child: const Text("Leave Group")),
