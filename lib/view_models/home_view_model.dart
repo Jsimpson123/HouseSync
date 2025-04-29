@@ -10,11 +10,6 @@ class HomeViewModel extends ChangeNotifier {
   final Map<DateTime, List<Event>> _events = {};
   Map <DateTime, List<Event>> get events => Map.unmodifiable(_events);
 
-  Color colour1 = Colors.grey.shade50;
-  Color colour2 = Colors.grey.shade200;
-  Color colour3 = Colors.grey.shade800;
-  Color colour4 = Colors.grey.shade900;
-
   Future<void> addCalendarEvent(Event newEvent, String userId, TimeOfDay selectedTime) async {
     newEvent.generateId();
 
@@ -50,6 +45,10 @@ class HomeViewModel extends ChangeNotifier {
     
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
+
+    if (groupId == null) {
+      return [];
+    }
     
     DateTime dayStart = DateTime(day.year, day.month, day.day, 0, 0, 0);
     DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);

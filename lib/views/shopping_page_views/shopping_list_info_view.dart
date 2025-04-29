@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 
+import '../../global/common/AppColours.dart';
+
 class ShoppingListInfoView extends StatelessWidget {
   const ShoppingListInfoView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
       return Container(
         margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
@@ -17,7 +20,7 @@ class ShoppingListInfoView extends StatelessWidget {
               flex: 1,
               child: Container(
                 decoration: BoxDecoration(
-                    color: viewModel.colour2, borderRadius: BorderRadius.circular(10)),
+                    color: AppColours.colour2(brightness), borderRadius: BorderRadius.circular(10)),
                 child: Column(children: [
                   Expanded(
                     flex: 2,
@@ -28,7 +31,7 @@ class ShoppingListInfoView extends StatelessWidget {
                           "${viewModel.numShoppingLists}",
                           style: TextStyle(
                               fontSize: 28,
-                              color: viewModel.colour3,
+                              color: AppColours.colour3(brightness),
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -40,7 +43,7 @@ class ShoppingListInfoView extends StatelessWidget {
                       alignment: Alignment.topCenter,
                       child: FittedBox(
                         child: Text("Total Shopping Lists", style: TextStyle(
-                            color: viewModel.colour4, fontWeight: FontWeight.w600
+                            color: AppColours.colour4(brightness), fontWeight: FontWeight.w600
                         ),),
                       ),
                     ),

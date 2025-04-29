@@ -7,10 +7,10 @@ import 'package:shared_accommodation_management_app/pages/finance_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
-import 'package:shared_accommodation_management_app/views/shopping_page_views/bottom_sheets/add_shopping_list_items_bottom_sheet_view.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/v4.dart';
 
+import '../../../global/common/AppColours.dart';
 import '../../../models/shopping_model.dart';
 import '../../../view_models/finance_view_model.dart';
 import '../../../view_models/task_view_model.dart';
@@ -49,6 +49,7 @@ FinanceViewModel financeViewModel = FinanceViewModel();
 class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetView> {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -76,22 +77,6 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
 
                     SizedBox(height: 15),
 
-                    // Expanded(
-                    //   flex: 2,
-                    //   child: Align(
-                    //     alignment: Alignment.center,
-                    //     child: FittedBox(
-                    //       child: Text(
-                    //         "$totalAmountOwed",
-                    //         style: TextStyle(
-                    //             fontSize: 28,
-                    //             color: viewModel.colour3,
-                    //             fontWeight: FontWeight.bold),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-
                     //Assign items Button
                     IconButton(
                         icon: Icon(Icons.shopping_basket),
@@ -106,8 +91,8 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                     ElevatedButton(
                         child: Text("Submit"),
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: viewModel.colour3,
-                            foregroundColor: viewModel.colour1,
+                            backgroundColor: AppColours.colour3(brightness),
+                            foregroundColor: AppColours.colour1(brightness),
                             fixedSize: Size(150, 100)),
                         onPressed: !isSubmitButtonEnabled()
                             ? null

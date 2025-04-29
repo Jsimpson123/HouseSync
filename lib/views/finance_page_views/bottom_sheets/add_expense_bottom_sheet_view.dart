@@ -8,6 +8,7 @@ import 'package:shared_accommodation_management_app/models/finance_model.dart';
 import 'package:shared_accommodation_management_app/pages/finance_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
+import '../../../global/common/AppColours.dart';
 import '../../../view_models/finance_view_model.dart';
 
 class AddExpenseBottomSheetView extends StatefulWidget {
@@ -54,6 +55,8 @@ FinanceViewModel financeViewModel = FinanceViewModel();
 class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Consumer<FinanceViewModel>(builder: (context, viewModel, child) {
       return Padding(
           padding: EdgeInsets.only(
@@ -85,7 +88,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                           ("£$remainingExpenseAmount"),
                           style: TextStyle(
                               fontSize: 28,
-                              color: viewModel.colour3,
+                              color: AppColours.colour3(brightness),
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -106,8 +109,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                   ElevatedButton(
                       child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: viewModel.colour3,
-                          foregroundColor: viewModel.colour1,
+                          backgroundColor: AppColours.colour3(brightness),
+                          foregroundColor: AppColours.colour1(brightness),
                           fixedSize: Size(150, 100)),
                       onPressed: !isSubmitButtonEnabled()
                           ? null
@@ -153,6 +156,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
   }
 
   Future<void> assignUsersToExpensePopup(BuildContext context) async {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -176,7 +181,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                             Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: viewModel.colour2,
+                                    color: AppColours.colour2(brightness),
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(30),
                                         bottom: Radius.circular(30))),
@@ -196,7 +201,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                           key: UniqueKey(),
                                           child: Container(
                                               decoration: BoxDecoration(
-                                                  color: viewModel.colour1,
+                                                  color: AppColours.colour1(brightness),
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           20)),
@@ -211,7 +216,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                             child: Text(
                                                                 viewModel.members[index],
                                                                 style: TextStyle(
-                                                                    color: viewModel.colour4,
+                                                                    color: AppColours.colour4(brightness),
                                                                     fontSize: isMobile? 14 : 16),
                                                               maxLines: 1,
                                                               softWrap: false,

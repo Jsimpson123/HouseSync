@@ -9,11 +9,6 @@ import '../pages/login_page.dart';
 
 class UserViewModel extends ChangeNotifier {
 
-  Color colour1 = Colors.grey.shade50;
-  Color colour2 = Colors.grey.shade200;
-  Color colour3 = Colors.grey.shade800;
-  Color colour4 = Colors.grey.shade900;
-
   Future <String?> returnCurrentUsername () async {
     final user = FirebaseAuth.instance.currentUser;
 

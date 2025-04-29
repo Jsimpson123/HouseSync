@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
+import '../../global/common/AppColours.dart';
 import '../../view_models/finance_view_model.dart';
 
 class ExpenseRecordsView {
@@ -17,6 +18,8 @@ class ExpenseRecordsView {
     showDialog(
         context: context,
         builder: (BuildContext context) {
+          final brightness = Theme.of(context).brightness;
+
           //Checks screen size to see if it is mobile or desktop
           double screenWidth = MediaQuery.of(context).size.width;
           bool isMobile = screenWidth < 600;
@@ -37,7 +40,7 @@ class ExpenseRecordsView {
                               Expanded(
                                   child: Container(
                                       decoration: BoxDecoration(
-                                          color: viewModel.colour2,
+                                          color: AppColours.colour2(brightness),
                                           borderRadius: const BorderRadius
                                               .vertical(
                                               top: Radius.circular(30),
@@ -50,6 +53,10 @@ class ExpenseRecordsView {
                                               .where('groupId', isEqualTo: groupId)
                                               .snapshots(),
                                           builder: (context, snapshot) {
+
+                                            if (groupId == null) {
+                                              return SizedBox.shrink();
+                                            }
 
                                             if (snapshot.data == null) {
                                               return Scaffold(
@@ -71,7 +78,7 @@ class ExpenseRecordsView {
                                                   var record = records[index];
                                                   return Container(
                                                       decoration: BoxDecoration(
-                                                          color: viewModel.colour1,
+                                                          color: AppColours.colour1(brightness),
                                                           borderRadius: BorderRadius.circular(20)),
                                                       child: InkWell(
                                                         child: ExpansionTile(
@@ -79,7 +86,7 @@ class ExpenseRecordsView {
                                                             ? Text(record['name'],
                                                                     style: TextStyle(
                                                                         fontWeight: FontWeight.bold,
-                                                                        color: viewModel.colour4,
+                                                                        color: AppColours.colour4(brightness),
                                                                         fontSize: isMobile? 16 : 24))
                                                           : Text(""),
                                                           children: [
@@ -94,9 +101,11 @@ class ExpenseRecordsView {
                                                                         style: TextStyle(
                                                                           fontSize: 16,
                                                                           fontWeight: FontWeight.bold,
-                                                                          color: viewModel.colour4,)
+                                                                          color: AppColours.colour4(brightness),)
                                                                     ),
-                                                                    backgroundColor: Colors.lightBlue[100],
+                                                                    backgroundColor: brightness == Brightness.light
+                                                                        ? Colors.lightBlue[100]
+                                                                        : Colors.blue[900],
                                                                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                                                     shape: RoundedRectangleBorder(
                                                                       borderRadius: BorderRadius.circular(20),
@@ -142,6 +151,7 @@ class ExpenseRecordsView {
     showDialog(
         context: context,
         builder: (BuildContext context) {
+          final brightness = Theme.of(context).brightness;
           //Checks screen size to see if it is mobile or desktop
           double screenWidth = MediaQuery.of(context).size.width;
           bool isMobile = screenWidth < 600;
@@ -162,7 +172,7 @@ class ExpenseRecordsView {
                               Expanded(
                                   child: Container(
                                       decoration: BoxDecoration(
-                                          color: viewModel.colour2,
+                                          color: AppColours.colour2(brightness),
                                           borderRadius: const BorderRadius
                                               .vertical(
                                               top: Radius.circular(30),
@@ -190,7 +200,7 @@ class ExpenseRecordsView {
                                                     key: UniqueKey(),
                                                     child: Container(
                                                         decoration: BoxDecoration(
-                                                            color: viewModel.colour1,
+                                                            color: AppColours.colour1(brightness),
                                                             borderRadius: BorderRadius.circular(20)),
                                                         child: ListTile(
                                                           title: Text("£${payment['amountPaid']}",

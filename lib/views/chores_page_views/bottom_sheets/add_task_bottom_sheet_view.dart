@@ -3,9 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/task_model.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 
+import '../../../global/common/AppColours.dart';
+
 class AddTaskBottomSheetView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final TextEditingController enteredTaskNameController = TextEditingController();
 
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
@@ -26,12 +29,6 @@ class AddTaskBottomSheetView extends StatelessWidget {
                         hintText: "Task Name", border: OutlineInputBorder()),
                     controller: enteredTaskNameController,
                     onSubmitted: (value) {
-                      // if (enteredTaskNameController.text.isNotEmpty) {
-                      //   Task newTask = Task.newTask(enteredTaskNameController.text);
-                      //   viewModel.addTask(newTask);
-                      //   enteredTaskNameController.clear();
-                      // }
-                      // Navigator.of(context).pop(); //Makes bottom task bar disappear
                     }
                   ),
 
@@ -41,8 +38,8 @@ class AddTaskBottomSheetView extends StatelessWidget {
                   key: Key("submitChoreButton"),
                   child: Text("Submit"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: viewModel.colour3,
-                    foregroundColor: viewModel.colour1,
+                    backgroundColor: AppColours.colour3(brightness),
+                    foregroundColor: AppColours.colour1(brightness),
                     fixedSize: Size(100, 50)),
                   onPressed: () {
                     if (enteredTaskNameController.text.isNotEmpty) {

@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
+import '../../global/common/AppColours.dart';
+
 class TaskListView extends StatefulWidget {
   @override
   State<TaskListView> createState() {
@@ -15,12 +17,13 @@ class TaskListView extends StatefulWidget {
 class _TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final User? user = FirebaseAuth.instance.currentUser;
 
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Container(
         decoration: BoxDecoration(
-            color: viewModel.colour2,
+            color: AppColours.colour2(brightness),
             borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
         child: viewModel.numTasks > 0 ?
         ListView.separated(
@@ -45,22 +48,22 @@ class _TaskListViewState extends State<TaskListView> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: viewModel.colour1, borderRadius: BorderRadius.circular(20)),
+                      color: AppColours.colour1(brightness), borderRadius: BorderRadius.circular(20)),
                   child: ListTile(
                     key: Key("listtile$index"),
                     leading: Checkbox(
                         key: Key("checkbox$index"),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        side: BorderSide(width: 2, color: viewModel.colour3),
-                        checkColor: viewModel.colour1,
-                        activeColor: viewModel.colour3,
+                        side: BorderSide(width: 2, color: AppColours.colour3(brightness)),
+                        checkColor: AppColours.colour1(brightness),
+                        activeColor: AppColours.colour3(brightness),
                         value: task.isCompleted,
                         onChanged: (bool? value) {
                           viewModel.setTaskValue(task);
                         }),
                     title: Text(viewModel.getTaskTitle(index),
                         style: TextStyle(
-                            color: viewModel.colour4, fontSize: 20, fontWeight: FontWeight.bold)),
+                            color: AppColours.colour4(brightness), fontSize: 20, fontWeight: FontWeight.bold)),
                     trailing: task.assignedUser != null
                         ? IconButton(
                             key: Key("unassignButton$index"),
@@ -112,12 +115,14 @@ class _TaskListViewState extends State<TaskListView> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
-                                                    color: viewModel.colour4)),
+                                                    color: AppColours.colour4(brightness))),
                                           ),
                                         );
                                       }
                                     }),
-                                backgroundColor: Colors.lightBlue[100],
+                                backgroundColor: brightness == Brightness.light
+                                    ? Colors.lightBlue[100]
+                                    : Colors.blue[900],
                                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),

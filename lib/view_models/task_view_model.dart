@@ -9,11 +9,6 @@ class TaskViewModel extends ChangeNotifier {
   final List<Task> _tasks = <Task>[];
   List<Task> get tasks => List.unmodifiable(_tasks);
 
-  Color colour1 = Colors.grey.shade50;
-  Color colour2 = Colors.grey.shade200;
-  Color colour3 = Colors.grey.shade800;
-  Color colour4 = Colors.grey.shade900;
-
   int get numTasks => _tasks.length;
   int get numTasksRemaining => _tasks.where((task) => !task.isCompleted).length;
 
@@ -22,6 +17,10 @@ class TaskViewModel extends ChangeNotifier {
 
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
+
+    if (groupId == null) {
+      return;
+    }
 
     final taskGroupQuery = FirebaseFirestore.instance
         .collection('tasks')

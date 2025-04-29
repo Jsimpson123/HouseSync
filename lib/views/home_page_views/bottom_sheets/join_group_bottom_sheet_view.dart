@@ -46,8 +46,8 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                     key: Key("submitGroupCodeButton"),
                       child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
-                          foregroundColor: viewModel.colour1,
-                          backgroundColor: viewModel.colour3,
+                          foregroundColor: Colors.grey.shade50,
+                          backgroundColor: Colors.grey.shade800,
                         fixedSize: Size(100, 50)
                       ),
                       onPressed: () async {

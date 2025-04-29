@@ -45,8 +45,8 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                     key: Key("submitGroupNameButton"),
                       child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColours.colour3(brightness),
-                          foregroundColor: AppColours.colour1(brightness),
+                          backgroundColor: Colors.grey.shade800,
+                          foregroundColor: Colors.grey.shade50,
                           fixedSize: Size(100, 50)),
                       onPressed: () async {
                         if (enteredGroupNameController.text.isNotEmpty) {

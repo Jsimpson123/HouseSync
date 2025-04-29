@@ -14,42 +14,15 @@ class FinanceViewModel extends ChangeNotifier {
 
   int get numExpenses => _expenses.length;
 
-  // final List<String> _assignedUsers = <String>[];
-  // List<String> get assignedUsers => List.unmodifiable(_assignedUsers);
-
-  //int get numAssignedUsers => _expenses.where((expense) => expense.assignedUsers.isNotEmpty).length;
-
-  Color colour1 = Colors.grey.shade50;
-  Color colour2 = Colors.grey.shade200;
-  Color colour3 = Colors.grey.shade800;
-  Color colour4 = Colors.grey.shade900;
-
   Future <void> loadExpenses() async {
     User? user = FirebaseAuth.instance.currentUser;
 
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
 
-    final expenseGroupQuery = FirebaseFirestore.instance
-        .collection('expenses')
-        .where('groupId', isEqualTo: groupId)
-        .get();
-
-    final snapshot = await expenseGroupQuery;
-    _expenses.clear();
-
-    for (var doc in snapshot.docs) {
-      _expenses.add(Expense.fromMap(doc.id, doc.data()));
+    if (groupId == null) {
+      return;
     }
-
-    notifyListeners();
-  }
-
-  Future <void> loadExpenseRecords() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
 
     final expenseGroupQuery = FirebaseFirestore.instance
         .collection('expenses')

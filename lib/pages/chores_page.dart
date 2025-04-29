@@ -6,6 +6,7 @@ import 'package:shared_accommodation_management_app/views/chores_page_views/chor
 import 'package:shared_accommodation_management_app/views/chores_page_views/task_list_view.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/settings_view.dart';
 
+import '../global/common/AppColours.dart';
 import '../view_models/group_view_model.dart';
 import '../view_models/task_view_model.dart';
 import '../view_models/user_view_model.dart';
@@ -48,6 +49,7 @@ class _ChoresPageState extends State<ChoresPage> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     UserViewModel userViewModel = UserViewModel();
 
     return Scaffold(
@@ -55,7 +57,7 @@ class _ChoresPageState extends State<ChoresPage> {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: userViewModel.colour2),
+              decoration: BoxDecoration(color: AppColours.colour2(brightness)),
 
               //User icon
               currentAccountPicture: const Expanded(
@@ -79,7 +81,7 @@ class _ChoresPageState extends State<ChoresPage> {
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: userViewModel.colour4)),
+                                  color: AppColours.colour4(brightness))),
                         ),
                       );
                     }
@@ -101,7 +103,7 @@ class _ChoresPageState extends State<ChoresPage> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: userViewModel.colour4)),
+                                  color: AppColours.colour4(brightness))),
                         ),
                       );
                     }
@@ -173,6 +175,8 @@ class _ChoresPageState extends State<ChoresPage> {
   }
 
   Future<void> groupDetails(BuildContext context) async {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -206,7 +210,7 @@ class _ChoresPageState extends State<ChoresPage> {
                                       style: TextStyle(
                                           fontSize: isMobile ? 24 : 42,
                                           fontWeight: FontWeight.bold,
-                                          color: viewModel.colour4)),
+                                          color: AppColours.colour4(brightness))),
                                 ),
                               );
                             }
@@ -229,7 +233,7 @@ class _ChoresPageState extends State<ChoresPage> {
                                     style: TextStyle(
                                         fontSize: isMobile ? 14 : 24,
                                         fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
+                                        color: AppColours.colour4(brightness))),
                               );
                             }
                           }),
@@ -250,7 +254,7 @@ class _ChoresPageState extends State<ChoresPage> {
                           Expanded(
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: viewModel.colour2,
+                                  color: AppColours.colour2(brightness),
                                   borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(30))),
                               padding: EdgeInsets.all(20),
@@ -268,7 +272,7 @@ class _ChoresPageState extends State<ChoresPage> {
                                         key: UniqueKey(),
                                         child: Container(
                                             decoration: BoxDecoration(
-                                                color: viewModel.colour1,
+                                                color: AppColours.colour1(brightness),
                                                 borderRadius:
                                                 BorderRadius.circular(20)),
                                             child: ListTile(
@@ -278,7 +282,7 @@ class _ChoresPageState extends State<ChoresPage> {
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
                                                           color:
-                                                          viewModel.colour4,
+                                                          AppColours.colour4(brightness),
                                                           fontWeight:
                                                           FontWeight.bold,
                                                           fontSize: 20)),
@@ -303,8 +307,8 @@ class _ChoresPageState extends State<ChoresPage> {
                                     context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
-                                  foregroundColor: viewModel.colour1,
-                                  backgroundColor: viewModel.colour3,
+                                  foregroundColor: AppColours.colour1(brightness),
+                                  backgroundColor: AppColours.colour3(brightness),
                                   textStyle:
                                   const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                   shape: RoundedRectangleBorder(

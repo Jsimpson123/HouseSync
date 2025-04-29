@@ -43,9 +43,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false, //Stop overflow when keyboard opens
-      body: createRegisterPageBody(),
+    return Theme(
+      data: ThemeData.light(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false, //Stop overflow when keyboard opens
+        body: createRegisterPageBody(),
+      ),
     );
   }
 

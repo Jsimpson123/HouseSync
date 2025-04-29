@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 
+import '../../global/common/AppColours.dart';
 import '../../pages/finance_page.dart';
 import '../../view_models/finance_view_model.dart';
 
@@ -22,6 +23,8 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -31,7 +34,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                      color: viewModel.colour2,
+                      color: AppColours.colour2(brightness),
                       borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                   child: viewModel.expenses.length > 0
                   ? GridView.builder(
@@ -49,23 +52,24 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                           onTap: () => expenseDetailsPopup(context, expense.expenseId),
                           child: Container(
                               decoration: BoxDecoration(
-                                  color: viewModel.colour1,
+                                  color: AppColours.colour1(brightness),
                                   borderRadius: BorderRadius.circular(20)),
                             child: Card(
-                              color: Colors.white,
+                              color: brightness == Brightness.light
+                                  ? Colors.white
+                                  : AppColours.colour1(brightness),
                               child:
                                   SingleChildScrollView(
                                     child: Column(
                                       children: [
                                         Row(
                                           children: [
-                                            // Icon(Icons.attach_money),
                                             Expanded(
                                                       child: Center(
                                                         child: Text(viewModel.getExpenseTitle(index),
                                                             textAlign: TextAlign.center,
                                                             style: TextStyle(
-                                                                color: viewModel.colour4,
+                                                                color: AppColours.colour4(brightness),
                                                                 fontSize: isMobile ? 20 : 24,
                                                                 fontWeight: FontWeight.bold)),
                                                       ),
@@ -133,9 +137,11 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               style: TextStyle(
                                                                   fontSize: 16,
                                                                   fontWeight: FontWeight.bold,
-                                                                  color: viewModel.colour4,)
+                                                                  color: AppColours.colour4(brightness),)
                                                           ),
-                                                          backgroundColor: Colors.lightBlue[100],
+                                                          backgroundColor: brightness == Brightness.light
+                                                              ? Colors.lightBlue[100]
+                                                              : Colors.blue[900],
                                                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                                           shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(20),
@@ -161,8 +167,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                   },
                                                   style: ElevatedButton
                                                       .styleFrom(
-                                                      foregroundColor: viewModel
-                                                          .colour1,
+                                                      foregroundColor: AppColours.colour1(brightness),
                                                       backgroundColor: Colors
                                                           .red,
                                                       textStyle:
@@ -209,6 +214,8 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
       });
   }
   Future<void> expenseDetailsPopup(BuildContext context, String expenseId) async {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -238,7 +245,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                             Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: viewModel.colour2,
+                                    color: AppColours.colour2(brightness),
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(30),
                                         bottom: Radius.circular(30))),
@@ -263,7 +270,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                               // double amountOwed = double.parse(snapshot.data?[1]![index]);
                                                   return Container(
                                                       decoration: BoxDecoration(
-                                                          color: viewModel.colour1,
+                                                          color: AppColours.colour1(brightness),
                                                           borderRadius:
                                                           BorderRadius.circular(
                                                               20)),
@@ -291,7 +298,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                                   snapshot.data?[0]![index],
                                                                   style: TextStyle(
                                                                       color:
-                                                                      viewModel.colour4,
+                                                                      AppColours.colour4(brightness),
                                                                       fontWeight: FontWeight.bold,
                                                                       fontSize: isMobile ? 14 : 16
                                                                   ),

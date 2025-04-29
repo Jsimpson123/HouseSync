@@ -6,6 +6,7 @@ import 'package:shared_accommodation_management_app/view_models/shopping_view_mo
 import 'package:shared_accommodation_management_app/views/shopping_page_views/bottom_sheets/add_shopping_list_bottom_sheet_view.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../global/common/AppColours.dart';
 import '../../global/common/toast.dart';
 import '../../view_models/finance_view_model.dart';
 import '../finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
@@ -24,6 +25,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -34,7 +36,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
           Expanded(
             child: Container(
                 decoration: BoxDecoration(
-                    color: viewModel.colour2,
+                    color: AppColours.colour2(brightness),
                     borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
                 child: viewModel.shoppingLists.length > 0
                     ? GridView.builder(
@@ -55,10 +57,12 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                             onTap: () => shoppingListDetailsPopup(context, shoppingList),
                             child: Container(
                                 decoration: BoxDecoration(
-                                    color: viewModel.colour1,
+                                    color: AppColours.colour1(brightness),
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Card(
-                                  color: Colors.white,
+                                  color: brightness == Brightness.light
+                                      ? Colors.white
+                                      : AppColours.colour1(brightness),
                                   child: SingleChildScrollView(
                                     child: Column(
                                       children: [
@@ -76,7 +80,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                               child: Text(viewModel.getShoppingListTitle(index),
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                      color: viewModel.colour4,
+                                                      color: AppColours.colour4(brightness),
                                                       fontSize: isMobile ? 20 : 24,
                                                       fontWeight: FontWeight.bold)),
                                             ),
@@ -98,7 +102,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                   style: TextStyle(
                                                       fontSize: isMobile ? 20 : 24,
                                                       fontWeight: FontWeight.bold,
-                                                      color: viewModel.colour4)),
+                                                      color: AppColours.colour4(brightness))),
                                             ),
                                             Center(
                                               child: FutureBuilder<int?>(
@@ -115,7 +119,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                             style: TextStyle(
                                                                 fontSize: isMobile ? 20 : 24,
                                                                 fontWeight: FontWeight.bold,
-                                                                color: viewModel.colour4)),
+                                                                color: AppColours.colour4(brightness))),
                                                       );
                                                     }
                                                   }),
@@ -126,7 +130,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                   viewModel.deleteShoppingList(index);
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                    foregroundColor: viewModel.colour1,
+                                                    foregroundColor: AppColours.colour1(brightness),
                                                     backgroundColor: Colors.red,
                                                     textStyle: TextStyle(
                                                         fontWeight: FontWeight.w700, fontSize: 16),
@@ -166,6 +170,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
   }
 
   Future<void> shoppingListDetailsPopup(BuildContext context, ShoppingList shoppingList) async {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -205,7 +211,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     flex: 1,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          color: viewModel.colour2,
+                                          color: AppColours.colour2(brightness),
                                           borderRadius: BorderRadius.circular(10)),
                                       child: Column(children: [
                                         Expanded(
@@ -235,7 +241,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     fontWeight: FontWeight.bold,
-                                                                    color: viewModel.colour4)),
+                                                                    color: AppColours.colour4(brightness))),
                                                           ),
                                                         );
                                                       }
@@ -253,7 +259,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                               child: Text(
                                                 "Total Items",
                                                 style: TextStyle(
-                                                    color: viewModel.colour4,
+                                                    color: AppColours.colour4(brightness),
                                                     fontWeight: FontWeight.w600),
                                               ),
                                             ),
@@ -270,7 +276,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     flex: 1,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          color: viewModel.colour2,
+                                          color: AppColours.colour2(brightness),
                                           borderRadius: BorderRadius.circular(10)),
                                       child: Column(children: [
                                         Expanded(
@@ -300,7 +306,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     fontWeight: FontWeight.bold,
-                                                                    color: viewModel.colour4)),
+                                                                    color: AppColours.colour4(brightness))),
                                                           ),
                                                         );
                                                       }
@@ -318,7 +324,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                               child: Text(
                                                 "Remaining items",
                                                 style: TextStyle(
-                                                    color: viewModel.colour4,
+                                                    color: AppColours.colour4(brightness),
                                                     fontWeight: FontWeight.w600),
                                               ),
                                             ),
@@ -334,7 +340,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                 flex: 6,
                                 child: Container(
                                     decoration: BoxDecoration(
-                                        color: viewModel.colour2,
+                                        color: AppColours.colour2(brightness),
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(30), bottom: Radius.circular(30))),
                                     child: FutureBuilder(
@@ -377,7 +383,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                       ),
                                                       child: Container(
                                                           decoration: BoxDecoration(
-                                                              color: viewModel.colour1,
+                                                              color: AppColours.colour1(brightness),
                                                               borderRadius:
                                                                   BorderRadius.circular(20)),
                                                           child: ListTile(
@@ -393,9 +399,9 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                                 5)),
                                                                     side: BorderSide(
                                                                         width: 2,
-                                                                        color: viewModel.colour3),
-                                                                    checkColor: viewModel.colour1,
-                                                                    activeColor: viewModel.colour3,
+                                                                        color: AppColours.colour3(brightness)),
+                                                                    checkColor: AppColours.colour1(brightness),
+                                                                    activeColor: AppColours.colour3(brightness),
                                                                     value: isChecked,
                                                                     onChanged:
                                                                         (bool? newValue) async {
@@ -422,7 +428,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                   ),
                                                                   Text(snapshot.data?[3]![index],
                                                                       style: TextStyle(
-                                                                          color: viewModel.colour4,
+                                                                          color: AppColours.colour4(brightness),
                                                                           fontSize:
                                                                               isMobile ? 14 : 16)),
                                                                 ],
@@ -434,7 +440,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                               child: Text(
                                                                 snapshot.data?[0]![index],
                                                                 style: TextStyle(
-                                                                    color: viewModel.colour4,
+                                                                    color: AppColours.colour4(brightness),
                                                                     fontSize: isMobile ? 14 : 16),
                                                                 softWrap: false,
                                                               ),
@@ -467,8 +473,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                 height: 60,
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        backgroundColor: viewModel.colour3,
-                                        foregroundColor: viewModel.colour1),
+                                        backgroundColor: AppColours.colour3(brightness),
+                                        foregroundColor: AppColours.colour1(brightness)),
                                     onPressed: () {
                                       addAdditionalItemsToShoppingListPopup(context, shoppingList);
                                     },

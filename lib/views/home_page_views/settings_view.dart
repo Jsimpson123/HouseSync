@@ -45,15 +45,27 @@ class SettingsView {
                                     child: ListView(
                                       children: [
                                         ListTile(
-                                          leading: Icon(Icons.password),
-                                          title: Text('Change Password'),
+                                          leading: Icon(Icons.password,
+                                            color: AppColours.colour4(brightness),
+                                          ),
+                                          title: Text('Change Password',
+                                            style: TextStyle(
+                                                color: AppColours.colour4(brightness)
+                                            ),
+                                          ),
                                           onTap: () {},
                                         ),
                                         Divider(),
 
                                         SwitchListTile(
-                                          title: Text('Dark Mode'),
-                                          secondary: Icon(Icons.dark_mode),
+                                          title: Text('Dark Mode',
+                                            style: TextStyle(
+                                                color: AppColours.colour4(brightness)
+                                            ),
+                                          ),
+                                          secondary: Icon(Icons.dark_mode,
+                                            color: AppColours.colour4(brightness),
+                                          ),
                                           value: MyApp.notifier.value == ThemeMode.dark,
                                           onChanged: (bool isOn) {
                                             MyApp.notifier.value = isOn ? ThemeMode.dark : ThemeMode.light;

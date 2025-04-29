@@ -8,9 +8,11 @@ import 'package:shared_accommodation_management_app/views/medical_page_views/med
 import 'package:shared_accommodation_management_app/views/medical_page_views/medical_info_view.dart';
 
 import '../features/appbar_display.dart';
+import '../global/common/AppColours.dart';
 import '../view_models/group_view_model.dart';
 import '../view_models/user_view_model.dart';
 import '../views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
+import '../views/home_page_views/settings_view.dart';
 import 'chores_page.dart';
 import 'create_or_join_group_page.dart';
 import 'finance_page.dart';
@@ -40,6 +42,8 @@ class _MedicalPageState extends State<MedicalPage> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     UserViewModel userViewModel = UserViewModel();
 
     return Scaffold(
@@ -47,7 +51,7 @@ class _MedicalPageState extends State<MedicalPage> {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: userViewModel.colour2),
+              decoration: BoxDecoration(color: AppColours.colour2(brightness)),
 
               //User icon
               currentAccountPicture: const Expanded(
@@ -71,7 +75,7 @@ class _MedicalPageState extends State<MedicalPage> {
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: userViewModel.colour4)),
+                                  color: AppColours.colour4(brightness))),
                         ),
                       );
                     }
@@ -93,7 +97,7 @@ class _MedicalPageState extends State<MedicalPage> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: userViewModel.colour4)),
+                                  color: AppColours.colour4(brightness))),
                         ),
                       );
                     }
@@ -103,7 +107,9 @@ class _MedicalPageState extends State<MedicalPage> {
               title: Text("Group"),
               onTap: () => groupDetails(context)
             ),
-            ListTile(title: Text("Settings")),
+            ListTile(title: Text("Settings"),
+              onTap: () => SettingsView.settingsPopup(context, SettingsView()),
+            ),
 
             ListTile(
                 title: Text("Logout"),
@@ -156,6 +162,8 @@ class _MedicalPageState extends State<MedicalPage> {
   }
 
   Future<void> groupDetails(BuildContext context) async {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -189,7 +197,7 @@ class _MedicalPageState extends State<MedicalPage> {
                                       style: TextStyle(
                                           fontSize: isMobile ? 24 : 42,
                                           fontWeight: FontWeight.bold,
-                                          color: viewModel.colour4)),
+                                          color: AppColours.colour4(brightness))),
                                 ),
                               );
                             }
@@ -212,7 +220,7 @@ class _MedicalPageState extends State<MedicalPage> {
                                     style: TextStyle(
                                         fontSize: isMobile ? 14 : 24,
                                         fontWeight: FontWeight.bold,
-                                        color: viewModel.colour4)),
+                                        color: AppColours.colour4(brightness))),
                               );
                             }
                           }),
@@ -233,7 +241,7 @@ class _MedicalPageState extends State<MedicalPage> {
                           Expanded(
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: viewModel.colour2,
+                                  color: AppColours.colour2(brightness),
                                   borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(30))),
                               padding: EdgeInsets.all(20),
@@ -251,7 +259,7 @@ class _MedicalPageState extends State<MedicalPage> {
                                         key: UniqueKey(),
                                         child: Container(
                                             decoration: BoxDecoration(
-                                                color: viewModel.colour1,
+                                                color: AppColours.colour1(brightness),
                                                 borderRadius:
                                                 BorderRadius.circular(20)),
                                             child: ListTile(
@@ -261,7 +269,7 @@ class _MedicalPageState extends State<MedicalPage> {
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
                                                           color:
-                                                          viewModel.colour4,
+                                                          AppColours.colour4(brightness),
                                                           fontWeight:
                                                           FontWeight.bold,
                                                           fontSize: 20)),
@@ -286,8 +294,8 @@ class _MedicalPageState extends State<MedicalPage> {
                                     context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
-                                  foregroundColor: viewModel.colour1,
-                                  backgroundColor: viewModel.colour3,
+                                  foregroundColor: AppColours.colour1(brightness),
+                                  backgroundColor: AppColours.colour3(brightness),
                                   textStyle:
                                   const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                   shape: RoundedRectangleBorder(

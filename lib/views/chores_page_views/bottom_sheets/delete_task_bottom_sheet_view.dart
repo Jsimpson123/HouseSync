@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 
+import '../../../global/common/AppColours.dart';
+
 class DeleteTaskBottomSheetView extends StatelessWidget{
   const DeleteTaskBottomSheetView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Consumer<TaskViewModel>(builder: (context, viewModel, child){
       return Container(
         height: 150,
@@ -18,8 +21,8 @@ class DeleteTaskBottomSheetView extends StatelessWidget{
                 viewModel.deleteAllTasks();
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: viewModel.colour1,
-                backgroundColor: viewModel.colour3,
+                foregroundColor: AppColours.colour1(brightness),
+                backgroundColor: AppColours.colour3(brightness),
                 textStyle:
                   TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
               shape: RoundedRectangleBorder(
@@ -33,8 +36,8 @@ class DeleteTaskBottomSheetView extends StatelessWidget{
                   viewModel.deleteAllCompletedTasks();
                 },
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: viewModel.colour1,
-                    backgroundColor: viewModel.colour3,
+                    foregroundColor: AppColours.colour1(brightness),
+                    backgroundColor: AppColours.colour3(brightness),
                     textStyle:
                     TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                     shape: RoundedRectangleBorder(

@@ -8,6 +8,8 @@ import 'package:shared_accommodation_management_app/view_models/group_view_model
 import 'package:shared_accommodation_management_app/view_models/medical_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 
+import '../../global/common/AppColours.dart';
+
 class GroupMembersCardListView extends StatefulWidget {
   const GroupMembersCardListView({super.key});
 
@@ -24,13 +26,14 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
       return Column(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  color: viewModel.colour2,
+                  color: AppColours.colour2(brightness),
                   borderRadius:
                       BorderRadius.vertical(top: Radius.circular(30))),
               padding: EdgeInsets.all(20),
@@ -48,7 +51,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                         key: UniqueKey(),
                         child: Container(
                             decoration: BoxDecoration(
-                                color: viewModel.colour1,
+                                color: AppColours.colour1(brightness),
                                 borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               title: Row(
@@ -56,7 +59,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                   Icon(Icons.account_box),
                                   Text(viewModel.members[index],
                                       style: TextStyle(
-                                          color: viewModel.colour4,
+                                          color: AppColours.colour4(brightness),
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20)),
                                 ],
@@ -75,6 +78,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
 
   Future<void> viewSpecificUsersMedicalConditionsPopup(
       BuildContext context, String memberId) async {
+    final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -103,7 +108,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                             Expanded(
                                 child: Container(
                                     decoration: BoxDecoration(
-                                        color: viewModel.colour2,
+                                        color: AppColours.colour2(brightness),
                                         borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(30),
                                             bottom: Radius.circular(30))),
@@ -132,10 +137,12 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                 itemBuilder: (context, index) {
                                                   return Container(
                                                       decoration: BoxDecoration(
-                                                          color: viewModel.colour1,
+                                                          color: AppColours.colour1(brightness),
                                                           borderRadius: BorderRadius.circular(20)),
                                                       child: Card(
-                                                        color: Colors.white,
+                                                        color: brightness == Brightness.light
+                                                            ? Colors.white
+                                                            : AppColours.colour1(brightness),
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(10)),
                                                         child: Column(
@@ -167,7 +174,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                           textAlign: TextAlign.center,
                                                                           softWrap: true,
                                                                           style: TextStyle(
-                                                                            color: viewModel.colour4,
+                                                                            color: AppColours.colour4(brightness),
                                                                             fontWeight: FontWeight.bold,
                                                                             fontSize: isMobile ? 20 : 24,
                                                                           ),
@@ -198,7 +205,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                     child: Text(
                                                                         snapshot.data?[1]![index],
                                                                         style: TextStyle(
-                                                                            color: viewModel.colour4,
+                                                                            color: AppColours.colour4(brightness),
                                                                             fontSize: isMobile ? 14 : 16)),
                                                                   ),
                                                                 ),
@@ -213,7 +220,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                     showToast(message: "Condition Successfully Deleted");
                                                                   },
                                                                   style: ElevatedButton.styleFrom(
-                                                                      foregroundColor: viewModel.colour1,
+                                                                      foregroundColor: AppColours.colour1(brightness),
                                                                       backgroundColor: Colors.red,
                                                                       textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                                                       shape: RoundedRectangleBorder(

@@ -12,16 +12,15 @@ class MedicalViewModel extends ChangeNotifier {
 
   int get numMedicalConditions => _medicalConditions.length;
 
-  Color colour1 = Colors.grey.shade50;
-  Color colour2 = Colors.grey.shade200;
-  Color colour3 = Colors.grey.shade800;
-  Color colour4 = Colors.grey.shade900;
-
   Future <void> loadMedicalConditions() async {
     User? user = FirebaseAuth.instance.currentUser;
 
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
     final groupId = await userDoc.data()?['groupId'];
+
+    if (groupId == null) {
+      return;
+    }
 
     final medicalGroupQuery = FirebaseFirestore.instance
         .collection('medicalConditions')

@@ -27,11 +27,6 @@ class GroupViewModel extends ChangeNotifier {
 
   List<Group> get groups => List.unmodifiable(_groups);
 
-  Color colour1 = Colors.grey.shade50;
-  Color colour2 = Colors.grey.shade200;
-  Color colour3 = Colors.grey.shade800;
-  Color colour4 = Colors.grey.shade900;
-
   String generateRandomGroupJoinCode() {
     String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     final Random random = Random();

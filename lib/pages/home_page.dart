@@ -20,6 +20,7 @@ import '../models/event_model.dart';
 import '../view_models/group_view_model.dart';
 import '../view_models/user_view_model.dart';
 import '../views/home_page_views/home_header_view.dart';
+import '../views/home_page_views/settings_view.dart';
 import 'create_or_join_group_page.dart';
 import 'medical_page.dart';
 
@@ -147,7 +148,9 @@ class _HomePageState extends State<HomePage> {
               title: Text("Group"),
               onTap: () => groupDetails(context),
             ),
-            ListTile(title: Text("Settings")),
+            ListTile(title: Text("Settings"),
+              onTap: () => SettingsView.settingsPopup(context, SettingsView()),
+            ),
             ListTile(
                 title: Text("Logout"),
                 onTap: () async => await FirebaseAuth.instance.signOut().then((value) =>
@@ -300,8 +303,7 @@ class _HomePageState extends State<HomePage> {
                                                                           fontSize: 20,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: userViewModel
-                                                                              .colour4)),
+                                                                          color: AppColours.colour3(brightness))),
                                                                   SizedBox(height: 15),
                                                                   TextField(
                                                                     key: Key(
@@ -345,8 +347,7 @@ class _HomePageState extends State<HomePage> {
                                                                               foregroundColor:
                                                                               AppColours.colour1(brightness),
                                                                               backgroundColor:
-                                                                                  homeViewModel
-                                                                                      .colour3,
+                                                                                  AppColours.colour3(brightness),
                                                                               fixedSize:
                                                                                   Size(100, 50)),
                                                                       onPressed: () async {

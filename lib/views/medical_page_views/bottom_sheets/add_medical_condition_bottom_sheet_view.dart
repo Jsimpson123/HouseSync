@@ -7,6 +7,8 @@ import 'package:shared_accommodation_management_app/pages/medical_page.dart';
 import 'package:shared_accommodation_management_app/view_models/medical_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 
+import '../../../global/common/AppColours.dart';
+
 class AddMedicalConditionBottomSheetView extends StatefulWidget {
   const AddMedicalConditionBottomSheetView({super.key});
 
@@ -32,6 +34,7 @@ bool isSubmitButtonEnabled() {
 class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBottomSheetView> {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     return Consumer<MedicalViewModel>(builder: (context, viewModel, child) {
       return Padding(
           padding: EdgeInsets.only(
@@ -70,8 +73,8 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                   ElevatedButton(
                       child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: viewModel.colour3,
-                          foregroundColor: viewModel.colour1,
+                          backgroundColor: AppColours.colour3(brightness),
+                          foregroundColor: AppColours.colour1(brightness),
                           fixedSize: Size(150, 100)),
                       onPressed: !isSubmitButtonEnabled()
                           ? null

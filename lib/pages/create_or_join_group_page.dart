@@ -11,8 +11,11 @@ class CreateOrJoinGroupPage extends StatefulWidget {
 class _CreateOrJoinGroupPageState extends State<CreateOrJoinGroupPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: GroupFunctionsView())
+    return Theme(
+      data: ThemeData.light(),
+      child: Scaffold(
+        body: Center(child: GroupFunctionsView())
+      ),
     );
   }
 }

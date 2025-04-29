@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/expense_card_list_view.dart';
 
+import '../../global/common/AppColours.dart';
 import 'expense_records_view.dart';
 
 class FinanceHeaderView extends StatelessWidget {
@@ -10,7 +11,8 @@ class FinanceHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ExpenseCardListView expenseCardListView = ExpenseCardListView();
+    final brightness = Theme.of(context).brightness;
+
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
@@ -43,7 +45,7 @@ class FinanceHeaderView extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 40,
                                 fontWeight: FontWeight.w900,
-                                color: viewModel.colour4)),
+                                color: AppColours.colour4(brightness))),
                       ),
                     ),
                   )

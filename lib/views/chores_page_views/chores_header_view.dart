@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
+import '../../global/common/AppColours.dart';
 import 'add_task_view.dart';
 import 'bottom_sheets/delete_task_bottom_sheet_view.dart';
 
@@ -9,6 +10,8 @@ class ChoresHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
@@ -48,7 +51,7 @@ class ChoresHeaderView extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 40,
                                 fontWeight: FontWeight.w900,
-                                color: viewModel.colour4)),
+                                color: AppColours.colour4(brightness))),
                       ),
                     ),
                   )

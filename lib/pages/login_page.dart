@@ -34,9 +34,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false, //Stop overflow when keyboard opens
-      body: createLoginPageBody(),
+    return Theme(
+      data: ThemeData.light(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false, //Stop overflow when keyboard opens
+        body: createLoginPageBody(),
+      ),
     );
   }
 
