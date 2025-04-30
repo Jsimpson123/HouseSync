@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/main.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
+import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../global/common/AppColours.dart';
+import '../../global/common/toast.dart';
 
 class SettingsView {
   static Future<void> settingsPopup(BuildContext context,
@@ -14,6 +16,8 @@ class SettingsView {
     User? user = FirebaseAuth.instance.currentUser;
 
     final brightness = Theme.of(context).brightness;
+
+    String? userEmail = user?.email;
     
     showDialog(
         context: context,
@@ -54,7 +58,9 @@ class SettingsView {
                                                 color: AppColours.colour4(brightness)
                                             ),
                                           ),
-                                          onTap: () {},
+                                          onTap: () {
+                                            sendForgotPasswordEmail(userEmail!);
+                                          },
                                         ),
                                         Divider(),
 
@@ -84,7 +90,7 @@ class SettingsView {
 
                                         SizedBox(height: 40),
 
-                                        Center(child: Text('Version 1.0.0', style: TextStyle(color: Colors.grey))),
+                                        Center(child: Text('HouseSync - Version 1.0.0', style: TextStyle(color: Colors.grey))),
                                       ],
                                     )
                                     ,
@@ -99,5 +105,20 @@ class SettingsView {
                 );
               });
         });
+  }
+
+  static void sendForgotPasswordEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showToast(message: "Reset password email sent");
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        showToast(message: "Invalid email");
+      } else {
+        showToast(message: "An error occurred: ${e.code}");
+      }
+    }
+    return null;
   }
 }

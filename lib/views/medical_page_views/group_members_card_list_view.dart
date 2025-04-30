@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/shopping_model.dart';
@@ -34,8 +35,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
             child: Container(
               decoration: BoxDecoration(
                   color: AppColours.colour2(brightness),
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30))),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
               padding: EdgeInsets.all(20),
               child: ListView.separated(
                   padding: EdgeInsets.all(15),
@@ -64,9 +64,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                           fontSize: 20)),
                                 ],
                               ),
-                              onTap: () =>
-                                  viewSpecificUsersMedicalConditionsPopup(
-                                      context, viewModel.memberIds[index]),
+                              onTap: () => viewSpecificUsersMedicalConditionsPopup(
+                                  context, viewModel.memberIds[index]),
                             )));
                   }),
             ),
@@ -80,14 +79,16 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
       BuildContext context, String memberId) async {
     final brightness = Theme.of(context).brightness;
 
+    TextEditingController enteredContactName = TextEditingController();
+    TextEditingController enteredContactNumber = TextEditingController();
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<MedicalViewModel>(
-              builder: (context, viewModel, child) {
+          return Consumer<MedicalViewModel>(builder: (context, viewModel, child) {
             Future medicalNamesFuture = viewModel.returnMedicalConditionsNamesList(memberId);
             Future medicalDescsFuture = viewModel.returnMedicalConditionsDescsList(memberId);
             Future medicalIds = viewModel.returnMedicalConditionIds(memberId);
@@ -95,7 +96,72 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('Medical Conditions'),
+                title: SizedBox(
+                  width: double.maxFinite,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Medical Conditions",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                      Column(
+                        children: [
+                          Text(
+                            "Emergency Contact:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(Icons.warning),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: FutureBuilder<String?>(
+                                future: viewModel.returnUserEmergencyContactName(memberId),
+                                builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                                  if ("${snapshot.data}" == "null") {
+                                    return const Text(
+                                        ""); //Due to a delay in the group code loading
+                                  } else {
+                                    return Expanded(
+                                      // flex: 1,
+                                      child: Text("${snapshot.data}",
+                                          style: TextStyle(
+                                              fontSize: isMobile ? 14 : 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red)),
+                                    );
+                                  }
+                                }),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: FutureBuilder<String?>(
+                                future: viewModel.returnUserEmergencyContactNumber(memberId),
+                                builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                                  if ("${snapshot.data}" == "null") {
+                                    return const Text(
+                                        ""); //Due to a delay in the group code loading
+                                  } else {
+                                    return Expanded(
+                                      child: Text("${snapshot.data}",
+                                          style: TextStyle(
+                                              fontSize: isMobile ? 14 : 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red)),
+                                    );
+                                  }
+                                }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -110,22 +176,18 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                     decoration: BoxDecoration(
                                         color: AppColours.colour2(brightness),
                                         borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(30),
-                                            bottom: Radius.circular(30))),
+                                            top: Radius.circular(30), bottom: Radius.circular(30))),
                                     child: FutureBuilder(
-                                        future: Future.wait([
-                                          medicalNamesFuture,
-                                          medicalDescsFuture,
-                                          medicalIds
-                                        ]),
+                                        future: Future.wait(
+                                            [medicalNamesFuture, medicalDescsFuture, medicalIds]),
                                         builder: (BuildContext context,
-                                            AsyncSnapshot<List<dynamic>>
-                                                snapshot) {
+                                            AsyncSnapshot<List<dynamic>> snapshot) {
                                           if ("${snapshot.data}" == "null") {
                                             return const Text("");
                                           } else {
                                             return GridView.builder(
-                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: isMobile ? 1 : 2,
                                                   crossAxisSpacing: 10,
                                                   mainAxisSpacing: 10,
@@ -144,7 +206,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                             ? Colors.white
                                                             : AppColours.colour1(brightness),
                                                         shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(10)),
+                                                            borderRadius:
+                                                                BorderRadius.circular(10)),
                                                         child: Column(
                                                           children: [
                                                             Stack(
@@ -154,7 +217,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                   left: 0,
                                                                   top: 0,
                                                                   child: Icon(
-                                                                    Icons.medical_information_outlined,
+                                                                    Icons
+                                                                        .medical_information_outlined,
                                                                     size: isMobile ? 20 : 30,
                                                                   ),
                                                                 ),
@@ -164,24 +228,36 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                   alignment: Alignment.center,
                                                                   child: Row(
                                                                     mainAxisSize: MainAxisSize.max,
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment.center,
                                                                     children: [
                                                                       //Makes text seem centred
-                                                                      SizedBox(width: isMobile ? 30 : 40),
+                                                                      SizedBox(
+                                                                          width:
+                                                                              isMobile ? 30 : 40),
                                                                       Flexible(
                                                                         child: Text(
-                                                                          snapshot.data?[0]![index] ?? '',
-                                                                          textAlign: TextAlign.center,
+                                                                          snapshot.data?[0]![
+                                                                                  index] ??
+                                                                              '',
+                                                                          textAlign:
+                                                                              TextAlign.center,
                                                                           softWrap: true,
                                                                           style: TextStyle(
-                                                                            color: AppColours.colour4(brightness),
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: isMobile ? 20 : 24,
+                                                                            color:
+                                                                                AppColours.colour4(
+                                                                                    brightness),
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize:
+                                                                                isMobile ? 20 : 24,
                                                                           ),
                                                                         ),
                                                                       ),
                                                                       //For symmetry
-                                                                      SizedBox(width: isMobile ? 30 : 40),
+                                                                      SizedBox(
+                                                                          width:
+                                                                              isMobile ? 30 : 40),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -192,7 +268,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                             Container(
                                                               decoration: const BoxDecoration(
                                                                 border: Border(
-                                                                  bottom: BorderSide(color: Colors.black),
+                                                                  bottom: BorderSide(
+                                                                      color: Colors.black),
                                                                 ),
                                                               ),
                                                             ),
@@ -200,40 +277,176 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                             Expanded(
                                                               child: SingleChildScrollView(
                                                                 child: Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                                                  padding:
+                                                                      const EdgeInsets.fromLTRB(
+                                                                          10, 0, 10, 0),
                                                                   child: Center(
                                                                     child: Text(
                                                                         snapshot.data?[1]![index],
                                                                         style: TextStyle(
-                                                                            color: AppColours.colour4(brightness),
-                                                                            fontSize: isMobile ? 14 : 16)),
+                                                                            color:
+                                                                                AppColours.colour4(
+                                                                                    brightness),
+                                                                            fontSize: isMobile
+                                                                                ? 14
+                                                                                : 16)),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
                                                             Padding(
-                                                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                                              child: user?.uid == memberId
-                                                                  ? ElevatedButton(
-                                                                  onPressed: () async {
-                                                                    await viewModel.deleteMedicalCondition(snapshot.data?[2][index]);
-                                                                    showToast(message: "Condition Successfully Deleted");
-                                                                  },
-                                                                  style: ElevatedButton.styleFrom(
-                                                                      foregroundColor: AppColours.colour1(brightness),
-                                                                      backgroundColor: Colors.red,
-                                                                      textStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                                                                      shape: RoundedRectangleBorder(
-                                                                          borderRadius: BorderRadius.circular(20))),
-                                                                  child: const Text("Delete"))
-                                                           : null
-                                                            )
+                                                                padding: const EdgeInsets.fromLTRB(
+                                                                    0, 0, 0, 5),
+                                                                child: user?.uid == memberId
+                                                                    ? ElevatedButton(
+                                                                        onPressed: () async {
+                                                                          await viewModel
+                                                                              .deleteMedicalCondition(
+                                                                                  snapshot.data?[2]
+                                                                                      [index]);
+                                                                          showToast(
+                                                                              message:
+                                                                                  "Condition Successfully Deleted");
+                                                                        },
+                                                                        style: ElevatedButton.styleFrom(
+                                                                            foregroundColor:
+                                                                                AppColours.colour1(
+                                                                                    brightness),
+                                                                            backgroundColor:
+                                                                                Colors.red,
+                                                                            textStyle: TextStyle(
+                                                                                fontWeight:
+                                                                                    FontWeight.w700,
+                                                                                fontSize: 16),
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius:
+                                                                                    BorderRadius
+                                                                                        .circular(
+                                                                                            20))),
+                                                                        child: const Text("Delete"))
+                                                                    : null)
                                                           ],
                                                         ),
                                                       ));
                                                 });
                                           }
                                         }))),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                child: user?.uid == memberId
+                                    ? ElevatedButton(
+                                        onPressed: () async {
+                                          viewModel.displayBottomSheet(
+                                              Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom:
+                                                          MediaQuery.of(context).viewInsets.bottom),
+                                                  //Ensures the keyboard doesn't cover the textfields
+                                                  child: Container(
+                                                      height: 260,
+                                                      padding: const EdgeInsets.all(16.0),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          Text("Emergency Contact Details",
+                                                              style: TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  color: AppColours.colour3(
+                                                                      brightness))),
+                                                          SizedBox(height: 15),
+                                                          TextField(
+                                                            key: Key(
+                                                                "emergencyContactNameTextField"),
+                                                            decoration: const InputDecoration(
+                                                                hintText: "Emergency Contact Name",
+                                                                border: OutlineInputBorder()),
+                                                            controller: enteredContactName,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                          TextField(
+                                                            key: Key(
+                                                                "emergencyContactNumberTextField"),
+                                                            decoration: const InputDecoration(
+                                                                hintText:
+                                                                    "Emergency Contact Phone Number",
+                                                                border: OutlineInputBorder()),
+                                                            controller: enteredContactNumber,
+                                                            keyboardType: TextInputType.phone,
+                                                            inputFormatters: [
+                                                              FilteringTextInputFormatter.allow(
+                                                                  RegExp(r'[0-9+ ]')),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 15),
+                                                          ElevatedButton(
+                                                              key: Key(
+                                                                  "submitNewEventDetailsButton"),
+                                                              child: Text("Submit"),
+                                                              style: ElevatedButton.styleFrom(
+                                                                  foregroundColor:
+                                                                      AppColours.colour1(
+                                                                          brightness),
+                                                                  backgroundColor:
+                                                                      AppColours.colour3(
+                                                                          brightness),
+                                                                  fixedSize: Size(100, 50)),
+                                                              onPressed: () async {
+                                                                if (enteredContactName
+                                                                        .text.isNotEmpty &&
+                                                                    enteredContactNumber
+                                                                        .text.isNotEmpty) {
+                                                                  Map<String, dynamic>
+                                                                      emergencyContact = ({
+                                                                    'contactName':
+                                                                        enteredContactName.text,
+                                                                    'contactNumber':
+                                                                        enteredContactNumber.text
+                                                                  });
+                                                                  await viewModel
+                                                                      .addEmergencyContact(
+                                                                          user!.uid,
+                                                                          emergencyContact);
+
+                                                                  setState(() {
+                                                                    emergencyContact = ({
+                                                                      'contactName':
+                                                                          enteredContactName.text,
+                                                                      'contactNumber':
+                                                                          enteredContactNumber.text
+                                                                    });
+                                                                  });
+
+                                                                  Navigator.of(context)
+                                                                      .pop(); //Makes bottom medical bar disappear
+
+                                                                  showToast(
+                                                                      message:
+                                                                          "Emergency contact added\nName: ${enteredContactName.text}\nNumber: ${enteredContactNumber.text}");
+                                                                } else {
+                                                                  showToast(
+                                                                      message:
+                                                                          "Please fill out all fields");
+                                                                }
+                                                              })
+                                                        ],
+                                                      ))),
+                                              context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            foregroundColor: AppColours.colour1(brightness),
+                                            backgroundColor: AppColours.colour4(brightness),
+                                            textStyle: TextStyle(
+                                                fontWeight: FontWeight.w700, fontSize: 16),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20))),
+                                        child: const Text("Add Emergency Contact"))
+                                    : null),
                           ],
                         ),
                       ),

@@ -62,6 +62,20 @@ class MedicalViewModel extends ChangeNotifier {
     return true;
   }
 
+  Future<void> addEmergencyContact(String userId, Map<String, dynamic> newContact) async {
+    final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+    final docSnapshot = await userDoc.get();
+    final data = docSnapshot.data();
+
+    if (data != null) {
+      //Updates the array with the new details
+      await userDoc.update({
+        'emergencyContact': newContact
+      });
+    }
+    notifyListeners();
+  }
+
   Future<void> deleteMedicalCondition(String conditionId) async {
     //Retrieves a condition
     final medicalDoc = await FirebaseFirestore.instance.collection(
@@ -93,7 +107,7 @@ class MedicalViewModel extends ChangeNotifier {
     }
   }
 
-  Future <List<String>> returnMedicalConditionsNamesList (String userId) async {
+  Future <List<String>> returnMedicalConditionsNamesList(String userId) async {
     try {
       final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
       final docSnapshot = await userDoc.get();
@@ -121,7 +135,7 @@ class MedicalViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future <List<String>> returnMedicalConditionsDescsList (String userId) async {
+  Future <List<String>> returnMedicalConditionsDescsList(String userId) async {
     try {
       final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
       final docSnapshot = await userDoc.get();
@@ -149,7 +163,7 @@ class MedicalViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future <List<String>> returnMedicalConditionIds (String userId) async {
+  Future <List<String>> returnMedicalConditionIds(String userId) async {
     try {
       final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
       final docSnapshot = await userDoc.get();
@@ -173,6 +187,36 @@ class MedicalViewModel extends ChangeNotifier {
       print("Error retrieving condition ids: $e");
     }
     return [];
+  }
+
+  Future<String> returnUserEmergencyContactName(String userId) async {
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+      final docSnapshot = await userDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        return data['emergencyContact']['contactName'];
+      }
+    } catch (e) {
+      print("Error retrieving name: $e");
+    }
+  return "";
+  }
+
+  Future<String> returnUserEmergencyContactNumber(String userId) async {
+    try {
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+      final docSnapshot = await userDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        return data['emergencyContact']['contactNumber'];
+      }
+    } catch (e) {
+      print("Error retrieving name: $e");
+    }
+    return "";
   }
 
   // Future<String> returnMedicalConditionCreatorId (String conditionId) async {

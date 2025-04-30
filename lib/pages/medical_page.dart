@@ -123,7 +123,47 @@ class _MedicalPageState extends State<MedicalPage> {
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
-                }
+                }),
+            SizedBox(
+              height: 30,
+            ),
+            Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.feedback),
+                Icon(Icons.bug_report),
+              ],),
+            Center(
+              child: Text(
+                "Want to send feedback or report a bug?",
+                style: TextStyle(
+                    color: AppColours.colour4(brightness),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14),
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Center(
+              child: Text(
+                "Email: HouseSync@gmail.com",
+                style: TextStyle(
+                    color: AppColours.colour4(brightness),
+                    fontSize: 14),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(),
+            Center(
+              child: Container(
+                width: 190,
+                height: 140,
+                child: Image.asset('assets/images/housesync_logo.png'),
+              ),
             ),
           ],
         ),

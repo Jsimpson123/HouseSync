@@ -149,21 +149,60 @@ class _HomePageState extends State<HomePage> {
               title: Text("Group"),
               onTap: () => groupDetails(context),
             ),
-            ListTile(title: Text("Settings"),
+            ListTile(
+              title: Text("Settings"),
               onTap: () => SettingsView.settingsPopup(context, SettingsView()),
             ),
             ListTile(
                 title: Text("Logout"),
                 onTap: () async {
-                  await FirebaseAuth.instance.signOut()
-                      .then((value) =>
-                      Navigator.of(context)
-                          .pushAndRemoveUntil(
+                  await FirebaseAuth.instance.signOut().then((value) => Navigator.of(context)
+                      .pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
-                }
+                }),
+            SizedBox(
+              height: 30,
+            ),
+            Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              Icon(Icons.feedback),
+              Icon(Icons.bug_report),
+            ],),
+            Center(
+              child: Text(
+                "Want to send feedback or report a bug?",
+                style: TextStyle(
+                    color: AppColours.colour4(brightness),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14),
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Center(
+              child: Text(
+                "Email: HouseSync@gmail.com",
+                style: TextStyle(
+                    color: AppColours.colour4(brightness),
+                    fontSize: 14),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(),
+            Center(
+              child: Container(
+                width: 190,
+                height: 140,
+                child: Image.asset('assets/images/housesync_logo.png'),
+              ),
             ),
           ],
         ),
@@ -216,7 +255,6 @@ class _HomePageState extends State<HomePage> {
                         }),
                   )),
               SizedBox(height: 8.0),
-
               Expanded(
                 flex: 3,
                 child: ValueListenableBuilder<List<Event>>(
@@ -312,7 +350,8 @@ class _HomePageState extends State<HomePage> {
                                                                           fontSize: 20,
                                                                           fontWeight:
                                                                               FontWeight.bold,
-                                                                          color: AppColours.colour3(brightness))),
+                                                                          color: AppColours.colour3(
+                                                                              brightness))),
                                                                   SizedBox(height: 15),
                                                                   TextField(
                                                                     key: Key(
@@ -351,14 +390,14 @@ class _HomePageState extends State<HomePage> {
                                                                       key: Key(
                                                                           "submitNewEventDetailsButton"),
                                                                       child: Text("Submit"),
-                                                                      style:
-                                                                          ElevatedButton.styleFrom(
-                                                                              foregroundColor:
-                                                                              AppColours.colour1(brightness),
-                                                                              backgroundColor:
-                                                                                  AppColours.colour3(brightness),
-                                                                              fixedSize:
-                                                                                  Size(100, 50)),
+                                                                      style: ElevatedButton.styleFrom(
+                                                                          foregroundColor:
+                                                                              AppColours.colour1(
+                                                                                  brightness),
+                                                                          backgroundColor:
+                                                                              AppColours.colour3(
+                                                                                  brightness),
+                                                                          fixedSize: Size(100, 50)),
                                                                       onPressed: () async {
                                                                         DateTime updatedTime;
 
@@ -443,8 +482,8 @@ class _HomePageState extends State<HomePage> {
                                                                   style: TextStyle(
                                                                       fontSize: 18,
                                                                       fontWeight: FontWeight.bold,
-                                                                      color:
-                                                                          AppColours.colour4(brightness))),
+                                                                      color: AppColours.colour4(
+                                                                          brightness))),
                                                             ],
                                                           ),
                                                         );
@@ -495,7 +534,8 @@ class _HomePageState extends State<HomePage> {
                                                                 style: TextStyle(
                                                                     fontSize: 18,
                                                                     fontWeight: FontWeight.bold,
-                                                                    color: AppColours.colour4(brightness))),
+                                                                    color: AppColours.colour4(
+                                                                        brightness))),
                                                           ],
                                                         ),
                                                       );
@@ -520,7 +560,8 @@ class _HomePageState extends State<HomePage> {
           child: ElevatedButton(
               key: Key("createEventButton"),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColours.colour3(brightness), foregroundColor: AppColours.colour1(brightness)),
+                  backgroundColor: AppColours.colour3(brightness),
+                  foregroundColor: AppColours.colour1(brightness)),
               onPressed: () => {
                     if (_selectedDay != null)
                       {
