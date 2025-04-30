@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,7 @@ import 'package:shared_accommodation_management_app/models/group_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
 import '../../../global/common/AppColours.dart';
+import '../../../main.dart';
 import '../../../pages/home_page.dart';
 
 class CreateGroupBottomSheetView extends StatefulWidget {
@@ -58,8 +60,17 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                               viewModel.generateRandomGroupJoinCode());
                           enteredGroupNameController.clear();
 
-                          setState(() {
+                          setState(() async {
                             if (groupCreated) {
+                              //Checks firebase for the users darkMode setting
+                              final doc = await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(user?.uid)
+                                  .get();
+
+                              final isDark = doc.data()?['darkMode'] ?? false;
+                              MyApp.notifier.value = isDark ? ThemeMode.dark : ThemeMode.light;
+
                               //Executes only one time after the layout is completed
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 //Upon creating a group, it brings the user to the Home page

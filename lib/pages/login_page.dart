@@ -6,6 +6,7 @@ import 'package:shared_accommodation_management_app/pages/create_or_join_group_p
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 
 import '../global/common/toast.dart';
+import '../main.dart';
 import '../user_auth/firebase_auth_functionality.dart';
 
 class LoginPage extends StatefulWidget {
@@ -193,6 +194,16 @@ class _LoginPageState extends State<LoginPage> {
     //Checks if the current user is already in a group and displays the Home page if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
       print("User was successfully signed in");
+
+      //Checks firebase for the users darkMode setting
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+
+      final isDark = doc.data()?['darkMode'] ?? false;
+      MyApp.notifier.value = isDark ? ThemeMode.dark : ThemeMode.light;
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
     }

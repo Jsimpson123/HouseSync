@@ -7,6 +7,7 @@ import 'package:shared_accommodation_management_app/views/chores_page_views/task
 import 'package:shared_accommodation_management_app/views/home_page_views/settings_view.dart';
 
 import '../global/common/AppColours.dart';
+import '../main.dart';
 import '../view_models/group_view_model.dart';
 import '../view_models/task_view_model.dart';
 import '../view_models/user_view_model.dart';
@@ -119,10 +120,16 @@ class _ChoresPageState extends State<ChoresPage> {
 
             ListTile(
                 title: Text("Logout"),
-                onTap: () async => await FirebaseAuth.instance.signOut()
-                    .then((value) =>
-                    Navigator.of(context)
-                        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()),(route) => false))
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut()
+                      .then((value) =>
+                      Navigator.of(context)
+                          .pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
+
+                  //Resets the apps theme to light mode
+                  MyApp.notifier.value = ThemeMode.light;
+                }
             ),
           ],
         ),

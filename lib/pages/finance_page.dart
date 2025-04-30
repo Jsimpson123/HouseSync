@@ -11,6 +11,7 @@ import 'package:shared_accommodation_management_app/views/finance_page_views/fin
 
 import '../features/appbar_display.dart';
 import '../global/common/AppColours.dart';
+import '../main.dart';
 import '../view_models/user_view_model.dart';
 import '../views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
 import '../views/home_page_views/settings_view.dart';
@@ -121,10 +122,16 @@ class _FinancePageState extends State<FinancePage> {
 
             ListTile(
                 title: Text("Logout"),
-                onTap: () async => await FirebaseAuth.instance.signOut()
-                    .then((value) =>
-                    Navigator.of(context)
-                        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()),(route) => false))
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut()
+                      .then((value) =>
+                      Navigator.of(context)
+                          .pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
+
+                  //Resets the apps theme to light mode
+                  MyApp.notifier.value = ThemeMode.light;
+                }
             ),
           ],
         ),

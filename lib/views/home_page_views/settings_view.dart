@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/main.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../global/common/AppColours.dart';
 
@@ -67,8 +68,16 @@ class SettingsView {
                                             color: AppColours.colour4(brightness),
                                           ),
                                           value: MyApp.notifier.value == ThemeMode.dark,
-                                          onChanged: (bool isOn) {
+                                          onChanged: (bool isOn) async {
                                             MyApp.notifier.value = isOn ? ThemeMode.dark : ThemeMode.light;
+
+                                            final user = FirebaseAuth.instance.currentUser;
+                                            if (user != null) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(user.uid)
+                                                  .update({'darkMode': isOn});
+                                            }
                                           },
                                         ),
                                         Divider(),

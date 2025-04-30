@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/firebase_options.dart';
@@ -15,9 +16,21 @@ import 'package:shared_accommodation_management_app/view_models/shopping_view_mo
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  var isDarkMode = prefs.getBool('isDarkMode') ?? false;
+
+  if (user != null) {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid)
+        .get();
+
+    isDarkMode = userDoc.data()?['darkMode'] ?? false;
+  }
   await Firebase.initializeApp(
     // name: "HouseSync-Firebase",
     options: DefaultFirebaseOptions.currentPlatform,
@@ -44,13 +57,17 @@ void main() async {
     ChangeNotifierProvider(
         create: (context) => HomeViewModel()
     ),
-  ], child: MyApp()));
+  ], child: MyApp(isDarkMode: isDarkMode)));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  MyApp({super.key, this.isDarkMode = false}) {
+    notifier.value = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  }
 
   static final ValueNotifier<ThemeMode> notifier = ValueNotifier(ThemeMode.light);
+
+  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {

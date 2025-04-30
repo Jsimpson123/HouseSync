@@ -16,6 +16,7 @@ import 'package:shared_accommodation_management_app/views/home_page_views/group_
 import 'package:table_calendar/table_calendar.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 
+import '../main.dart';
 import '../models/event_model.dart';
 import '../view_models/group_view_model.dart';
 import '../view_models/user_view_model.dart';
@@ -153,9 +154,17 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
                 title: Text("Logout"),
-                onTap: () async => await FirebaseAuth.instance.signOut().then((value) =>
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => LoginPage()), (route) => false))),
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut()
+                      .then((value) =>
+                      Navigator.of(context)
+                          .pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
+
+                  //Resets the apps theme to light mode
+                  MyApp.notifier.value = ThemeMode.light;
+                }
+            ),
           ],
         ),
       ),

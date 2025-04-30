@@ -9,6 +9,7 @@ import 'package:shared_accommodation_management_app/views/shopping_page_views/sh
 
 import '../features/appbar_display.dart';
 import '../global/common/AppColours.dart';
+import '../main.dart';
 import '../view_models/finance_view_model.dart';
 import '../view_models/group_view_model.dart';
 import '../view_models/user_view_model.dart';
@@ -113,10 +114,16 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
             ListTile(
                 title: Text("Logout"),
-                onTap: () async => await FirebaseAuth.instance.signOut()
-                    .then((value) =>
-                    Navigator.of(context)
-                        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginPage()),(route) => false))
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut()
+                      .then((value) =>
+                      Navigator.of(context)
+                          .pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
+
+                  //Resets the apps theme to light mode
+                  MyApp.notifier.value = ThemeMode.light;
+                }
             ),
           ],
         ),
