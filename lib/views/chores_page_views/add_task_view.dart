@@ -5,6 +5,8 @@ import '../../global/common/AppColours.dart';
 import 'bottom_sheets/add_task_bottom_sheet_view.dart';
 
 class AddTaskView extends StatelessWidget {
+  const AddTaskView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
@@ -13,16 +15,16 @@ class AddTaskView extends StatelessWidget {
       return SizedBox(
         height: 60,
         child: ElevatedButton(
-          key: Key("createChoreButton"),
+          key: const Key("createChoreButton"),
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColours.colour3(brightness),
                 foregroundColor: AppColours.colour1(brightness)
             ),
             onPressed: () {
               viewModel.displayBottomSheet(
-                  AddTaskBottomSheetView(), context);
+                  const AddTaskBottomSheetView(), context);
             },
-            child: Icon(
+            child: const Icon(
                 Icons.add)),
       );
     });

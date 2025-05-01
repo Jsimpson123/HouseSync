@@ -6,6 +6,8 @@ import 'package:shared_accommodation_management_app/views/shopping_page_views/bo
 import '../../global/common/AppColours.dart';
 
 class AddShoppingListView extends StatelessWidget {
+  const AddShoppingListView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
@@ -19,9 +21,9 @@ class AddShoppingListView extends StatelessWidget {
             ),
             onPressed: () {
               viewModel.displayBottomSheet(
-                  AddShoppingListBottomSheetView(), context);
+                  const AddShoppingListBottomSheetView(), context);
             },
-            child: Icon(
+            child: const Icon(
                 Icons.add)),
       );
     });

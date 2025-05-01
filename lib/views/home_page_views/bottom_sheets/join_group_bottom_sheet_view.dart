@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_accommodation_management_app/models/group_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
 import '../../../main.dart';
 import '../../../pages/home_page.dart';
 
 class JoinGroupBottomSheetView extends StatefulWidget {
+  const JoinGroupBottomSheetView({super.key});
+
   @override
   State<JoinGroupBottomSheetView> createState() {
     return _JoinGroupBottomSheetViewState();
@@ -35,21 +36,20 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    key: Key("groupCodeTextField"),
+                    key: const Key("groupCodeTextField"),
                       decoration: const InputDecoration(
                           hintText: "Group Code", border: OutlineInputBorder()),
                       controller: enteredGroupCodeController,
                   ),
 
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   ElevatedButton(
-                    key: Key("submitGroupCodeButton"),
-                      child: Text("Submit"),
+                    key: const Key("submitGroupCodeButton"),
                       style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.grey.shade50,
                           backgroundColor: Colors.grey.shade800,
-                        fixedSize: Size(100, 50)
+                        fixedSize: const Size(100, 50)
                       ),
                       onPressed: () async {
         if (enteredGroupCodeController.text.isNotEmpty) {
@@ -62,7 +62,7 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
               //Checks firebase for the users darkMode setting
               final doc = await FirebaseFirestore.instance
                   .collection('users')
-                  .doc(user?.uid)
+                  .doc(user.uid)
                   .get();
 
               final isDark = doc.data()?['darkMode'] ?? false;
@@ -77,7 +77,8 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
           });
         }
         Navigator.of(context).pop(); //Makes bottom task bar disappear
-      })
+      },
+                      child: const Text("Submit"))
                 ],
               )));
     });
@@ -87,6 +88,6 @@ class _JoinGroupBottomSheetViewState extends State<JoinGroupBottomSheetView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => HomePage()));
+            builder: (context) => const HomePage()));
   }
 }

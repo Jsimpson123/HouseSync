@@ -6,6 +6,8 @@ import 'package:shared_accommodation_management_app/views/medical_page_views/bot
 import '../../global/common/AppColours.dart';
 
 class AddMedicalConditionView extends StatelessWidget {
+  const AddMedicalConditionView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
@@ -19,9 +21,9 @@ class AddMedicalConditionView extends StatelessWidget {
             ),
             onPressed: () {
               viewModel.displayBottomSheet(
-                  AddMedicalConditionBottomSheetView(), context);
+                  const AddMedicalConditionBottomSheetView(), context);
             },
-            child: Icon(
+            child: const Icon(
                 Icons.add)),
       );
     });

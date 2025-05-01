@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,7 +76,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                       controller: enteredExpenseNameController,
                       onChanged: (_) => setState(() {})),
 
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   Expanded(
                     flex: 2,
@@ -97,21 +96,20 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
 
                   //Assign Users Button
                   IconButton(
-                      icon: Icon(Icons.group_add),
+                      icon: const Icon(Icons.group_add),
                       iconSize: 30,
                       onPressed: !isAddButtonEnabled()
                           ? null
                           : () => assignUsersToExpensePopup(context)),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   //Submit Button
                   ElevatedButton(
-                      child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: AppColours.colour3(brightness),
                           foregroundColor: AppColours.colour1(brightness),
-                          fixedSize: Size(150, 100)),
+                          fixedSize: const Size(150, 100)),
                       onPressed: !isSubmitButtonEnabled()
                           ? null
                           : () async {
@@ -148,8 +146,9 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => FinancePage()));
-                            })
+                                      builder: (context) => const FinancePage()));
+                            },
+                      child: const Text("Submit"))
                 ],
               )));
     });
@@ -168,7 +167,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('Add Users'),
+                title: const Text('Add Users'),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -182,14 +181,14 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: AppColours.colour2(brightness),
-                                    borderRadius: BorderRadius.vertical(
+                                    borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(30),
                                         bottom: Radius.circular(30))),
                                 child: ListView.separated(
-                                    padding: EdgeInsets.all(15),
+                                    padding: const EdgeInsets.all(15),
                                     shrinkWrap: true,
                                     separatorBuilder: (context, index) {
-                                      return SizedBox(height: 15);
+                                      return const SizedBox(height: 15);
                                     },
                                     itemCount: viewModel.members.length,
                                     itemBuilder: (context, index) {
@@ -211,7 +210,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                         children: [
                                                           Icon(Icons.account_box,
                                                               size: isMobile ? 18 : 24),
-                                                          SizedBox(width: 2),
+                                                          const SizedBox(width: 2),
                                                           Expanded(
                                                             child: Text(
                                                                 viewModel.members[index],
@@ -278,7 +277,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                                       size: isMobile ? 18 :24
                                                                     ),
                                                               padding: EdgeInsets.zero,
-                                                                constraints: BoxConstraints.tightFor(width: 16, height: 16)
+                                                                constraints: const BoxConstraints.tightFor(width: 16, height: 16)
                                                                   )
                                                           ]),
 
@@ -288,7 +287,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                                 border: OutlineInputBorder(),
                                                             ),
                                                             controller: enteredUserAmountController,
-                                                            keyboardType: TextInputType
+                                                            keyboardType: const TextInputType
                                                                 .numberWithOptions(
                                                                     decimal:
                                                                         true),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import '../../global/common/AppColours.dart';
-import 'add_task_view.dart';
 import 'bottom_sheets/delete_task_bottom_sheet_view.dart';
 
 class ChoresHeaderView extends StatelessWidget {
@@ -18,7 +17,7 @@ class ChoresHeaderView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.menu,
                 size: 42,
               ),
@@ -27,14 +26,14 @@ class ChoresHeaderView extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 25,
           ),
-          Icon(
+          const Icon(
             Icons.cleaning_services,
             size: 45,
           ),
-          SizedBox(
+          const SizedBox(
             width: 5,
           ),
           Expanded(
@@ -59,12 +58,12 @@ class ChoresHeaderView extends StatelessWidget {
               )),
           // Delete Icon
           Container(
-            margin: EdgeInsets.only(right: 100),
+            margin: const EdgeInsets.only(right: 100),
             child: InkWell(
                 onTap: () {
-                  viewModel.displayBottomSheet(DeleteTaskBottomSheetView(), context);
+                  viewModel.displayBottomSheet(const DeleteTaskBottomSheetView(), context);
                 },
-                child: Icon(Icons.delete, size: 40)),
+                child: const Icon(Icons.delete, size: 40)),
           ),
         ],
       );

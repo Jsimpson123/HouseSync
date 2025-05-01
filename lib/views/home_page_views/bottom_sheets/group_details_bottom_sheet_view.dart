@@ -1,12 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_accommodation_management_app/models/user_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
-import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 
 import '../../../global/common/AppColours.dart';
-import '../../../pages/create_or_join_group_page.dart';
 
 class GroupDetailsBottomSheetView extends StatefulWidget {
   const GroupDetailsBottomSheetView({super.key});
@@ -33,15 +30,15 @@ class _GroupDetailsBottomSheetView extends State<GroupDetailsBottomSheetView> {
               decoration: BoxDecoration(
                   color: AppColours.colour2(brightness),
                   borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(30))),
-              padding: EdgeInsets.all(20),
+                  const BorderRadius.vertical(top: Radius.circular(30))),
+              padding: const EdgeInsets.all(20),
               child: ListView.separated(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   separatorBuilder: (context, index) {
-                    return SizedBox(height: 15);
+                    return const SizedBox(height: 15);
                   },
                   scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
+                  physics: const ScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: viewModel.memberIds.length,
                   itemBuilder: (context, index) {
@@ -54,7 +51,7 @@ class _GroupDetailsBottomSheetView extends State<GroupDetailsBottomSheetView> {
                             child: ListTile(
                               title: Row(
                                 children: [
-                                  Icon(Icons.account_box),
+                                  const Icon(Icons.account_box),
                                   Text(viewModel.members[index],
                                       style: TextStyle(
                                           color: AppColours.colour4(brightness),

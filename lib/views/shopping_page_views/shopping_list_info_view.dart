@@ -12,7 +12,7 @@ class ShoppingListInfoView extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     return Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
       return Container(
-        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
         child: Row(
           children: [
             //Total Tasks

@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
-import 'package:shared_accommodation_management_app/models/shopping_model.dart';
-import 'package:shared_accommodation_management_app/models/user_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/medical_view_model.dart';
-import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 
 import '../../global/common/AppColours.dart';
 
@@ -35,15 +32,15 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
             child: Container(
               decoration: BoxDecoration(
                   color: AppColours.colour2(brightness),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-              padding: EdgeInsets.all(20),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
+              padding: const EdgeInsets.all(20),
               child: ListView.separated(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   separatorBuilder: (context, index) {
-                    return SizedBox(height: 15);
+                    return const SizedBox(height: 15);
                   },
                   scrollDirection: Axis.vertical,
-                  physics: ScrollPhysics(),
+                  physics: const ScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: viewModel.memberIds.length,
                   itemBuilder: (context, index) {
@@ -56,7 +53,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                             child: ListTile(
                               title: Row(
                                 children: [
-                                  Icon(Icons.account_box),
+                                  const Icon(Icons.account_box),
                                   Text(viewModel.members[index],
                                       style: TextStyle(
                                           color: AppColours.colour4(brightness),
@@ -101,7 +98,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Align(
+                      const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Medical Conditions",
@@ -111,13 +108,13 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                           )),
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             "Emergency Contact:",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Icon(Icons.warning),
+                          const Icon(Icons.warning),
                           Align(
                             alignment: Alignment.centerRight,
                             child: FutureBuilder<String?>(
@@ -175,7 +172,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                 child: Container(
                                     decoration: BoxDecoration(
                                         color: AppColours.colour2(brightness),
-                                        borderRadius: BorderRadius.vertical(
+                                        borderRadius: const BorderRadius.vertical(
                                             top: Radius.circular(30), bottom: Radius.circular(30))),
                                     child: FutureBuilder(
                                         future: Future.wait(
@@ -193,7 +190,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                   mainAxisSpacing: 10,
                                                   childAspectRatio: isMobile ? 0.8 : 1.4,
                                                 ),
-                                                padding: EdgeInsets.all(15),
+                                                padding: const EdgeInsets.all(15),
                                                 shrinkWrap: true,
                                                 itemCount: snapshot.data?[0]!.length,
                                                 itemBuilder: (context, index) {
@@ -273,7 +270,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(height: 30),
+                                                            const SizedBox(height: 30),
                                                             Expanded(
                                                               child: SingleChildScrollView(
                                                                 child: Padding(
@@ -314,7 +311,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                                     brightness),
                                                                             backgroundColor:
                                                                                 Colors.red,
-                                                                            textStyle: TextStyle(
+                                                                            textStyle: const TextStyle(
                                                                                 fontWeight:
                                                                                     FontWeight.w700,
                                                                                 fontSize: 16),
@@ -331,7 +328,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                 });
                                           }
                                         }))),
-                            SizedBox(
+                            const SizedBox(
                               height: 15,
                             ),
                             Padding(
@@ -357,20 +354,20 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                   fontWeight: FontWeight.bold,
                                                                   color: AppColours.colour3(
                                                                       brightness))),
-                                                          SizedBox(height: 15),
+                                                          const SizedBox(height: 15),
                                                           TextField(
-                                                            key: Key(
+                                                            key: const Key(
                                                                 "emergencyContactNameTextField"),
                                                             decoration: const InputDecoration(
                                                                 hintText: "Emergency Contact Name",
                                                                 border: OutlineInputBorder()),
                                                             controller: enteredContactName,
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             height: 15,
                                                           ),
                                                           TextField(
-                                                            key: Key(
+                                                            key: const Key(
                                                                 "emergencyContactNumberTextField"),
                                                             decoration: const InputDecoration(
                                                                 hintText:
@@ -383,11 +380,10 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                   RegExp(r'[0-9+ ]')),
                                                             ],
                                                           ),
-                                                          SizedBox(height: 15),
+                                                          const SizedBox(height: 15),
                                                           ElevatedButton(
-                                                              key: Key(
+                                                              key: const Key(
                                                                   "submitNewEventDetailsButton"),
-                                                              child: Text("Submit"),
                                                               style: ElevatedButton.styleFrom(
                                                                   foregroundColor:
                                                                       AppColours.colour1(
@@ -395,7 +391,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                   backgroundColor:
                                                                       AppColours.colour3(
                                                                           brightness),
-                                                                  fixedSize: Size(100, 50)),
+                                                                  fixedSize: const Size(100, 50)),
                                                               onPressed: () async {
                                                                 if (enteredContactName
                                                                         .text.isNotEmpty &&
@@ -433,7 +429,8 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                       message:
                                                                           "Please fill out all fields");
                                                                 }
-                                                              })
+                                                              },
+                                                              child: const Text("Submit"))
                                                         ],
                                                       ))),
                                               context);
@@ -441,7 +438,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                         style: ElevatedButton.styleFrom(
                                             foregroundColor: AppColours.colour1(brightness),
                                             backgroundColor: AppColours.colour4(brightness),
-                                            textStyle: TextStyle(
+                                            textStyle: const TextStyle(
                                                 fontWeight: FontWeight.w700, fontSize: 16),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20))),

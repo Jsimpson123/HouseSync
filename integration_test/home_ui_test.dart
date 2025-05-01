@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +8,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/firebase_options.dart';
 import 'package:shared_accommodation_management_app/main.dart';
-import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
@@ -63,12 +61,12 @@ void main() {
       ),
     );
 
-    String random = Uuid().v4();
+    String random = const Uuid().v4();
     rand = random;
 
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is signed in
     expect(auth.currentUser, isNotNull);
@@ -78,18 +76,18 @@ void main() {
     expect(find.text("Home"), findsAny);
 
     //Find createEventButton button
-    final Finder createEventButton = find.byKey(Key('createEventButton'));
+    final Finder createEventButton = find.byKey(const Key('createEventButton'));
 
     //Click the button to navigate to bring the popup
     await tester.tap(createEventButton);
     await tester.pumpAndSettle();
 
     //Finds widgets on the screen
-    final Finder eventTextField = find.byKey(Key('eventTextField'));
-    final Finder submitEventButton = find.byKey(Key('submitEventButton'));
+    final Finder eventTextField = find.byKey(const Key('eventTextField'));
+    final Finder submitEventButton = find.byKey(const Key('submitEventButton'));
 
     //Enters text and submits
-    await tester.enterText(eventTextField, 'TestEvent' + rand);
+    await tester.enterText(eventTextField, 'TestEvent$rand');
     await tester.tap(submitEventButton);
     await tester.pumpAndSettle();
 
@@ -102,16 +100,16 @@ void main() {
     await tester.tap(okButton);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     await tester.pump();
 
     //Verifies the event is created
-    expect(find.text('TestEvent' + rand), findsAny);
+    expect(find.text('TestEvent$rand'), findsAny);
 
     //Cleanup
     final eventSnapshot = await FirebaseFirestore.instance
         .collection('calendarEvents')
-        .where('title', isEqualTo: 'TestEvent' + rand)
+        .where('title', isEqualTo: 'TestEvent$rand')
         .get();
 
     for (var doc in eventSnapshot.docs) {

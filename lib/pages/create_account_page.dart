@@ -1,13 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
-import 'package:shared_accommodation_management_app/pages/create_or_join_group_page.dart';
-import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
-import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
-import '../global/common/toast.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -20,15 +14,15 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   FirebaseAuthFunctionality firebaseAuthFunctionality =
-      new FirebaseAuthFunctionality();
+      FirebaseAuthFunctionality();
 
   //FirebaseAuthFunctionality instance
   final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
 
   //Setting up the TextEditingControllers
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   //Prevents memory leaks
   @override
@@ -61,7 +55,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         Padding(
           padding: const EdgeInsets.only(),
           child: Center(
-            child: Container(
+            child: SizedBox(
               width: 200,
               height: 150,
               child: Image.asset('assets/images/housesync_logo.png'),
@@ -80,10 +74,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-              key: Key("registerUsernameField"),
+              key: const Key("registerUsernameField"),
               controller: _usernameController,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.account_box_rounded),
+                prefixIcon: const Icon(Icons.account_box_rounded),
                 hintText: "User Name",
                 filled: true,
                 focusedBorder: OutlineInputBorder(
@@ -101,10 +95,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-              key: Key("registerEmailField"),
+              key: const Key("registerEmailField"),
               controller: _emailController,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email_rounded),
+                prefixIcon: const Icon(Icons.email_rounded),
                 hintText: "Email",
                 filled: true,
                 focusedBorder: OutlineInputBorder(
@@ -122,11 +116,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-              key: Key("registerPasswordField"),
+              key: const Key("registerPasswordField"),
               controller: _passwordController,
               obscureText: _isHidden,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.password_rounded),
+                prefixIcon: const Icon(Icons.password_rounded),
                 hintText: "Password",
                 filled: true,
                 focusedBorder: OutlineInputBorder(
@@ -158,22 +152,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         //Spacing between the TextFields and login button
         const SizedBox(height: 25),
         ElevatedButton(
-            key: Key("registerNowButton"),
+            key: const Key("registerNowButton"),
             onPressed: () async {
               HouseSyncUser newUser = HouseSyncUser.newUser(
                   _usernameController.text, _emailController.text);
               await firebaseAuthFunctionality.registerUser(
                   newUser, _passwordController.text, context);
             },
-            child: Text("Register Now"),
             style: ButtonStyle(
                 backgroundColor:
                     WidgetStateProperty.all<Color>(Colors.blue[800]!),
                 foregroundColor:
                     WidgetStateProperty.resolveWith((state) => Colors.white),
                 textStyle:
-                    WidgetStateProperty.all<TextStyle>(TextStyle(fontSize: 30)),
-                minimumSize: WidgetStateProperty.all<Size>(Size(200, 100))))
+                    WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 30)),
+                minimumSize: WidgetStateProperty.all<Size>(const Size(200, 100))),
+            child: const Text("Register Now"))
       ],
     ));
   }

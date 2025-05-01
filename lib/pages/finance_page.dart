@@ -9,11 +9,9 @@ import 'package:shared_accommodation_management_app/views/finance_page_views/exp
 import 'package:shared_accommodation_management_app/views/finance_page_views/finance_header_view.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/finance_info_view.dart';
 
-import '../features/appbar_display.dart';
 import '../global/common/AppColours.dart';
 import '../main.dart';
 import '../view_models/user_view_model.dart';
-import '../views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
 import '../views/home_page_views/settings_view.dart';
 import 'chores_page.dart';
 import 'create_or_join_group_page.dart';
@@ -22,6 +20,8 @@ import 'login_page.dart';
 import 'medical_page.dart';
 
 class FinancePage extends StatefulWidget {
+  const FinancePage({super.key});
+
 
   @override
   State<FinancePage> createState() {
@@ -43,11 +43,11 @@ class _FinancePageState extends State<FinancePage> {
 
   int index = 2;
   List<Widget> pages = [
-    HomePage(),
-    ChoresPage(),
-    FinancePage(),
-    ShoppingPage(),
-    MedicalPage()
+    const HomePage(),
+    const ChoresPage(),
+    const FinancePage(),
+    const ShoppingPage(),
+    const MedicalPage()
   ];
 
   @override
@@ -113,30 +113,30 @@ class _FinancePageState extends State<FinancePage> {
                   }),
             ),
             ListTile(
-              title: Text("Group"),
+              title: const Text("Group"),
               onTap: () => groupDetails(context),
             ),
-            ListTile(title: Text("Settings"),
+            ListTile(title: const Text("Settings"),
               onTap: () => SettingsView.settingsPopup(context, SettingsView()),
             ),
 
             ListTile(
-                title: Text("Logout"),
+                title: const Text("Logout"),
                 onTap: () async {
                   await FirebaseAuth.instance.signOut()
                       .then((value) =>
                       Navigator.of(context)
                           .pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
+                          MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false));
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
                 }),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.feedback),
@@ -151,7 +151,7 @@ class _FinancePageState extends State<FinancePage> {
                     fontSize: 14),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Center(
@@ -162,12 +162,12 @@ class _FinancePageState extends State<FinancePage> {
                     fontSize: 14),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Divider(),
+            const Divider(),
             Center(
-              child: Container(
+              child: SizedBox(
                 width: 190,
                 height: 140,
                 child: Image.asset('assets/images/housesync_logo.png'),
@@ -176,7 +176,7 @@ class _FinancePageState extends State<FinancePage> {
           ],
         ),
       ),
-      body: SafeArea(
+      body: const SafeArea(
           bottom: false,
           child: Column(
             children: [
@@ -185,7 +185,7 @@ class _FinancePageState extends State<FinancePage> {
               Expanded(flex: 6, child: ExpenseCardListView())
             ],
           )),
-      floatingActionButton: AddExpenseView(),
+      floatingActionButton: const AddExpenseView(),
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }
@@ -207,7 +207,7 @@ class _FinancePageState extends State<FinancePage> {
                 ));
           },
           type: BottomNavigationBarType.fixed,
-          items: [
+          items: const [
             BottomNavigationBarItem(
                 icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
@@ -303,16 +303,16 @@ class _FinancePageState extends State<FinancePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: AppColours.colour2(brightness),
-                                  borderRadius: BorderRadius.vertical(
+                                  borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(30))),
-                              padding: EdgeInsets.all(20),
+                              padding: const EdgeInsets.all(20),
                               child: ListView.separated(
-                                  padding: EdgeInsets.all(15),
+                                  padding: const EdgeInsets.all(15),
                                   separatorBuilder: (context, index) {
-                                    return SizedBox(height: 15);
+                                    return const SizedBox(height: 15);
                                   },
                                   scrollDirection: Axis.vertical,
-                                  physics: ScrollPhysics(),
+                                  physics: const ScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: viewModel.memberIds.length,
                                   itemBuilder: (context, index) {
@@ -326,7 +326,7 @@ class _FinancePageState extends State<FinancePage> {
                                             child: ListTile(
                                               title: Row(
                                                 children: [
-                                                  Icon(Icons.account_box),
+                                                  const Icon(Icons.account_box),
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
                                                           color:
@@ -341,7 +341,7 @@ class _FinancePageState extends State<FinancePage> {
                             ),
                           ),
 
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           //Leave group button
                           ElevatedButton(
@@ -349,7 +349,7 @@ class _FinancePageState extends State<FinancePage> {
                                 viewModel.leaveGroup(user!.uid);
 
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
+                                    context, MaterialPageRoute(builder: (context) => const CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: AppColours.colour1(brightness),

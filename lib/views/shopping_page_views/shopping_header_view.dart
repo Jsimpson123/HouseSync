@@ -16,7 +16,7 @@ class ShoppingHeaderView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.menu,
                 size: 42,
               ),
@@ -25,9 +25,9 @@ class ShoppingHeaderView extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(width: 25,),
-          Icon(Icons.shopping_cart, size: 45,),
-          SizedBox(width: 5,),
+          const SizedBox(width: 25,),
+          const Icon(Icons.shopping_cart, size: 45,),
+          const SizedBox(width: 5,),
           Expanded(
               flex: 2,
               child: Column(

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/firebase_options.dart';
 import 'package:shared_accommodation_management_app/main.dart';
-import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
@@ -56,11 +54,11 @@ void main() {
           ),
         );
 
-      String random = Uuid().v4();
+      String random = const Uuid().v4();
       rand = random;
 
       //Find register button
-      final Finder registerButton = find.byKey(Key('registerButton'));
+      final Finder registerButton = find.byKey(const Key('registerButton'));
 
       //Click the button to navigate to register page
       await tester.tap(registerButton);
@@ -70,10 +68,10 @@ void main() {
       expect(find.text("Create Account"), findsOneWidget);
 
       //Finds widgets on the screen
-      final Finder registerUsernameField = find.byKey(Key('registerUsernameField'));
-      final Finder registerEmailField = find.byKey(Key('registerEmailField'));
-      final Finder registerPasswordField = find.byKey(Key('registerPasswordField'));
-      final Finder registerNowButton = find.byKey(Key('registerNowButton'));
+      final Finder registerUsernameField = find.byKey(const Key('registerUsernameField'));
+      final Finder registerEmailField = find.byKey(const Key('registerEmailField'));
+      final Finder registerPasswordField = find.byKey(const Key('registerPasswordField'));
+      final Finder registerNowButton = find.byKey(const Key('registerNowButton'));
 
       //Creates a new account
       await tester.enterText(registerUsernameField, 'TestUser');
@@ -83,7 +81,7 @@ void main() {
       await tester.pumpAndSettle();
 
       //Gives Firebase time
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       //Verifies the user is registered
       expect(auth.currentUser, isNotNull);
@@ -113,15 +111,15 @@ void main() {
       ),
     );
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is on the login page
     expect(find.text("Welcome"), findsOneWidget);
 
     // Find TextFields and button
-    final Finder emailField = find.byKey(Key('emailField'));
-    final Finder passwordField = find.byKey(Key('passwordField'));
-    final Finder loginButton = find.byKey(Key('loginButton'));
+    final Finder emailField = find.byKey(const Key('emailField'));
+    final Finder passwordField = find.byKey(const Key('passwordField'));
+    final Finder loginButton = find.byKey(const Key('loginButton'));
 
     //Logs in to pre-created account
     await tester.enterText(emailField, '$rand@test123.com');
@@ -130,7 +128,7 @@ void main() {
     await tester.pumpAndSettle();
 
     //Gives Firebase time
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is logged in
     expect(auth.currentUser, isNotNull);
@@ -142,31 +140,31 @@ void main() {
     expect(find.text("Create Group"), findsOneWidget);
 
     //Finds the button and clicks it
-    final Finder createGroupButton = find.byKey(Key('createGroupButton'));
+    final Finder createGroupButton = find.byKey(const Key('createGroupButton'));
     await tester.tap(createGroupButton);
     await tester.pumpAndSettle();
 
     //Enters the group name and clicks submit
-    final Finder groupNameTextField = find.byKey(Key('groupNameTextField'));
-    final Finder submitGroupNameButton = find.byKey(Key('submitGroupNameButton'));
+    final Finder groupNameTextField = find.byKey(const Key('groupNameTextField'));
+    final Finder submitGroupNameButton = find.byKey(const Key('submitGroupNameButton'));
     await tester.enterText(groupNameTextField, 'Group UI Test');
     await tester.tap(submitGroupNameButton);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     await tester.pumpAndSettle();
 
     //Verifies the user is on the home page
     expect(find.text("Home"), findsAny);
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
-    final Finder groupText = find.byKey(Key('groupCodeText'));
+    final Finder groupText = find.byKey(const Key('groupCodeText'));
 
     groupCode = await getTextFromFinder(tester, groupText);
     expect(groupCode, isNotNull);
     expect(groupCode?.isNotEmpty, true);
-    print("groupcode: " + groupCode!);
+    print("groupcode: ${groupCode!}");
   });
 
   testWidgets('User can create account and join a group', (WidgetTester tester) async {
@@ -192,16 +190,16 @@ void main() {
       ),
     );
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is on the login page
     expect(find.text("Welcome"), findsOneWidget);
 
-    String random = Uuid().v4();
+    String random = const Uuid().v4();
     rand = random;
 
     //Find register button
-    final Finder registerButton = find.byKey(Key('registerButton'));
+    final Finder registerButton = find.byKey(const Key('registerButton'));
 
     //Click the button to navigate to register page
     await tester.tap(registerButton);
@@ -211,10 +209,10 @@ void main() {
     expect(find.text("Create Account"), findsOneWidget);
 
     //Finds widgets on the screen
-    final Finder registerUsernameField = find.byKey(Key('registerUsernameField'));
-    final Finder registerEmailField = find.byKey(Key('registerEmailField'));
-    final Finder registerPasswordField = find.byKey(Key('registerPasswordField'));
-    final Finder registerNowButton = find.byKey(Key('registerNowButton'));
+    final Finder registerUsernameField = find.byKey(const Key('registerUsernameField'));
+    final Finder registerEmailField = find.byKey(const Key('registerEmailField'));
+    final Finder registerPasswordField = find.byKey(const Key('registerPasswordField'));
+    final Finder registerNowButton = find.byKey(const Key('registerNowButton'));
 
     //Creates a new account
     await tester.enterText(registerUsernameField, 'TestUser2');
@@ -224,7 +222,7 @@ void main() {
     await tester.pumpAndSettle();
 
     //Gives Firebase time
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is registered
     expect(auth.currentUser, isNotNull);
@@ -236,13 +234,13 @@ void main() {
     expect(find.text("Join Group"), findsOneWidget);
 
     //Finds the button and clicks it
-    final Finder joinGroupButton = find.byKey(Key('joinGroupButton'));
+    final Finder joinGroupButton = find.byKey(const Key('joinGroupButton'));
     await tester.tap(joinGroupButton);
     await tester.pumpAndSettle();
 
     //Enters the group name and clicks submit
-    final Finder groupCodeTextField = find.byKey(Key('groupCodeTextField'));
-    final Finder submitGroupNameButton = find.byKey(Key('submitGroupCodeButton'));
+    final Finder groupCodeTextField = find.byKey(const Key('groupCodeTextField'));
+    final Finder submitGroupNameButton = find.byKey(const Key('submitGroupCodeButton'));
 
     expect(groupCodeTextField, findsOneWidget);
 
@@ -250,13 +248,13 @@ void main() {
     await tester.tap(submitGroupNameButton);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     await tester.pumpAndSettle();
 
     //Verifies the user is on the home page
     expect(find.text("Home"), findsAny);
 
-    final Finder groupText = find.byKey(Key('groupCodeText'));
+    final Finder groupText = find.byKey(const Key('groupCodeText'));
 
     groupCode = await getTextFromFinder(tester, groupText);
 

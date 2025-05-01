@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
-import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/bottom_sheets/create_group_bottom_sheet_view.dart';
 
-import '../../global/common/AppColours.dart';
 import 'bottom_sheets/join_group_bottom_sheet_view.dart';
 
 class GroupFunctionsView extends StatelessWidget {
@@ -16,12 +14,12 @@ class GroupFunctionsView extends StatelessWidget {
       data: ThemeData.light(),
       child: Consumer<GroupViewModel>(builder: (context, viewModel, child) {
         return Container(
-          margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+          margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
           child: Row(
             children: [
               //Create group
               Expanded(
-                key: Key("createGroupButton"),
+                key: const Key("createGroupButton"),
                 flex: 1,
                 child: InkWell(
                   child: Container(
@@ -47,12 +45,12 @@ class GroupFunctionsView extends StatelessWidget {
                     ]),
                   ),
                   onTap: () {
-                    viewModel.displayBottomSheet(CreateGroupBottomSheetView(), context);
+                    viewModel.displayBottomSheet(const CreateGroupBottomSheetView(), context);
                   },
                 ),
               ),
 
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
 
               //Join group
               Expanded(
@@ -70,7 +68,7 @@ class GroupFunctionsView extends StatelessWidget {
                             child: FittedBox(
                               child: Text(
                                 "Join Group",
-                                key: Key("joinGroupButton"),
+                                key: const Key("joinGroupButton"),
                                 style: TextStyle(
                                     fontSize: 28,
                                     color: Colors.grey.shade800,
@@ -82,7 +80,7 @@ class GroupFunctionsView extends StatelessWidget {
                       ]),
                     ),
                     onTap: () {
-                      viewModel.displayBottomSheet(JoinGroupBottomSheetView(), context);
+                      viewModel.displayBottomSheet(const JoinGroupBottomSheetView(), context);
                     }),
               ),
             ],

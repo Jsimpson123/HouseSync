@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
-import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
 import '../../global/common/AppColours.dart';
 
 class TaskListView extends StatefulWidget {
+  const TaskListView({super.key});
+
   @override
   State<TaskListView> createState() {
     return _TaskListViewState();
@@ -24,12 +24,12 @@ class _TaskListViewState extends State<TaskListView> {
       return Container(
         decoration: BoxDecoration(
             color: AppColours.colour2(brightness),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
         child: viewModel.numTasks > 0 ?
         ListView.separated(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             separatorBuilder: (context, index) {
-              return SizedBox(height: 15);
+              return const SizedBox(height: 15);
             },
             itemCount: viewModel.numTasks,
             itemBuilder: (context, index) {
@@ -41,10 +41,10 @@ class _TaskListViewState extends State<TaskListView> {
                   viewModel.deleteTask(index);
                 },
                 background: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
                   decoration:
                       BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
-                  child: Center(child: Icon(Icons.delete)),
+                  child: const Center(child: Icon(Icons.delete)),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
@@ -78,7 +78,7 @@ class _TaskListViewState extends State<TaskListView> {
                                 }
                               });
                             },
-                            icon: Icon(Icons.remove_circle))
+                            icon: const Icon(Icons.remove_circle))
                         : IconButton(
                             key: Key("assignButton$index"),
                             //If false
@@ -92,12 +92,12 @@ class _TaskListViewState extends State<TaskListView> {
                                 }
                               });
                             },
-                            icon: Icon(Icons.add_box)),
+                            icon: const Icon(Icons.add_box)),
                     subtitle: task.assignedUser != null
                         ? Row(
                             children: [
                               Chip(
-                                avatar: Icon(Icons.account_box),
+                                avatar: const Icon(Icons.account_box),
                                 label: FutureBuilder<String?>(
                                     //If true
                                     future: viewModel.returnAssignedTaskUsername(task.taskId),
@@ -123,7 +123,7 @@ class _TaskListViewState extends State<TaskListView> {
                                 backgroundColor: brightness == Brightness.light
                                     ? Colors.lightBlue[100]
                                     : Colors.blue[900],
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                   side: BorderSide(color: Colors.grey.shade300),
@@ -135,7 +135,7 @@ class _TaskListViewState extends State<TaskListView> {
                   ),
                 ),
               );
-            }) : Center(
+            }) : const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

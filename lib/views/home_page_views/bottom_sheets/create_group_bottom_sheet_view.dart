@@ -5,11 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 
-import '../../../global/common/AppColours.dart';
 import '../../../main.dart';
 import '../../../pages/home_page.dart';
 
 class CreateGroupBottomSheetView extends StatefulWidget {
+  const CreateGroupBottomSheetView({super.key});
+
   @override
   State<CreateGroupBottomSheetView> createState() {
     return _CreateGroupBottomSheetView();
@@ -36,20 +37,19 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    key: Key("groupNameTextField"),
+                    key: const Key("groupNameTextField"),
                       decoration: const InputDecoration(
                           hintText: "Group Name", border: OutlineInputBorder()),
                       controller: enteredGroupNameController
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   ElevatedButton(
-                    key: Key("submitGroupNameButton"),
-                      child: Text("Submit"),
+                    key: const Key("submitGroupNameButton"),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey.shade800,
                           foregroundColor: Colors.grey.shade50,
-                          fixedSize: Size(100, 50)),
+                          fixedSize: const Size(100, 50)),
                       onPressed: () async {
                         if (enteredGroupNameController.text.isNotEmpty) {
                           Group newGroup = Group.newGroup(
@@ -65,7 +65,7 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                               //Checks firebase for the users darkMode setting
                               final doc = await FirebaseFirestore.instance
                                   .collection('users')
-                                  .doc(user?.uid)
+                                  .doc(user.uid)
                                   .get();
 
                               final isDark = doc.data()?['darkMode'] ?? false;
@@ -81,7 +81,8 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                         }
                         Navigator.of(context)
                             .pop(); //Makes bottom task bar disappear
-                      })
+                      },
+                      child: const Text("Submit"))
                 ],
               )));
     });
@@ -91,6 +92,6 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => HomePage()));
+            builder: (context) => const HomePage()));
   }
 }

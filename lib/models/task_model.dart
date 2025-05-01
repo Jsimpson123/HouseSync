@@ -39,6 +39,6 @@ class Task {
   }
 
   void generateId() {
-    taskId = Uuid().v4();
+    taskId = const Uuid().v4();
   }
 }

@@ -3,9 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/firebase_options.dart';
-import 'package:shared_accommodation_management_app/pages/chores_page.dart';
-import 'package:shared_accommodation_management_app/pages/create_account_page.dart';
-import 'package:shared_accommodation_management_app/pages/create_or_join_group_page.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +28,7 @@ void main() async {
   if (user != null) {
     final userDoc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(user?.uid)
+        .doc(user.uid)
         .get();
 
     isDarkMode = userDoc.data()?['darkMode'] ?? false;
@@ -93,7 +90,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             themeMode: mode,
-            home: user == null ? LoginPage() : HomePage(),
+            home: user == null ? const LoginPage() : const HomePage(),
             debugShowCheckedModeBanner: false,
           );
         }

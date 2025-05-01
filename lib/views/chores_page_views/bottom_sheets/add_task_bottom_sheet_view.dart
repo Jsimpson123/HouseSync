@@ -6,6 +6,8 @@ import 'package:shared_accommodation_management_app/view_models/task_view_model.
 import '../../../global/common/AppColours.dart';
 
 class AddTaskBottomSheetView extends StatelessWidget {
+  const AddTaskBottomSheetView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
@@ -24,7 +26,7 @@ class AddTaskBottomSheetView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    key: Key("choreTextField"),
+                    key: const Key("choreTextField"),
                     decoration: const InputDecoration(
                         hintText: "Task Name", border: OutlineInputBorder()),
                     controller: enteredTaskNameController,
@@ -32,15 +34,14 @@ class AddTaskBottomSheetView extends StatelessWidget {
                     }
                   ),
 
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   ElevatedButton(
-                  key: Key("submitChoreButton"),
-                  child: Text("Submit"),
+                  key: const Key("submitChoreButton"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColours.colour3(brightness),
                     foregroundColor: AppColours.colour1(brightness),
-                    fixedSize: Size(100, 50)),
+                    fixedSize: const Size(100, 50)),
                   onPressed: () {
                     if (enteredTaskNameController.text.isNotEmpty) {
                       Task newTask = Task.newTask(enteredTaskNameController.text);
@@ -48,7 +49,8 @@ class AddTaskBottomSheetView extends StatelessWidget {
                       enteredTaskNameController.clear();
                     }
                     Navigator.of(context).pop(); //Makes bottom task bar disappear
-                  }
+                  },
+                  child: const Text("Submit")
                   )
                 ],
               )));

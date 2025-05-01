@@ -2,18 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
-import 'package:shared_accommodation_management_app/models/finance_model.dart';
-import 'package:shared_accommodation_management_app/pages/finance_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/shopping_view_model.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/v4.dart';
 
 import '../../../global/common/AppColours.dart';
 import '../../../models/shopping_model.dart';
 import '../../../view_models/finance_view_model.dart';
-import '../../../view_models/task_view_model.dart';
 
 class AddShoppingListBottomSheetView extends StatefulWidget {
   const AddShoppingListBottomSheetView({super.key});
@@ -75,25 +71,24 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                         controller: enteredShoppingListNameController,
                         onChanged: (_) => setState(() {})),
 
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
 
                     //Assign items Button
                     IconButton(
-                        icon: Icon(Icons.shopping_basket),
+                        icon: const Icon(Icons.shopping_basket),
                         iconSize: 30,
                         onPressed: !isAddButtonEnabled()
                             ? null
                             : () => assignItemsToShoppingListPopup(context)),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     //Submit Button
                     ElevatedButton(
-                        child: Text("Submit"),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: AppColours.colour3(brightness),
                             foregroundColor: AppColours.colour1(brightness),
-                            fixedSize: Size(150, 100)),
+                            fixedSize: const Size(150, 100)),
                         onPressed: !isSubmitButtonEnabled()
                             ? null
                             : () async {
@@ -122,8 +117,9 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ShoppingPage()));
-                              })
+                                        builder: (context) => const ShoppingPage()));
+                              },
+                        child: const Text("Submit"))
                   ],
                 ))),
       );
@@ -145,7 +141,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('Add Items'),
+                title: const Text('Add Items'),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -167,7 +163,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                padding: EdgeInsets.only(bottom: 30),
+                                padding: const EdgeInsets.only(bottom: 30),
                                 icon: const Icon(Icons.minimize),
                                 iconSize: 60,
                                 onPressed: () {
@@ -211,7 +207,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                       'itemName': enteredItemNameController.text,
                                       'quantity': quantity,
                                       'isPurchased': false,
-                                      'itemId': Uuid().v4()
+                                      'itemId': const Uuid().v4()
                                     });
                                     showToast(
                                         message: "Added: $quantity ${enteredItemNameController.text}");

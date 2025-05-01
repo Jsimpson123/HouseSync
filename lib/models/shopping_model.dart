@@ -41,6 +41,6 @@ class ShoppingList {
   }
 
   void generateId() {
-    shoppingListId = Uuid().v4();
+    shoppingListId = const Uuid().v4();
   }
 }

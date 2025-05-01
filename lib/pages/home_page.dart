@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_accommodation_management_app/features/appbar_display.dart';
 import 'package:shared_accommodation_management_app/global/common/AppColours.dart';
 import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/pages/chores_page.dart';
@@ -10,11 +8,7 @@ import 'package:shared_accommodation_management_app/pages/finance_page.dart';
 import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
-import 'package:shared_accommodation_management_app/views/home_page_views/bottom_sheets/group_details_bottom_sheet_view.dart';
-import 'package:shared_accommodation_management_app/views/home_page_views/calendar_view.dart';
-import 'package:shared_accommodation_management_app/views/home_page_views/group_functions_view.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 
 import '../main.dart';
 import '../models/event_model.dart';
@@ -26,6 +20,8 @@ import 'create_or_join_group_page.dart';
 import 'medical_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() {
     return _HomePageState();
@@ -37,11 +33,11 @@ class _HomePageState extends State<HomePage> {
 
   int index = 0;
   List<Widget> pages = [
-    HomePage(),
-    ChoresPage(),
-    FinancePage(),
-    ShoppingPage(),
-    MedicalPage(),
+    const HomePage(),
+    const ChoresPage(),
+    const FinancePage(),
+    const ShoppingPage(),
+    const MedicalPage(),
   ];
 
   late final ValueNotifier<List<Event>> _selectedEvents;
@@ -146,28 +142,28 @@ class _HomePageState extends State<HomePage> {
                   }),
             ),
             ListTile(
-              title: Text("Group"),
+              title: const Text("Group"),
               onTap: () => groupDetails(context),
             ),
             ListTile(
-              title: Text("Settings"),
+              title: const Text("Settings"),
               onTap: () => SettingsView.settingsPopup(context, SettingsView()),
             ),
             ListTile(
-                title: Text("Logout"),
+                title: const Text("Logout"),
                 onTap: () async {
                   await FirebaseAuth.instance.signOut().then((value) => Navigator.of(context)
                       .pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => LoginPage()), (route) => false));
+                          MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false));
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
                 }),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
-            Divider(),
-            Row(
+            const Divider(),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
               Icon(Icons.feedback),
@@ -182,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 14),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Center(
@@ -193,12 +189,12 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 14),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Divider(),
+            const Divider(),
             Center(
-              child: Container(
+              child: SizedBox(
                 width: 190,
                 height: 140,
                 child: Image.asset('assets/images/housesync_logo.png'),
@@ -211,9 +207,9 @@ class _HomePageState extends State<HomePage> {
           bottom: false,
           child: Column(
             children: [
-              Expanded(flex: 2, child: HomeHeaderView()),
+              const Expanded(flex: 2, child: HomeHeaderView()),
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(color: Colors.black),
                   ),
@@ -254,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                           _focusedDay = focusedDay;
                         }),
                   )),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Expanded(
                 flex: 3,
                 child: ValueListenableBuilder<List<Event>>(
@@ -263,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                       return Container(
                         decoration: BoxDecoration(
                             color: AppColours.colour2(brightness),
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
                         child: Column(
                           children: [
                             Text("Events",
@@ -275,9 +271,9 @@ class _HomePageState extends State<HomePage> {
                               child: SizedBox(
                                 height: 200,
                                 child: ListView.separated(
-                                    padding: EdgeInsets.all(15),
+                                    padding: const EdgeInsets.all(15),
                                     separatorBuilder: (context, index) {
-                                      return SizedBox(height: 15);
+                                      return const SizedBox(height: 15);
                                     },
                                     itemCount: value.length,
                                     itemBuilder: (context, index) {
@@ -297,15 +293,15 @@ class _HomePageState extends State<HomePage> {
                                             });
                                           },
                                           background: Container(
-                                            margin: EdgeInsets.symmetric(horizontal: 5),
+                                            margin: const EdgeInsets.symmetric(horizontal: 5),
                                             decoration: BoxDecoration(
                                                 color: Colors.red,
                                                 borderRadius: BorderRadius.circular(10)),
-                                            child: Center(child: Icon(Icons.delete)),
+                                            child: const Center(child: Icon(Icons.delete)),
                                           ),
                                           child: Container(
                                               decoration: BoxDecoration(
-                                                  boxShadow: [
+                                                  boxShadow: const [
                                                     BoxShadow(
                                                         color: Colors.blueAccent, spreadRadius: 2)
                                                   ],
@@ -352,9 +348,9 @@ class _HomePageState extends State<HomePage> {
                                                                               FontWeight.bold,
                                                                           color: AppColours.colour3(
                                                                               brightness))),
-                                                                  SizedBox(height: 15),
+                                                                  const SizedBox(height: 15),
                                                                   TextField(
-                                                                    key: Key(
+                                                                    key: const Key(
                                                                         "updatedEventNameTextField"),
                                                                     decoration: const InputDecoration(
                                                                         hintText: "New Event Name",
@@ -363,7 +359,7 @@ class _HomePageState extends State<HomePage> {
                                                                     controller:
                                                                         enteredEventNameController,
                                                                   ),
-                                                                  SizedBox(height: 15),
+                                                                  const SizedBox(height: 15),
                                                                   IconButton(
                                                                       onPressed: () async {
                                                                         //Shows the time picker, setting it to the previously set time
@@ -382,14 +378,13 @@ class _HomePageState extends State<HomePage> {
                                                                           isTimeChanged = true;
                                                                         }
                                                                       },
-                                                                      icon: Icon(
+                                                                      icon: const Icon(
                                                                         Icons.more_time,
                                                                       )),
-                                                                  SizedBox(height: 15),
+                                                                  const SizedBox(height: 15),
                                                                   ElevatedButton(
-                                                                      key: Key(
+                                                                      key: const Key(
                                                                           "submitNewEventDetailsButton"),
-                                                                      child: Text("Submit"),
                                                                       style: ElevatedButton.styleFrom(
                                                                           foregroundColor:
                                                                               AppColours.colour1(
@@ -397,7 +392,7 @@ class _HomePageState extends State<HomePage> {
                                                                           backgroundColor:
                                                                               AppColours.colour3(
                                                                                   brightness),
-                                                                          fixedSize: Size(100, 50)),
+                                                                          fixedSize: const Size(100, 50)),
                                                                       onPressed: () async {
                                                                         DateTime updatedTime;
 
@@ -443,7 +438,8 @@ class _HomePageState extends State<HomePage> {
                                                                         showToast(
                                                                             message:
                                                                                 "New Time: ${selectedTime.hour}:${selectedTime.minute.toString()}");
-                                                                      })
+                                                                      },
+                                                                      child: const Text("Submit"))
                                                                 ],
                                                               ))),
                                                       context);
@@ -455,7 +451,7 @@ class _HomePageState extends State<HomePage> {
                                                         color: AppColours.colour4(brightness))),
                                                 subtitle: Row(
                                                   children: [
-                                                    Icon(Icons.access_time_outlined),
+                                                    const Icon(Icons.access_time_outlined),
                                                     Text(value[index].time.toString(),
                                                         style: TextStyle(
                                                             fontSize: 16,
@@ -476,7 +472,7 @@ class _HomePageState extends State<HomePage> {
                                                           fit: BoxFit.fitHeight,
                                                           child: Column(
                                                             children: [
-                                                              Icon(Icons.supervisor_account_sharp,
+                                                              const Icon(Icons.supervisor_account_sharp,
                                                                   size: 35),
                                                               Text("${snapshot.data}",
                                                                   style: TextStyle(
@@ -494,7 +490,7 @@ class _HomePageState extends State<HomePage> {
                                       } else {
                                         return Container(
                                             decoration: BoxDecoration(
-                                                boxShadow: [
+                                                boxShadow: const [
                                                   BoxShadow(
                                                       color: Colors.blueAccent, spreadRadius: 2)
                                                 ],
@@ -508,7 +504,7 @@ class _HomePageState extends State<HomePage> {
                                                       color: AppColours.colour4(brightness))),
                                               subtitle: Row(
                                                 children: [
-                                                  Icon(Icons.access_time_outlined),
+                                                  const Icon(Icons.access_time_outlined),
                                                   Text(value[index].time.toString(),
                                                       style: TextStyle(
                                                           fontSize: 16,
@@ -528,7 +524,7 @@ class _HomePageState extends State<HomePage> {
                                                         fit: BoxFit.fitHeight,
                                                         child: Column(
                                                           children: [
-                                                            Icon(Icons.supervisor_account_sharp,
+                                                            const Icon(Icons.supervisor_account_sharp,
                                                                 size: 35),
                                                             Text("${snapshot.data}",
                                                                 style: TextStyle(
@@ -558,7 +554,7 @@ class _HomePageState extends State<HomePage> {
         return SizedBox(
           height: 60,
           child: ElevatedButton(
-              key: Key("createEventButton"),
+              key: const Key("createEventButton"),
               style: ElevatedButton.styleFrom(
                   backgroundColor: AppColours.colour3(brightness),
                   foregroundColor: AppColours.colour1(brightness)),
@@ -578,19 +574,18 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       TextField(
-                                          key: Key("eventTextField"),
+                                          key: const Key("eventTextField"),
                                           decoration: const InputDecoration(
                                               hintText: "Event Name", border: OutlineInputBorder()),
                                           controller: enteredEventNameController,
                                           onSubmitted: (value) async {}),
-                                      SizedBox(height: 15),
+                                      const SizedBox(height: 15),
                                       ElevatedButton(
-                                          key: Key("submitEventButton"),
-                                          child: Text("Submit"),
+                                          key: const Key("submitEventButton"),
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor: AppColours.colour3(brightness),
                                               foregroundColor: AppColours.colour1(brightness),
-                                              fixedSize: Size(100, 50)),
+                                              fixedSize: const Size(100, 50)),
                                           onPressed: () async {
                                             if (enteredEventNameController.text.isNotEmpty) {
                                               Event newEvent = Event.newEvent(user!.uid,
@@ -618,7 +613,8 @@ class _HomePageState extends State<HomePage> {
                                                 .pop(); //Makes bottom event bar disappear
                                             // _selectedEvents.value = _getEventsForDay(_selectedDay!);
                                             _loadEventsForDay(_selectedDay!);
-                                          }),
+                                          },
+                                          child: const Text("Submit")),
                                     ],
                                   )));
                         }), context)
@@ -626,7 +622,7 @@ class _HomePageState extends State<HomePage> {
                     else
                       {showToast(message: "Please Select A Day")}
                   },
-              child: Icon(Icons.add)),
+              child: const Icon(Icons.add)),
         );
       }),
       bottomNavigationBar: setBottomNavigationBar(),
@@ -651,7 +647,7 @@ class _HomePageState extends State<HomePage> {
                 ));
           },
           type: BottomNavigationBarType.fixed,
-          items: [
+          items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.dry_cleaning_sharp), label: "Chores", key: Key("choresPage")),
@@ -738,15 +734,15 @@ class _HomePageState extends State<HomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: AppColours.colour2(brightness),
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-                              padding: EdgeInsets.all(20),
+                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
+                              padding: const EdgeInsets.all(20),
                               child: ListView.separated(
-                                  padding: EdgeInsets.all(15),
+                                  padding: const EdgeInsets.all(15),
                                   separatorBuilder: (context, index) {
-                                    return SizedBox(height: 15);
+                                    return const SizedBox(height: 15);
                                   },
                                   scrollDirection: Axis.vertical,
-                                  physics: ScrollPhysics(),
+                                  physics: const ScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: viewModel.memberIds.length,
                                   itemBuilder: (context, index) {
@@ -759,7 +755,7 @@ class _HomePageState extends State<HomePage> {
                                             child: ListTile(
                                               title: Row(
                                                 children: [
-                                                  Icon(Icons.account_box),
+                                                  const Icon(Icons.account_box),
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
                                                           color: AppColours.colour4(brightness),
@@ -775,7 +771,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
 
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           //Leave group button
                           ElevatedButton(
@@ -785,7 +781,7 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => CreateOrJoinGroupPage()));
+                                        builder: (context) => const CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: AppColours.colour1(brightness),

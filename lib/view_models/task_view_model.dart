@@ -91,7 +91,7 @@ class TaskViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteAllCompletedTasks() async {
-    final collection = await _firestore.collection('tasks');
+    final collection = _firestore.collection('tasks');
     final snapshot = await collection.where('isCompleted', isEqualTo: true).get();
 
     List<String> completedTasksIds = [];

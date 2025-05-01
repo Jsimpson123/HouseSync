@@ -35,10 +35,10 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                 child: Container(
                   decoration: BoxDecoration(
                       color: AppColours.colour2(brightness),
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-                  child: viewModel.expenses.length > 0
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
+                  child: viewModel.expenses.isNotEmpty
                   ? GridView.builder(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
@@ -90,18 +90,18 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                   //FIX THIS
                                                   setState(() async {
 
-                                                    SizedBox.shrink();
+                                                    const SizedBox.shrink();
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (context) => FinancePage()));
+                                                            builder: (context) => const FinancePage()));
                                                   });
-                                                  return SizedBox();
+                                                  return const SizedBox();
                                                 } else {
                                                   return FittedBox(
                                                       fit: BoxFit.fitHeight,
                                                       child: Text(
-                                                          "£" + num.tryParse("${snapshot.data}")!.toStringAsFixed(2),
+                                                          "£${num.tryParse("${snapshot.data}")!.toStringAsFixed(2)}",
                                                           style: TextStyle(
                                                               fontSize: isMobile ? 20 : 24,
                                                               fontWeight: FontWeight.bold,
@@ -132,7 +132,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                     children: [
                                                       for (int i = 0; i < assignedUsers.length; i++)
                                                         Chip(
-                                                          avatar: Icon(Icons.account_box),
+                                                          avatar: const Icon(Icons.account_box),
                                                           label: Text(
                                                             assignedUsers[i],
                                                               style: TextStyle(
@@ -143,7 +143,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                           backgroundColor: brightness == Brightness.light
                                                               ? Colors.lightBlue[100]
                                                               : Colors.blue[900],
-                                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                                           shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(20),
                                                             side: BorderSide(color: Colors.grey.shade300),
@@ -155,7 +155,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                               }),
                                         ),
 
-                                        SizedBox(height: 15,),
+                                        const SizedBox(height: 15,),
 
                                         FutureBuilder(
                                           future: viewModel.returnExpenseCreatorId(expense.expenseId),
@@ -173,7 +173,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                       backgroundColor: Colors
                                                           .red,
                                                       textStyle:
-                                                      TextStyle(
+                                                      const TextStyle(
                                                           fontWeight: FontWeight
                                                               .w700,
                                                           fontSize: 16),
@@ -182,7 +182,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               .circular(20))),
                                                   child: const Text("Delete"));
                                             }
-                                            return SizedBox();
+                                            return const SizedBox();
                                           }
                                         )
                                       ],
@@ -191,7 +191,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                             )
                           ),
                         );
-                    }) : Center(
+                    }) : const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -234,7 +234,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('Expense Details'),
+                title: const Text('Expense Details'),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -248,7 +248,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: AppColours.colour2(brightness),
-                                    borderRadius: BorderRadius.vertical(
+                                    borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(30),
                                         bottom: Radius.circular(30))),
 
@@ -261,10 +261,10 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                             ""); //Due to a delay in the username loading
                                       } else {
                                         return ListView.separated(
-                                            padding: EdgeInsets.all(15),
+                                            padding: const EdgeInsets.all(15),
                                             shrinkWrap: true,
                                             separatorBuilder: (context, index) {
-                                              return SizedBox(height: 15);
+                                              return const SizedBox(height: 15);
                                             },
                                             itemCount: snapshot.data?[0]!.length,
                                             itemBuilder: (context, index) {
@@ -279,9 +279,9 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                       child: ListTile(
                                                           //Prevents overflow
                                                           dense: true,
-                                                          contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+                                                          contentPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
                                                         leading: Text(
-                                                            "£" + num.tryParse(snapshot.data?[1]![index])!.toStringAsFixed(2),
+                                                            "£${num.tryParse(snapshot.data?[1]![index])!.toStringAsFixed(2)}",
                                                             style: TextStyle(
                                                             color: Colors.red,
                                                             fontWeight: FontWeight.bold,
@@ -294,7 +294,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                                 Icons.account_box,
                                                                 size: isMobile ? 18 : 24,
                                                             ),
-                                                            SizedBox(width: 2),
+                                                            const SizedBox(width: 2),
                                                             Expanded(
                                                               child: Text(
                                                                   snapshot.data?[0]![index],
@@ -317,7 +317,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                               hintText: "Paid",
                                                               border: OutlineInputBorder()),
                                                           controller: enteredUserAmountController,
-                                                          keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                                           inputFormatters: [
                                                             //Regex to insure invalid user inputs cant be entered
                                                             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
@@ -351,7 +351,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                                 }
                                                               });
 
-                                              }, icon: Icon(Icons.add))
+                                              }, icon: const Icon(Icons.add))
                                                             : null
                                                       ));
                                             });

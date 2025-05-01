@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class Event {
@@ -26,6 +25,6 @@ class Event {
       time = '';
 
   void generateId() {
-    eventId = Uuid().v4();
+    eventId = const Uuid().v4();
   }
 }

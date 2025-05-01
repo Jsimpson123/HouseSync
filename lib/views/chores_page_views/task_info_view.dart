@@ -12,7 +12,7 @@ class TaskInfoView extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Container(
-        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
         child: Row(
           children: [
             //Total Tasks
@@ -52,7 +52,7 @@ class TaskInfoView extends StatelessWidget {
               ),
             ),
 
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
 
             //Remaining Tasks
             Expanded(

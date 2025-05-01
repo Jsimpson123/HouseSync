@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../global/common/toast.dart';
@@ -8,7 +7,7 @@ import '../models/user_model.dart';
 import '../pages/create_or_join_group_page.dart';
 
 class FirebaseAuthFunctionality extends ChangeNotifier{
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> registerUser(HouseSyncUser user, String password, BuildContext context) async {
       try {
@@ -42,7 +41,7 @@ class FirebaseAuthFunctionality extends ChangeNotifier{
             'email': user.email});
 
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
+              MaterialPageRoute(builder: (context) => const CreateOrJoinGroupPage()));
 
           print("User was successfully created");
           showToast(message: "User was successfully created");

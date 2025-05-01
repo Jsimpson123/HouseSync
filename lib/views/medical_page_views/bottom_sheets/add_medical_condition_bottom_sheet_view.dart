@@ -2,10 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/models/medical_model.dart';
-import 'package:shared_accommodation_management_app/models/task_model.dart';
 import 'package:shared_accommodation_management_app/pages/medical_page.dart';
 import 'package:shared_accommodation_management_app/view_models/medical_view_model.dart';
-import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 
 import '../../../global/common/AppColours.dart';
 
@@ -55,7 +53,7 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                       onChanged: (_) => setState(() {})
                   ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   TextField(
                     decoration: const InputDecoration(
@@ -67,15 +65,14 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                     keyboardType: TextInputType.multiline,
                       onChanged: (_) => setState(() {})
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   //Submit Button
                   ElevatedButton(
-                      child: Text("Submit"),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: AppColours.colour3(brightness),
                           foregroundColor: AppColours.colour1(brightness),
-                          fixedSize: Size(150, 100)),
+                          fixedSize: const Size(150, 100)),
                       onPressed: !isSubmitButtonEnabled()
                           ? null
                           : ()  async {
@@ -98,8 +95,9 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    MedicalPage()));
-                      })
+                                    const MedicalPage()));
+                      },
+                      child: const Text("Submit"))
                 ],
               )));
     });

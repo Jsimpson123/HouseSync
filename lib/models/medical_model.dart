@@ -41,6 +41,6 @@ class MedicalCondition {
   }
 
   void generateId() {
-    medicalConditionId = Uuid().v4();
+    medicalConditionId = const Uuid().v4();
   }
 }

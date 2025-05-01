@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/AppColours.dart';
-import 'package:shared_accommodation_management_app/pages/home_page.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
 class HomeHeaderView extends StatelessWidget {
+  const HomeHeaderView({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class HomeHeaderView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.menu,
                 size: 42,
               ),
@@ -34,9 +35,9 @@ class HomeHeaderView extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(width: 25,),
-          Icon(Icons.home, size: 45,),
-          SizedBox(width: 5,),
+          const SizedBox(width: 25,),
+          const Icon(Icons.home, size: 45,),
+          const SizedBox(width: 5,),
           Expanded(
               flex: 2,
               child: Column(
@@ -81,7 +82,7 @@ class HomeHeaderView extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: AppColours.colour4(brightness))),
                               Text("${snapshot.data}",
-                                  key: Key("groupCodeText"),
+                                  key: const Key("groupCodeText"),
                                   style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,

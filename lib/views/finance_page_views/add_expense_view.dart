@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
 import '../../global/common/AppColours.dart';
 import '../../view_models/finance_view_model.dart';
 import 'bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 class AddExpenseView extends StatelessWidget {
+  const AddExpenseView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
@@ -19,9 +20,9 @@ class AddExpenseView extends StatelessWidget {
             ),
             onPressed: () {
               viewModel.displayBottomSheet(
-                  AddExpenseBottomSheetView(), context);
+                  const AddExpenseBottomSheetView(), context);
             },
-            child: Icon(
+            child: const Icon(
                 Icons.add)),
       );
     });

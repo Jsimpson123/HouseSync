@@ -11,7 +11,7 @@ class DeleteTaskBottomSheetView extends StatelessWidget{
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
     return Consumer<TaskViewModel>(builder: (context, viewModel, child){
-      return Container(
+      return SizedBox(
         height: 150,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -24,12 +24,12 @@ class DeleteTaskBottomSheetView extends StatelessWidget{
                 foregroundColor: AppColours.colour1(brightness),
                 backgroundColor: AppColours.colour3(brightness),
                 textStyle:
-                  TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20))),
-              child: Text("Delete All")),
+              child: const Text("Delete All")),
 
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
 
             ElevatedButton(
                 onPressed: () {
@@ -39,10 +39,10 @@ class DeleteTaskBottomSheetView extends StatelessWidget{
                     foregroundColor: AppColours.colour1(brightness),
                     backgroundColor: AppColours.colour3(brightness),
                     textStyle:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                    const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
-                child: Text("Delete Completed"))
+                child: const Text("Delete Completed"))
           ],
         ),
       );

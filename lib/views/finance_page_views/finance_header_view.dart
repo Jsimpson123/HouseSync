@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/view_models/task_view_model.dart';
-import 'package:shared_accommodation_management_app/views/finance_page_views/expense_card_list_view.dart';
 
 import '../../global/common/AppColours.dart';
 import 'expense_records_view.dart';
@@ -19,7 +18,7 @@ class FinanceHeaderView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.menu,
                 size: 42,
               ),
@@ -28,9 +27,9 @@ class FinanceHeaderView extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(width: 25,),
-          Icon(Icons.monetization_on, size: 45,),
-          SizedBox(width: 5,),
+          const SizedBox(width: 25,),
+          const Icon(Icons.monetization_on, size: 45,),
+          const SizedBox(width: 5,),
           Expanded(
               flex: 2,
               child: Column(
@@ -52,11 +51,11 @@ class FinanceHeaderView extends StatelessWidget {
                 ],
               )),
           Container(
-            margin: EdgeInsets.only(right: 100),
+            margin: const EdgeInsets.only(right: 100),
             child: InkWell( onTap: () {
               ExpenseRecordsView.expenseRecordsPopup(context, ExpenseRecordsView());
             },
-                child: Icon(Icons.calendar_month, size: 40)),
+                child: const Icon(Icons.calendar_month, size: 40)),
           ),
         ],
       );

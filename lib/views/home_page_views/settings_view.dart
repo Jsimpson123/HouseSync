@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/main.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
-import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../global/common/AppColours.dart';
 import '../../global/common/toast.dart';
@@ -29,7 +27,7 @@ class SettingsView {
               builder: (context, viewModel, child) {
                 return AlertDialog(
                   scrollable: true,
-                  title: Text('Settings'),
+                  title: const Text('Settings'),
                   content: SingleChildScrollView(
                     child: SizedBox(
                       width: double.maxFinite,
@@ -62,7 +60,7 @@ class SettingsView {
                                             sendForgotPasswordEmail(userEmail!);
                                           },
                                         ),
-                                        Divider(),
+                                        const Divider(),
 
                                         SwitchListTile(
                                           title: Text('Dark Mode',
@@ -86,11 +84,11 @@ class SettingsView {
                                             }
                                           },
                                         ),
-                                        Divider(),
+                                        const Divider(),
 
-                                        SizedBox(height: 40),
+                                        const SizedBox(height: 40),
 
-                                        Center(child: Text('HouseSync - Version 1.0.0', style: TextStyle(color: Colors.grey))),
+                                        const Center(child: Text('HouseSync - Version 1.0.0', style: TextStyle(color: Colors.grey))),
                                       ],
                                     )
                                     ,

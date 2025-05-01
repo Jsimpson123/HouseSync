@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/views/home_page_views/group_functions_view.dart';
 
 class CreateOrJoinGroupPage extends StatefulWidget {
+  const CreateOrJoinGroupPage({super.key});
+
   @override
   State<CreateOrJoinGroupPage> createState() {
     return _CreateOrJoinGroupPageState();
@@ -13,7 +15,7 @@ class _CreateOrJoinGroupPageState extends State<CreateOrJoinGroupPage> {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData.light(),
-      child: Scaffold(
+      child: const Scaffold(
         body: Center(child: GroupFunctionsView())
       ),
     );

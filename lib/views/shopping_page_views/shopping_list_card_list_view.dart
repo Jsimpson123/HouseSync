@@ -8,8 +8,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../global/common/AppColours.dart';
 import '../../global/common/toast.dart';
-import '../../view_models/finance_view_model.dart';
-import '../finance_page_views/bottom_sheets/add_expense_bottom_sheet_view.dart';
 
 class ShoppingListCardListView extends StatefulWidget {
   const ShoppingListCardListView({super.key});
@@ -37,10 +35,10 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
             child: Container(
                 decoration: BoxDecoration(
                     color: AppColours.colour2(brightness),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
-                child: viewModel.shoppingLists.length > 0
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
+                child: viewModel.shoppingLists.isNotEmpty
                     ? GridView.builder(
-                        padding: EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(15),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 10,
@@ -48,7 +46,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                           childAspectRatio: isMobile ? 0.8 : 2.7,
                         ),
                         scrollDirection: Axis.vertical,
-                        physics: ScrollPhysics(),
+                        physics: const ScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: viewModel.shoppingLists.length,
                         itemBuilder: (context, index) {
@@ -94,7 +92,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                         //     ),
                                         //   ),
                                         // ),
-                                        SizedBox(height: 30),
+                                        const SizedBox(height: 30),
                                         Column(
                                           children: [
                                             Center(
@@ -132,7 +130,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                 style: ElevatedButton.styleFrom(
                                                     foregroundColor: AppColours.colour1(brightness),
                                                     backgroundColor: Colors.red,
-                                                    textStyle: TextStyle(
+                                                    textStyle: const TextStyle(
                                                         fontWeight: FontWeight.w700, fontSize: 16),
                                                     shape: RoundedRectangleBorder(
                                                         borderRadius: BorderRadius.circular(20))),
@@ -145,7 +143,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                 )),
                           );
                         })
-                    : Center(
+                    : const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -190,7 +188,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('Shopping List Details'),
+                title: const Text('Shopping List Details'),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -203,7 +201,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                             Container(
                               height: 50,
                               width: 800,
-                              margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                              margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                               child: Row(
                                 children: [
                                   //Total Items
@@ -222,7 +220,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                               fit: BoxFit.fitWidth,
                                               child: ConstrainedBox(
                                                 constraints:
-                                                    BoxConstraints(minWidth: 1, minHeight: 1),
+                                                    const BoxConstraints(minWidth: 1, minHeight: 1),
                                                 child: FutureBuilder<int?>(
                                                     future: viewModel
                                                         .returnShoppingListItemsIdsListLength(
@@ -269,7 +267,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     ),
                                   ),
 
-                                  SizedBox(width: 20),
+                                  const SizedBox(width: 20),
 
                                   //Remaining Items
                                   Expanded(
@@ -287,7 +285,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                               fit: BoxFit.fitWidth,
                                               child: ConstrainedBox(
                                                 constraints:
-                                                    BoxConstraints(minWidth: 1, minHeight: 1),
+                                                    const BoxConstraints(minWidth: 1, minHeight: 1),
                                                 child: FutureBuilder<int?>(
                                                     future: viewModel
                                                         .returnShoppingListNotPurchasedItemsLength(
@@ -341,7 +339,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                 child: Container(
                                     decoration: BoxDecoration(
                                         color: AppColours.colour2(brightness),
-                                        borderRadius: BorderRadius.vertical(
+                                        borderRadius: const BorderRadius.vertical(
                                             top: Radius.circular(30), bottom: Radius.circular(30))),
                                     child: FutureBuilder(
                                         future: Future.wait([
@@ -358,10 +356,10 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             return Expanded(
                                               child: snapshot.data?[0]!.length > 0
                                                 ? ListView.separated(
-                                                  padding: EdgeInsets.all(15),
+                                                  padding: const EdgeInsets.all(15),
                                                   shrinkWrap: true,
                                                   separatorBuilder: (context, index) {
-                                                    return SizedBox(height: 15);
+                                                    return const SizedBox(height: 15);
                                                   },
                                                   itemCount: snapshot.data?[0]!.length,
                                                   itemBuilder: (context, index) {
@@ -374,12 +372,12 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                             shoppingList, snapshot.data?[2][index]);
                                                       },
                                                       background: Container(
-                                                        margin: EdgeInsets.symmetric(horizontal: 5),
+                                                        margin: const EdgeInsets.symmetric(horizontal: 5),
                                                         decoration: BoxDecoration(
                                                             color: Colors.red,
                                                             borderRadius:
                                                                 BorderRadius.circular(10)),
-                                                        child: Center(child: Icon(Icons.delete)),
+                                                        child: const Center(child: Icon(Icons.delete)),
                                                       ),
                                                       child: Container(
                                                           decoration: BoxDecoration(
@@ -468,7 +466,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             );
                                           }
                                         }))),
-                            SizedBox(height: 15,),
+                            const SizedBox(height: 15,),
                             Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
                               return SizedBox(
                                 height: 60,
@@ -479,7 +477,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                     onPressed: () {
                                       addAdditionalItemsToShoppingListPopup(context, shoppingList);
                                     },
-                                    child: Icon(Icons.add)),
+                                    child: const Icon(Icons.add)),
                               );
                             })
                           ],
@@ -509,7 +507,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: Text('Add Items'),
+                title: const Text('Add Items'),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -529,7 +527,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                padding: EdgeInsets.only(bottom: 30),
+                                padding: const EdgeInsets.only(bottom: 30),
                                 icon: const Icon(Icons.minimize),
                                 iconSize: 60,
                                 onPressed: () {
@@ -573,7 +571,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                       'itemName': enteredItemNameController.text,
                                       'quantity': quantity,
                                       'isPurchased': false,
-                                      'itemId': Uuid().v4()
+                                      'itemId': const Uuid().v4()
                                     });
                                     viewModel.addNewShoppingItem(
                                         shoppingList.shoppingListId, newItem);

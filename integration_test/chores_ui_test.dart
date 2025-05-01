@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +8,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/firebase_options.dart';
 import 'package:shared_accommodation_management_app/main.dart';
-import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
@@ -67,12 +65,12 @@ void main() {
       ),
     );
 
-    String random = Uuid().v4();
-    randomChore = 'TestChore' + random;
+    String random = const Uuid().v4();
+    randomChore = 'TestChore$random';
 
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is signed in
     expect(auth.currentUser, isNotNull);
@@ -82,33 +80,33 @@ void main() {
     expect(find.text("Home"), findsAny);
 
     //Find createEventButton button
-    final Finder choresPage = find.byKey(Key('choresPage'));
+    final Finder choresPage = find.byKey(const Key('choresPage'));
 
     //Click the button to navigate to bring the popup
     await tester.tap(choresPage);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     expect(find.text("Chores"), findsAny);
 
     //Finds widgets on the screen
-    final Finder createChoreButton = find.byKey(Key('createChoreButton'));
+    final Finder createChoreButton = find.byKey(const Key('createChoreButton'));
 
     await tester.tap(createChoreButton);
     await tester.pumpAndSettle();
 
-    final Finder choreTextField = find.byKey(Key('choreTextField'));
+    final Finder choreTextField = find.byKey(const Key('choreTextField'));
 
     //Enters text and submits
     await tester.enterText(choreTextField, randomChore);
 
-    final Finder submitChoreButton = find.byKey(Key('submitChoreButton'));
+    final Finder submitChoreButton = find.byKey(const Key('submitChoreButton'));
 
     await tester.tap(submitChoreButton);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     await tester.pump();
 
     //Verifies the event is created
@@ -162,7 +160,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     //Verifies the user is signed in
     expect(auth.currentUser, isNotNull);
@@ -172,47 +170,47 @@ void main() {
     expect(find.text("Home"), findsAny);
 
     //Find createEventButton button
-    final Finder choresPage = find.byKey(Key('choresPage'));
+    final Finder choresPage = find.byKey(const Key('choresPage'));
 
     //Click the button to navigate to bring the popup
     await tester.tap(choresPage);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     expect(find.text("Chores"), findsAny);
 
     //Finds widgets on the screen
-    final Finder createChoreButton = find.byKey(Key('createChoreButton'));
+    final Finder createChoreButton = find.byKey(const Key('createChoreButton'));
 
     await tester.tap(createChoreButton);
     await tester.pumpAndSettle();
 
-    final Finder choreTextField = find.byKey(Key('choreTextField'));
+    final Finder choreTextField = find.byKey(const Key('choreTextField'));
 
     //Enters text and submits
     await tester.enterText(choreTextField, randomChore);
 
-    final Finder submitChoreButton = find.byKey(Key('submitChoreButton'));
+    final Finder submitChoreButton = find.byKey(const Key('submitChoreButton'));
 
     await tester.tap(submitChoreButton);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     await tester.pumpAndSettle();
 
     //Verifies the event is created
     expect(find.text(randomChore), findsAny);
 
-    final Finder assignTaskButton = find.byKey(Key('assignButton0'));
+    final Finder assignTaskButton = find.byKey(const Key('assignButton0'));
 
     await tester.tap(assignTaskButton);
     await tester.pumpAndSettle();
 
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     await tester.pump();
 
-    final Finder unassignTaskButton = find.byKey(Key('unassignButton0'));
+    final Finder unassignTaskButton = find.byKey(const Key('unassignButton0'));
 
     expect(unassignTaskButton, findsOneWidget);
     expect(find.text("TUser"), findsAny);

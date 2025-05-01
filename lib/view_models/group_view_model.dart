@@ -1,12 +1,8 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/group_model.dart';
-import 'package:shared_accommodation_management_app/models/user_model.dart';
-import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
 
 class GroupViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -19,8 +15,8 @@ class GroupViewModel extends ChangeNotifier {
   List<String> get members => _members;
   List<dynamic> get memberIds => _memberIds;
 
-  List<String> _allMembers = <String>[];
-  List<dynamic> _allMemberIds = <String>[];
+  final List<String> _allMembers = <String>[];
+  final List<dynamic> _allMemberIds = <String>[];
 
   List<String> get allMembers => _allMembers;
   List<dynamic> get allMemberIds => _allMemberIds;

@@ -54,6 +54,6 @@ class Expense {
   }
 
   void generateId() {
-    expenseId = Uuid().v4();
+    expenseId = const Uuid().v4();
   }
 }

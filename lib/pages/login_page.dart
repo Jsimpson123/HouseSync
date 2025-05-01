@@ -10,6 +10,8 @@ import '../main.dart';
 import '../user_auth/firebase_auth_functionality.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() {
     return _LoginPageState();
@@ -20,8 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
 
   //Setting up the TextEditingControllers
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   //Prevents memory leaks
   @override
@@ -54,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         Padding(
           padding: const EdgeInsets.only(),
           child: Center(
-            child: Container(
+            child: SizedBox(
               width: 200,
               height: 150,
               child: Image.asset('assets/images/housesync_logo.png'),
@@ -75,10 +77,10 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-            key: Key('emailField'),
+            key: const Key('emailField'),
               controller: _emailController,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email_rounded),
+                prefixIcon: const Icon(Icons.email_rounded),
                 hintText: "Email",
                 filled: true,
                 focusedBorder: OutlineInputBorder(
@@ -96,11 +98,11 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-            key: Key('passwordField'),
+            key: const Key('passwordField'),
               controller: _passwordController,
               obscureText: _isHidden,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.password_rounded),
+                prefixIcon: const Icon(Icons.password_rounded),
                 hintText: "Password",
                 filled: true,
                 focusedBorder: OutlineInputBorder(
@@ -135,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-                key: Key("forgotPasswordButton"),
+                key: const Key("forgotPasswordButton"),
                 onPressed: () {
                   if (_emailController.text.isNotEmpty) {
                     sendForgotPasswordEmail(_emailController.text);
@@ -152,19 +154,19 @@ class _LoginPageState extends State<LoginPage> {
         //Spacing between the TextFields
         const SizedBox(height: 3),
         ElevatedButton(
-          key: Key("loginButton"),
+          key: const Key("loginButton"),
             onPressed: () {
               _signIn();
             },
-            child: Text("Login"),
             style: ButtonStyle(
                 backgroundColor:
                     WidgetStateProperty.all<Color>(Colors.blue[800]!),
                 foregroundColor:
                     WidgetStateProperty.resolveWith((state) => Colors.white),
                 textStyle:
-                    WidgetStateProperty.all<TextStyle>(TextStyle(fontSize: 30)),
-                minimumSize: WidgetStateProperty.all<Size>(Size(200, 90)))),
+                    WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 30)),
+                minimumSize: WidgetStateProperty.all<Size>(const Size(200, 90))),
+            child: const Text("Login")),
         //Spacing between the login button and create account text
         const SizedBox(height: 15),
 
@@ -172,10 +174,10 @@ class _LoginPageState extends State<LoginPage> {
             child:
                 Text("Don't have an account?", style: TextStyle(fontSize: 25))),
         TextButton(
-          key: Key("registerButton"),
+          key: const Key("registerButton"),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CreateAccountPage()));
+                  MaterialPageRoute(builder: (context) => const CreateAccountPage()));
             },
             child: const Text("Create Account", style: TextStyle(fontSize: 25)))
       ],
@@ -183,14 +185,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _signIn() async {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     String email = _emailController.text;
     String password = _passwordController.text;
 
     User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-    final userDoc = await _firestore.collection('users').doc(user?.uid).get(); //Gets the userId from the users collection
+    final userDoc = await firestore.collection('users').doc(user?.uid).get(); //Gets the userId from the users collection
     //Checks if the current user is already in a group and displays the Home page if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
       print("User was successfully signed in");
@@ -205,12 +207,12 @@ class _LoginPageState extends State<LoginPage> {
       MyApp.notifier.value = isDark ? ThemeMode.dark : ThemeMode.light;
 
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
     }
     else if (user != null) {
       print("User was successfully signed in");
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CreateOrJoinGroupPage()));
+          context, MaterialPageRoute(builder: (context) => const CreateOrJoinGroupPage()));
     } else {
       print("An error occurred");
     }
