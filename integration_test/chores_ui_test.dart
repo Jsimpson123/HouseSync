@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,6 @@ void main() {
   });
 
   testWidgets('User can create a chore', (WidgetTester tester) async {
-
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: 'testuser@test.com',
       password: 'TestPassword123',
@@ -45,22 +43,15 @@ void main() {
       MaterialApp(
         home: MultiProvider(
           providers: [
-            ChangeNotifierProvider(
-                create: (context) => FirebaseAuthFunctionality()
-            ),
+            ChangeNotifierProvider(create: (context) => FirebaseAuthFunctionality()),
             ChangeNotifierProvider.value(
               value: GroupViewModel(),
             ),
-            ChangeNotifierProvider(
-                create: (context) => HomeViewModel()
-            ),
-            ChangeNotifierProvider(
-                create: (context) => UserViewModel()
-            ),
-            ChangeNotifierProvider(
-                create: (context) => TaskViewModel()
-            )
-          ], child: MyApp(),
+            ChangeNotifierProvider(create: (context) => HomeViewModel()),
+            ChangeNotifierProvider(create: (context) => UserViewModel()),
+            ChangeNotifierProvider(create: (context) => TaskViewModel())
+          ],
+          child: MyApp(),
         ),
       ),
     );
@@ -123,8 +114,8 @@ void main() {
     }
   });
 
-  testWidgets('User can create a chore, assign themself to it and complete it', (WidgetTester tester) async {
-
+  testWidgets('User can create a chore, assign themself to it and complete it',
+      (WidgetTester tester) async {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: 'testuser@test.com',
       password: 'TestPassword123',
@@ -135,22 +126,15 @@ void main() {
       MaterialApp(
         home: MultiProvider(
           providers: [
-            ChangeNotifierProvider(
-                create: (context) => FirebaseAuthFunctionality()
-            ),
+            ChangeNotifierProvider(create: (context) => FirebaseAuthFunctionality()),
             ChangeNotifierProvider.value(
               value: GroupViewModel(),
             ),
-            ChangeNotifierProvider(
-                create: (context) => HomeViewModel()
-            ),
-            ChangeNotifierProvider(
-                create: (context) => UserViewModel()
-            ),
-            ChangeNotifierProvider(
-                create: (context) => TaskViewModel()
-            )
-          ], child: MyApp(),
+            ChangeNotifierProvider(create: (context) => HomeViewModel()),
+            ChangeNotifierProvider(create: (context) => UserViewModel()),
+            ChangeNotifierProvider(create: (context) => TaskViewModel())
+          ],
+          child: MyApp(),
         ),
       ),
     );

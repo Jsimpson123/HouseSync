@@ -54,6 +54,7 @@ FinanceViewModel financeViewModel = FinanceViewModel();
 class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     return Consumer<FinanceViewModel>(builder: (context, viewModel, child) {
@@ -155,6 +156,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
   }
 
   Future<void> assignUsersToExpensePopup(BuildContext context) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop

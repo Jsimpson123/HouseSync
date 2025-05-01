@@ -13,6 +13,7 @@ class CreateOrJoinGroupPage extends StatefulWidget {
 class _CreateOrJoinGroupPageState extends State<CreateOrJoinGroupPage> {
   @override
   Widget build(BuildContext context) {
+    //Theme is always light as user hasn't had the ability to change it yet
     return Theme(
       data: ThemeData.light(),
       child: const Scaffold(

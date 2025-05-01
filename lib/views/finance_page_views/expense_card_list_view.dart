@@ -23,6 +23,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop
@@ -216,6 +217,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
       });
   }
   Future<void> expenseDetailsPopup(BuildContext context, String expenseId) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop

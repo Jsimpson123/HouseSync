@@ -40,6 +40,7 @@ class _ChoresPageState extends State<ChoresPage> {
     Provider.of<GroupViewModel>(context, listen: false).members;
   }
 
+  //Index for the pages
   int index = 1;
   List<Widget> pages = [
     const HomePage(),
@@ -51,7 +52,9 @@ class _ChoresPageState extends State<ChoresPage> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     UserViewModel userViewModel = UserViewModel();
 
     return Scaffold(
@@ -63,18 +66,15 @@ class _ChoresPageState extends State<ChoresPage> {
 
               //User icon
               currentAccountPicture: const Expanded(
-                  child: FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Icon(Icons.account_circle_rounded))),
+                  child:
+                      FittedBox(fit: BoxFit.fitHeight, child: Icon(Icons.account_circle_rounded))),
 
               //Username
               accountName: FutureBuilder<String?>(
                   future: userViewModel.returnCurrentUsername(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
-                      return const Text(
-                          ""); //Due to a delay in the username loading
+                      return const Text(""); //Due to a delay in the username loading
                     } else {
                       return Expanded(
                         child: FittedBox(
@@ -92,11 +92,9 @@ class _ChoresPageState extends State<ChoresPage> {
               //Email
               accountEmail: FutureBuilder<String?>(
                   future: userViewModel.returnCurrentEmail(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
-                      return const Text(
-                          ""); //Due to a delay in the email loading
+                      return const Text(""); //Due to a delay in the email loading
                     } else {
                       return Expanded(
                         child: FittedBox(
@@ -115,18 +113,18 @@ class _ChoresPageState extends State<ChoresPage> {
               title: const Text("Group"),
               onTap: () => groupDetails(context),
             ),
-            ListTile(title: const Text("Settings"),
+            ListTile(
+              title: const Text("Settings"),
               onTap: () => SettingsView.settingsPopup(context, SettingsView()),
             ),
-
             ListTile(
                 title: const Text("Logout"),
                 onTap: () async {
-                  await FirebaseAuth.instance.signOut()
-                      .then((value) =>
-                      Navigator.of(context)
-                          .pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false));
+                  //Logs the user out then returns them to the login page
+                  await FirebaseAuth.instance.signOut().then((value) => Navigator.of(context)
+                      .pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          (route) => false));
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
@@ -140,7 +138,8 @@ class _ChoresPageState extends State<ChoresPage> {
               children: [
                 Icon(Icons.feedback),
                 Icon(Icons.bug_report),
-              ],),
+              ],
+            ),
             Center(
               child: Text(
                 "Want to send feedback or report a bug?",
@@ -156,9 +155,7 @@ class _ChoresPageState extends State<ChoresPage> {
             Center(
               child: Text(
                 "Email: HouseSync@gmail.com",
-                style: TextStyle(
-                    color: AppColours.colour4(brightness),
-                    fontSize: 14),
+                style: TextStyle(color: AppColours.colour4(brightness), fontSize: 14),
               ),
             ),
             const SizedBox(
@@ -184,16 +181,20 @@ class _ChoresPageState extends State<ChoresPage> {
               Expanded(flex: 6, child: TaskListView())
             ],
           )),
+      //Button for adding a task
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: const AddTaskView(),
+
       bottomNavigationBar: setBottomNavigationBar(),
     );
   }
 
   PopScope setBottomNavigationBar() {
     return PopScope(
-        canPop: false,
         //Ensures that the built-in back button doesn't return to the wrong page
+        canPop: false,
+
+        //Navigation bar that directs the user to the selected page
         child: BottomNavigationBar(
           currentIndex: index,
           onTap: (newIndex) {
@@ -207,22 +208,21 @@ class _ChoresPageState extends State<ChoresPage> {
                 ));
           },
           type: BottomNavigationBarType.fixed,
+
+          //Icons in the bottom nav bar
           items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.monetization_on), label: "Finance"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart), label: "Shopping"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.health_and_safety), label: "Medical")
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
+            BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Finance"),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Shopping"),
+            BottomNavigationBarItem(icon: Icon(Icons.health_and_safety), label: "Medical")
           ],
         ));
   }
 
+  //Displays the group details
   Future<void> groupDetails(BuildContext context) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop
@@ -244,14 +244,11 @@ class _ChoresPageState extends State<ChoresPage> {
                       alignment: Alignment.centerLeft,
                       child: FutureBuilder<String?>(
                           future: viewModel.returnGroupName(user!.uid),
-                          builder:
-                              (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                             if ("${snapshot.data}" == "null") {
-                              return const Text(
-                                  ""); //Due to a delay in the data loading
+                              return const Text(""); //Due to a delay in the data loading
                             } else {
                               return Expanded(
-                                // flex: 2,
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text("${snapshot.data}",
@@ -265,15 +262,14 @@ class _ChoresPageState extends State<ChoresPage> {
                           }),
                     ),
 
+                    //Group code
                     Align(
                       alignment: Alignment.centerRight,
                       child: FutureBuilder<String?>(
                           future: viewModel.returnGroupCode(user!.uid),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                             if ("${snapshot.data}" == "null") {
-                              return const Text(
-                                  ""); //Due to a delay in the group code loading
+                              return const Text(""); //Due to a delay in the group code loading
                             } else {
                               return Expanded(
                                 // flex: 1,
@@ -303,8 +299,8 @@ class _ChoresPageState extends State<ChoresPage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: AppColours.colour2(brightness),
-                                  borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(30))),
+                                  borderRadius:
+                                      const BorderRadius.vertical(top: Radius.circular(30))),
                               padding: const EdgeInsets.all(20),
                               child: ListView.separated(
                                   padding: const EdgeInsets.all(15),
@@ -321,24 +317,18 @@ class _ChoresPageState extends State<ChoresPage> {
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: AppColours.colour1(brightness),
-                                                borderRadius:
-                                                BorderRadius.circular(20)),
+                                                borderRadius: BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Row(
                                                 children: [
                                                   const Icon(Icons.account_box),
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
-                                                          color:
-                                                          AppColours.colour4(brightness),
-                                                          fontWeight:
-                                                          FontWeight.bold,
+                                                          color: AppColours.colour4(brightness),
+                                                          fontWeight: FontWeight.bold,
                                                           fontSize: 20)),
                                                 ],
                                               ),
-                                              // onTap: () =>
-                                              //     viewSpecificUsersMedicalConditionsPopup(
-                                              //         context, viewModel.memberIds[index]),
                                             )));
                                   }),
                             ),
@@ -352,13 +342,15 @@ class _ChoresPageState extends State<ChoresPage> {
                                 viewModel.leaveGroup(user!.uid);
 
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => const CreateOrJoinGroupPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: AppColours.colour1(brightness),
                                   backgroundColor: AppColours.colour3(brightness),
                                   textStyle:
-                                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                      const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20))),
                               child: const Text("Leave Group")),

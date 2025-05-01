@@ -21,7 +21,9 @@ class _GroupDetailsBottomSheetView extends State<GroupDetailsBottomSheetView> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
       return Column(
         children: [

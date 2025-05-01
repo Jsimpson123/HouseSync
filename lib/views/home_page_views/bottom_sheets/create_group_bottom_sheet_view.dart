@@ -20,7 +20,6 @@ class CreateGroupBottomSheetView extends StatefulWidget {
 class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
 
     final TextEditingController enteredGroupNameController = TextEditingController();
 

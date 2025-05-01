@@ -24,7 +24,9 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
       return Column(
         children: [
@@ -74,6 +76,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
 
   Future<void> viewSpecificUsersMedicalConditionsPopup(
       BuildContext context, String memberId) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     TextEditingController enteredContactName = TextEditingController();

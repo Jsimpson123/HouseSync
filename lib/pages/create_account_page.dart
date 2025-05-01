@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_accommodation_management_app/models/user_model.dart';
 import 'package:shared_accommodation_management_app/user_auth/firebase_auth_functionality.dart';
 
-
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
 
@@ -13,11 +12,7 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
-  FirebaseAuthFunctionality firebaseAuthFunctionality =
-      FirebaseAuthFunctionality();
-
-  //FirebaseAuthFunctionality instance
-  final FirebaseAuthFunctionality _auth = FirebaseAuthFunctionality();
+  FirebaseAuthFunctionality firebaseAuthFunctionality = FirebaseAuthFunctionality();
 
   //Setting up the TextEditingControllers
   final TextEditingController _usernameController = TextEditingController();
@@ -33,10 +28,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     super.dispose();
   }
 
+  //For the password text
   bool _isHidden = true;
 
   @override
   Widget build(BuildContext context) {
+    //Theme is always light as user hasn't had the ability to change it yet
     return Theme(
       data: ThemeData.light(),
       child: Scaffold(
@@ -62,11 +59,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             ),
           ),
         ),
-        // const SizedBox(
-        //   height: 25,
-        // ),
-        const Center(
-            child: Text("Create Account", style: TextStyle(fontSize: 50))),
+
+        const Center(child: Text("Create Account", style: TextStyle(fontSize: 50))),
         //Spacing between the logo and TextFields
         const SizedBox(
           height: 25,
@@ -82,8 +76,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 filled: true,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
-                    borderSide:
-                        const BorderSide(color: Colors.green, width: 2.0)),
+                    borderSide: const BorderSide(color: Colors.green, width: 2.0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
@@ -103,8 +96,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 filled: true,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
-                    borderSide:
-                        const BorderSide(color: Colors.green, width: 2.0)),
+                    borderSide: const BorderSide(color: Colors.green, width: 2.0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
@@ -125,8 +117,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 filled: true,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
-                    borderSide:
-                        const BorderSide(color: Colors.green, width: 2.0)),
+                    borderSide: const BorderSide(color: Colors.green, width: 2.0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
@@ -145,8 +136,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         : const Icon(
                             Icons.visibility,
                             color: Colors.black,
-                          )
-                ),
+                          )),
               )),
         ),
         //Spacing between the TextFields and login button
@@ -154,62 +144,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         ElevatedButton(
             key: const Key("registerNowButton"),
             onPressed: () async {
-              HouseSyncUser newUser = HouseSyncUser.newUser(
-                  _usernameController.text, _emailController.text);
+              HouseSyncUser newUser =
+                  HouseSyncUser.newUser(_usernameController.text, _emailController.text);
               await firebaseAuthFunctionality.registerUser(
                   newUser, _passwordController.text, context);
             },
             style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateProperty.all<Color>(Colors.blue[800]!),
-                foregroundColor:
-                    WidgetStateProperty.resolveWith((state) => Colors.white),
-                textStyle:
-                    WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 30)),
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue[800]!),
+                foregroundColor: WidgetStateProperty.resolveWith((state) => Colors.white),
+                textStyle: WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 30)),
                 minimumSize: WidgetStateProperty.all<Size>(const Size(200, 100))),
             child: const Text("Register Now"))
       ],
     ));
   }
-
-// void _signUp() async {
-//   String username = _usernameController.text;
-//   String email = _emailController.text;
-//   String password = _passwordController.text;
-//
-//   User? user = await _auth.signUpWithEmailAndPassword(email, password);
-//
-//   if(user != null) {
-//     print("User was successfully created");
-//     Navigator.push(context, MaterialPageRoute(
-//         builder: (context) => HomePage()
-//       )
-//     );
-//   } else {
-//     print("An error occured");
-//   }
-// }
-
-// Future<void> registerUser(String username, String email, String password) async {
-//   UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-//       email: email,
-//       password: password);
-//
-//   String? userId = userCredential.user?.uid;
-//
-//   await FirebaseFirestore.instance.collection('users').doc(userId).set({
-//     'username': username,
-//     'email': email
-//   });
-//
-//   if(username.isNotEmpty && userCredential.user?.email != null && password.isNotEmpty) {
-//         print("User was successfully created");
-//         Navigator.push(context, MaterialPageRoute(
-//             builder: (context) => HomePage()
-//           )
-//         );
-//       } else {
-//         print("An error occured");
-//       }
-// }
 }

@@ -22,7 +22,6 @@ import 'medical_page.dart';
 class FinancePage extends StatefulWidget {
   const FinancePage({super.key});
 
-
   @override
   State<FinancePage> createState() {
     return _FinancePageState();
@@ -31,16 +30,17 @@ class FinancePage extends StatefulWidget {
 
 class _FinancePageState extends State<FinancePage> {
   User? user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
     super.initState();
     Provider.of<FinanceViewModel>(context, listen: false).loadExpenses();
     Provider.of<GroupViewModel>(context, listen: false).returnGroupMembersAsList(user!.uid);
-    //Provider.of<GroupViewModel>(context, listen: false).returnAllGroupMembersAsList(user!.uid);
     Provider.of<GroupViewModel>(context, listen: false).memberIds;
     Provider.of<GroupViewModel>(context, listen: false).members;
   }
 
+  //Index for the pages
   int index = 2;
   List<Widget> pages = [
     const HomePage(),
@@ -52,6 +52,7 @@ class _FinancePageState extends State<FinancePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
     UserViewModel userViewModel = UserViewModel();
 
@@ -64,18 +65,15 @@ class _FinancePageState extends State<FinancePage> {
 
               //User icon
               currentAccountPicture: const Expanded(
-                  child: FittedBox(
-                      fit: BoxFit.fitHeight,
-                      child: Icon(Icons.account_circle_rounded))),
+                  child:
+                      FittedBox(fit: BoxFit.fitHeight, child: Icon(Icons.account_circle_rounded))),
 
               //Username
               accountName: FutureBuilder<String?>(
                   future: userViewModel.returnCurrentUsername(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
-                      return const Text(
-                          ""); //Due to a delay in the username loading
+                      return const Text(""); //Due to a delay in the username loading
                     } else {
                       return Expanded(
                         child: FittedBox(
@@ -93,11 +91,9 @@ class _FinancePageState extends State<FinancePage> {
               //Email
               accountEmail: FutureBuilder<String?>(
                   future: userViewModel.returnCurrentEmail(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if ("${snapshot.data}" == "null") {
-                      return const Text(
-                          ""); //Due to a delay in the email loading
+                      return const Text(""); //Due to a delay in the email loading
                     } else {
                       return Expanded(
                         child: FittedBox(
@@ -116,18 +112,18 @@ class _FinancePageState extends State<FinancePage> {
               title: const Text("Group"),
               onTap: () => groupDetails(context),
             ),
-            ListTile(title: const Text("Settings"),
+            ListTile(
+              title: const Text("Settings"),
               onTap: () => SettingsView.settingsPopup(context, SettingsView()),
             ),
-
             ListTile(
                 title: const Text("Logout"),
                 onTap: () async {
-                  await FirebaseAuth.instance.signOut()
-                      .then((value) =>
-                      Navigator.of(context)
-                          .pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false));
+                  //Logs the user out then returns them to the login page
+                  await FirebaseAuth.instance.signOut().then((value) => Navigator.of(context)
+                      .pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          (route) => false));
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
@@ -141,7 +137,8 @@ class _FinancePageState extends State<FinancePage> {
               children: [
                 Icon(Icons.feedback),
                 Icon(Icons.bug_report),
-              ],),
+              ],
+            ),
             Center(
               child: Text(
                 "Want to send feedback or report a bug?",
@@ -157,9 +154,7 @@ class _FinancePageState extends State<FinancePage> {
             Center(
               child: Text(
                 "Email: HouseSync@gmail.com",
-                style: TextStyle(
-                    color: AppColours.colour4(brightness),
-                    fontSize: 14),
+                style: TextStyle(color: AppColours.colour4(brightness), fontSize: 14),
               ),
             ),
             const SizedBox(
@@ -180,7 +175,7 @@ class _FinancePageState extends State<FinancePage> {
           bottom: false,
           child: Column(
             children: [
-                Expanded(flex: 2, child: FinanceHeaderView()),
+              Expanded(flex: 2, child: FinanceHeaderView()),
               Expanded(flex: 2, child: FinanceInfoView()),
               Expanded(flex: 6, child: ExpenseCardListView())
             ],
@@ -192,8 +187,10 @@ class _FinancePageState extends State<FinancePage> {
 
   PopScope setBottomNavigationBar() {
     return PopScope(
-        canPop: false,
         //Ensures that the built-in back button doesn't return to the wrong page
+        canPop: false,
+
+        //Navigation bar that directs the user to the selected page
         child: BottomNavigationBar(
           currentIndex: index,
           onTap: (newIndex) {
@@ -207,22 +204,21 @@ class _FinancePageState extends State<FinancePage> {
                 ));
           },
           type: BottomNavigationBarType.fixed,
+
+          //Icons in the bottom nav bar
           items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.monetization_on), label: "Finance"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart), label: "Shopping"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.health_and_safety), label: "Medical")
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
+            BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Finance"),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Shopping"),
+            BottomNavigationBarItem(icon: Icon(Icons.health_and_safety), label: "Medical")
           ],
         ));
   }
 
+  //Displays the group details
   Future<void> groupDetails(BuildContext context) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop
@@ -244,14 +240,11 @@ class _FinancePageState extends State<FinancePage> {
                       alignment: Alignment.centerLeft,
                       child: FutureBuilder<String?>(
                           future: viewModel.returnGroupName(user!.uid),
-                          builder:
-                              (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                             if ("${snapshot.data}" == "null") {
-                              return const Text(
-                                  ""); //Due to a delay in the data loading
+                              return const Text(""); //Due to a delay in the data loading
                             } else {
                               return Expanded(
-                                // flex: 2,
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text("${snapshot.data}",
@@ -265,18 +258,16 @@ class _FinancePageState extends State<FinancePage> {
                           }),
                     ),
 
+                    //Group code
                     Align(
                       alignment: Alignment.centerRight,
                       child: FutureBuilder<String?>(
                           future: viewModel.returnGroupCode(user!.uid),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String?> snapshot) {
+                          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                             if ("${snapshot.data}" == "null") {
-                              return const Text(
-                                  ""); //Due to a delay in the group code loading
+                              return const Text(""); //Due to a delay in the group code loading
                             } else {
                               return Expanded(
-                                // flex: 1,
                                 child: Text("Group Code: \n${snapshot.data}",
                                     style: TextStyle(
                                         fontSize: isMobile ? 14 : 24,
@@ -303,8 +294,8 @@ class _FinancePageState extends State<FinancePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: AppColours.colour2(brightness),
-                                  borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(30))),
+                                  borderRadius:
+                                      const BorderRadius.vertical(top: Radius.circular(30))),
                               padding: const EdgeInsets.all(20),
                               child: ListView.separated(
                                   padding: const EdgeInsets.all(15),
@@ -321,18 +312,15 @@ class _FinancePageState extends State<FinancePage> {
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: AppColours.colour1(brightness),
-                                                borderRadius:
-                                                BorderRadius.circular(20)),
+                                                borderRadius: BorderRadius.circular(20)),
                                             child: ListTile(
                                               title: Row(
                                                 children: [
                                                   const Icon(Icons.account_box),
                                                   Text(viewModel.members[index],
                                                       style: TextStyle(
-                                                          color:
-                                                          AppColours.colour4(brightness),
-                                                          fontWeight:
-                                                          FontWeight.bold,
+                                                          color: AppColours.colour4(brightness),
+                                                          fontWeight: FontWeight.bold,
                                                           fontSize: 20)),
                                                 ],
                                               ),
@@ -349,13 +337,15 @@ class _FinancePageState extends State<FinancePage> {
                                 viewModel.leaveGroup(user!.uid);
 
                                 Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => const CreateOrJoinGroupPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const CreateOrJoinGroupPage()));
                               },
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: AppColours.colour1(brightness),
                                   backgroundColor: AppColours.colour3(brightness),
                                   textStyle:
-                                  const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                      const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20))),
                               child: const Text("Leave Group")),

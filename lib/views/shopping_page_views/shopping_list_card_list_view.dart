@@ -23,7 +23,9 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
@@ -168,6 +170,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
   }
 
   Future<void> shoppingListDetailsPopup(BuildContext context, ShoppingList shoppingList) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop

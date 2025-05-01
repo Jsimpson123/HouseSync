@@ -45,7 +45,9 @@ FinanceViewModel financeViewModel = FinanceViewModel();
 class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetView> {
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;

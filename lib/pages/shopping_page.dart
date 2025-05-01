@@ -42,6 +42,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   List<Widget> pages = [const HomePage(),const ChoresPage(),const FinancePage(),const ShoppingPage(),const MedicalPage()];
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     UserViewModel userViewModel = UserViewModel();
@@ -114,6 +115,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
             ListTile(
                 title: const Text("Logout"),
                 onTap: () async {
+                  //Logs the user out then returns them to the login page
                   await FirebaseAuth.instance.signOut()
                       .then((value) =>
                       Navigator.of(context)
@@ -183,7 +185,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   PopScope setBottomNavigationBar() {
     return PopScope(
-        canPop: false, //Ensures that the built-in back button doesn't return to the wrong page
+      //Ensures that the built-in back button doesn't return to the wrong page
+        canPop: false,
+
+        //Navigation bar that directs the user to the selected page
         child: BottomNavigationBar(
       currentIndex: index,
       onTap: (newIndex) {
@@ -198,6 +203,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
         );
       },
       type: BottomNavigationBarType.fixed,
+
+          //Icons in the bottom nav bar
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(icon: Icon(Icons.dry_cleaning_sharp), label: "Chores"),
@@ -208,7 +215,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
     ));
   }
 
+  //Displays the group details
   Future<void> groupDetails(BuildContext context) async {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     //Checks screen size to see if it is mobile or desktop
@@ -237,7 +246,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   ""); //Due to a delay in the data loading
                             } else {
                               return Expanded(
-                                // flex: 2,
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text("${snapshot.data}",
@@ -251,6 +259,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           }),
                     ),
 
+                    //Group code
                     Align(
                       alignment: Alignment.centerRight,
                       child: FutureBuilder<String?>(
@@ -262,7 +271,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                   ""); //Due to a delay in the group code loading
                             } else {
                               return Expanded(
-                                // flex: 1,
                                 child: Text("Group Code: \n${snapshot.data}",
                                     style: TextStyle(
                                         fontSize: isMobile ? 14 : 24,
@@ -322,9 +330,6 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                                           fontSize: 20)),
                                                 ],
                                               ),
-                                              // onTap: () =>
-                                              //     viewSpecificUsersMedicalConditionsPopup(
-                                              //         context, viewModel.memberIds[index]),
                                             )));
                                   }),
                             ),

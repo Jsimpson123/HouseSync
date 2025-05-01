@@ -10,6 +10,7 @@ class AddTaskBottomSheetView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
     final TextEditingController enteredTaskNameController = TextEditingController();
 

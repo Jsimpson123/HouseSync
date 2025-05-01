@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//This class automatically formats colours for light/dark mode
 class AppColours {
   static Color colour1(Brightness brightness) =>
       brightness == Brightness.dark ? Colors.grey.shade900 : Colors.grey.shade50;

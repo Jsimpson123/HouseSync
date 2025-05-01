@@ -15,6 +15,7 @@ class HomeHeaderView extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
 
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     GroupViewModel groupViewModel = GroupViewModel();

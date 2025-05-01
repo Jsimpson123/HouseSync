@@ -31,6 +31,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   User? user = FirebaseAuth.instance.currentUser;
 
+  //Index for the pages
   int index = 0;
   List<Widget> pages = [
     const HomePage(),
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     const MedicalPage(),
   ];
 
+  //Setup for the calendar
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
@@ -79,6 +81,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
     UserViewModel userViewModel = UserViewModel();
 
@@ -152,9 +155,11 @@ class _HomePageState extends State<HomePage> {
             ListTile(
                 title: const Text("Logout"),
                 onTap: () async {
+                  //Logs the user out then returns them to the login page
                   await FirebaseAuth.instance.signOut().then((value) => Navigator.of(context)
                       .pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false));
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          (route) => false));
 
                   //Resets the apps theme to light mode
                   MyApp.notifier.value = ThemeMode.light;
@@ -166,9 +171,10 @@ class _HomePageState extends State<HomePage> {
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-              Icon(Icons.feedback),
-              Icon(Icons.bug_report),
-            ],),
+                Icon(Icons.feedback),
+                Icon(Icons.bug_report),
+              ],
+            ),
             Center(
               child: Text(
                 "Want to send feedback or report a bug?",
@@ -184,9 +190,7 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: Text(
                 "Email: HouseSync@gmail.com",
-                style: TextStyle(
-                    color: AppColours.colour4(brightness),
-                    fontSize: 14),
+                style: TextStyle(color: AppColours.colour4(brightness), fontSize: 14),
               ),
             ),
             const SizedBox(
@@ -207,6 +211,7 @@ class _HomePageState extends State<HomePage> {
           bottom: false,
           child: Column(
             children: [
+              //Header
               const Expanded(flex: 2, child: HomeHeaderView()),
               Container(
                 decoration: const BoxDecoration(
@@ -215,6 +220,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+
+              //Calendar
               Expanded(
                   flex: 5,
                   child: SingleChildScrollView(
@@ -234,7 +241,6 @@ class _HomePageState extends State<HomePage> {
                             setState(() {
                               _selectedDay = selectedDay;
                               _focusedDay = focusedDay;
-                              //_selectedEvents.value = _getEventsForDay(selectedDay);
                             });
                             _loadEventsForDay(selectedDay);
                           }
@@ -251,6 +257,8 @@ class _HomePageState extends State<HomePage> {
                         }),
                   )),
               const SizedBox(height: 8.0),
+
+              //Events
               Expanded(
                 flex: 3,
                 child: ValueListenableBuilder<List<Event>>(
@@ -392,7 +400,8 @@ class _HomePageState extends State<HomePage> {
                                                                           backgroundColor:
                                                                               AppColours.colour3(
                                                                                   brightness),
-                                                                          fixedSize: const Size(100, 50)),
+                                                                          fixedSize:
+                                                                              const Size(100, 50)),
                                                                       onPressed: () async {
                                                                         DateTime updatedTime;
 
@@ -472,7 +481,8 @@ class _HomePageState extends State<HomePage> {
                                                           fit: BoxFit.fitHeight,
                                                           child: Column(
                                                             children: [
-                                                              const Icon(Icons.supervisor_account_sharp,
+                                                              const Icon(
+                                                                  Icons.supervisor_account_sharp,
                                                                   size: 35),
                                                               Text("${snapshot.data}",
                                                                   style: TextStyle(
@@ -524,7 +534,8 @@ class _HomePageState extends State<HomePage> {
                                                         fit: BoxFit.fitHeight,
                                                         child: Column(
                                                           children: [
-                                                            const Icon(Icons.supervisor_account_sharp,
+                                                            const Icon(
+                                                                Icons.supervisor_account_sharp,
                                                                 size: 35),
                                                             Text("${snapshot.data}",
                                                                 style: TextStyle(
@@ -631,8 +642,10 @@ class _HomePageState extends State<HomePage> {
 
   PopScope setBottomNavigationBar() {
     return PopScope(
-        canPop: false,
         //Ensures that the built-in back button doesn't return to the wrong page
+        canPop: false,
+
+        //Navigation bar that directs the user to the selected page
         child: BottomNavigationBar(
           currentIndex: index,
           onTap: (newIndex) {
@@ -647,6 +660,8 @@ class _HomePageState extends State<HomePage> {
                 ));
           },
           type: BottomNavigationBarType.fixed,
+
+          //Icons in the bottom nav bar
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
@@ -658,11 +673,13 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
+  //Displays the group details
   Future<void> groupDetails(BuildContext context) async {
     //Checks screen size to see if it is mobile or desktop
     double screenWidth = MediaQuery.of(context).size.width;
     bool isMobile = screenWidth < 600;
 
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
     showDialog(
         context: context,
@@ -685,7 +702,6 @@ class _HomePageState extends State<HomePage> {
                               return const Text(""); //Due to a delay in the data loading
                             } else {
                               return Expanded(
-                                // flex: 2,
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text("${snapshot.data}",
@@ -698,6 +714,8 @@ class _HomePageState extends State<HomePage> {
                             }
                           }),
                     ),
+
+                    //Group code
                     Align(
                       alignment: Alignment.centerRight,
                       child: FutureBuilder<String?>(
@@ -707,7 +725,6 @@ class _HomePageState extends State<HomePage> {
                               return const Text(""); //Due to a delay in the group code loading
                             } else {
                               return Expanded(
-                                // flex: 1,
                                 child: Text("Group Code: \n${snapshot.data}",
                                     style: TextStyle(
                                         fontSize: isMobile ? 14 : 24,
@@ -734,7 +751,8 @@ class _HomePageState extends State<HomePage> {
                             child: Container(
                               decoration: BoxDecoration(
                                   color: AppColours.colour2(brightness),
-                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
+                                  borderRadius:
+                                      const BorderRadius.vertical(top: Radius.circular(30))),
                               padding: const EdgeInsets.all(20),
                               child: ListView.separated(
                                   padding: const EdgeInsets.all(15),
@@ -763,9 +781,6 @@ class _HomePageState extends State<HomePage> {
                                                           fontSize: 20)),
                                                 ],
                                               ),
-                                              // onTap: () =>
-                                              //     viewSpecificUsersMedicalConditionsPopup(
-                                              //         context, viewModel.memberIds[index]),
                                             )));
                                   }),
                             ),

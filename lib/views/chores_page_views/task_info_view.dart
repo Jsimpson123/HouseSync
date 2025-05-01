@@ -9,7 +9,9 @@ class TaskInfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Container(
         margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),

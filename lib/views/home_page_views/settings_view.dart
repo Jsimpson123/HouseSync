@@ -13,6 +13,7 @@ class SettingsView {
       SettingsView settingsView) async {
     User? user = FirebaseAuth.instance.currentUser;
 
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
     String? userEmail = user?.email;

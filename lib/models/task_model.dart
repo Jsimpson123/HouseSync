@@ -7,26 +7,17 @@ class Task {
   bool isCompleted;
 
   //Constructor
-  Task({
-    required this.taskId,
-    required this.title,
-    required this.assignedUser,
-    this.isCompleted = false
-  });
+  Task(
+      {required this.taskId,
+      required this.title,
+      required this.assignedUser,
+      this.isCompleted = false});
 
   //Constructor for a new task
   Task.newTask(this.title)
-  : taskId = '',
-  assignedUser = null,
-  isCompleted = false;
-
-  //Method that converts Task to a map for database storage
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'isCompleted': isCompleted
-    };
-  }
+      : taskId = '',
+        assignedUser = null,
+        isCompleted = false;
 
   //Factory constructor to create a task from a Firestore document snapshot
   factory Task.fromMap(String taskId, Map<String, dynamic> map) {
@@ -34,10 +25,10 @@ class Task {
         taskId: taskId,
         title: map['title'],
         assignedUser: map['assignedUser'],
-        isCompleted: map['isCompleted'] ?? false
-    );
+        isCompleted: map['isCompleted'] ?? false);
   }
 
+  //Generates a random unique Id
   void generateId() {
     taskId = const Uuid().v4();
   }

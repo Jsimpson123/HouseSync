@@ -32,7 +32,9 @@ bool isSubmitButtonEnabled() {
 class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBottomSheetView> {
   @override
   Widget build(BuildContext context) {
+    //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
+
     return Consumer<MedicalViewModel>(builder: (context, viewModel, child) {
       return Padding(
           padding: EdgeInsets.only(
