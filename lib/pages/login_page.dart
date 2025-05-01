@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                   if (_emailController.text.isNotEmpty) {
                     sendForgotPasswordEmail(_emailController.text);
                   } else {
-                    showToast(message: "message");
+                    showToast(message: "Please enter an email address");
                   }
                 },
                 child: const Text("Forgot Password?", style: TextStyle(

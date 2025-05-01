@@ -85,6 +85,10 @@ class _HomePageState extends State<HomePage> {
     final brightness = Theme.of(context).brightness;
     UserViewModel userViewModel = UserViewModel();
 
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
+
     final TextEditingController enteredEventNameController = TextEditingController();
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -226,8 +230,8 @@ class _HomePageState extends State<HomePage> {
                   flex: 5,
                   child: SingleChildScrollView(
                     child: TableCalendar(
-                        rowHeight: 35,
-                        daysOfWeekHeight: 28,
+                        rowHeight: isMobile ? 40 : 35,
+                        daysOfWeekHeight: isMobile ? 28 : 30,
                         focusedDay: _focusedDay,
                         firstDay: DateTime.utc(2010, 10, 16),
                         lastDay: DateTime.utc(2030, 3, 14),
@@ -344,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                                                                   .bottom),
                                                           //Ensures the keyboard doesn't cover the textfields
                                                           child: Container(
-                                                              height: 250,
+                                                              height: 270,
                                                               padding: const EdgeInsets.all(16.0),
                                                               child: Column(
                                                                 mainAxisSize: MainAxisSize.min,
@@ -436,7 +440,7 @@ class _HomePageState extends State<HomePage> {
                                                                               enteredEventNameController
                                                                                   .text;
                                                                           value[index].time =
-                                                                              '${selectedTime.hour}:${selectedTime.minute.toString()}';
+                                                                              '${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}';
                                                                         });
                                                                         Navigator.of(context)
                                                                             .pop(); //Makes bottom event bar disappear
@@ -446,7 +450,7 @@ class _HomePageState extends State<HomePage> {
                                                                                 "New Event: ${enteredEventNameController.text}");
                                                                         showToast(
                                                                             message:
-                                                                                "New Time: ${selectedTime.hour}:${selectedTime.minute.toString()}");
+                                                                                "New Time: ${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}");
                                                                       },
                                                                       child: const Text("Submit"))
                                                                 ],
@@ -579,7 +583,7 @@ class _HomePageState extends State<HomePage> {
                                   EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                               //Ensures the keyboard doesn't cover the textfields
                               child: Container(
-                                  height: 150,
+                                  height: 160,
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -778,7 +782,7 @@ class _HomePageState extends State<HomePage> {
                                                       style: TextStyle(
                                                           color: AppColours.colour4(brightness),
                                                           fontWeight: FontWeight.bold,
-                                                          fontSize: 20)),
+                                                          fontSize: isMobile ? 14 : 20)),
                                                 ],
                                               ),
                                             )));

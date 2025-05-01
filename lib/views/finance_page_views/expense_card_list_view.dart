@@ -88,14 +88,14 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                       ""); //Due to a delay in the amount loading
                                                 } else if (num.parse("${snapshot.data}") <= 0) {
                                                   viewModel.deleteExpense(expense.expenseId);
-                                                  //FIX THIS
                                                   setState(() async {
-
                                                     const SizedBox.shrink();
+                                                    WidgetsBinding.instance.addPostFrameCallback((_) {
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) => const FinancePage()));
+                                                    });
                                                   });
                                                   return const SizedBox();
                                                 } else {
@@ -236,7 +236,66 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
-                title: const Text('Expense Details'),
+                title: SizedBox(
+                  width: double.maxFinite,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Expense Details",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: isMobile ? 14 : 24
+                            ),
+                          )),
+                      Column(
+                        children: [
+                          Text(
+                            "Expense Creator:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                                fontSize: isMobile ? 12 : 24
+                            ),
+                          ),
+                          SizedBox(height: 5,),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Chip(
+                              avatar: const Icon(Icons.account_box),
+                              label: FutureBuilder<String?>(
+                                  future: viewModel.returnExpenseCreatorName(expenseId),
+                                  builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                                    if ("${snapshot.data}" == "null") {
+                                      return const Text(
+                                          ""); //Due to a delay in the username loading
+                                    } else {
+                                      return Expanded(
+                                        // flex: 1,
+                                        child: Text("${snapshot.data}",
+                                            style: TextStyle(
+                                                fontSize: isMobile ? 12 : 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green)),
+                                      );
+                                    }
+                                  }),
+                              backgroundColor: brightness == Brightness.light
+                                  ? Colors.lightBlue[100]
+                                  : Colors.blue[900],
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(color: Colors.grey.shade300),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
@@ -281,79 +340,94 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                       child: ListTile(
                                                           //Prevents overflow
                                                           dense: true,
-                                                          contentPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-                                                        leading: Text(
-                                                            "£${num.tryParse(snapshot.data?[1]![index])!.toStringAsFixed(2)}",
-                                                            style: TextStyle(
-                                                            color: Colors.red,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: isMobile ? 14 : 16
-                                                            )),
-                                                        title: Row(
-                                                          mainAxisSize: MainAxisSize.min,
+                                                          contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                                        title: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
-                                                            Icon(
-                                                                Icons.account_box,
-                                                                size: isMobile ? 18 : 24,
-                                                            ),
-                                                            const SizedBox(width: 2),
-                                                            Expanded(
-                                                              child: Text(
-                                                                  snapshot.data?[0]![index],
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                      AppColours.colour4(brightness),
-                                                                      fontWeight: FontWeight.bold,
-                                                                      fontSize: isMobile ? 14 : 16
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons.account_box,
+                                                                    size: isMobile ? 20 : 24,
+                                                                ),
+                                                                const SizedBox(width: 2),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    snapshot.data?[0]![index],
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                        AppColours.colour4(brightness),
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: isMobile ? 16 : 18
+                                                                    ),
+                                                                    softWrap: false,
                                                                   ),
-                                                                softWrap: false,
-                                                              ),
+                                                                ),
+                                                              ],
                                                             ),
+                                                            SizedBox(height: 5,),
+                                                            Text(
+                                                                  "£${num.tryParse(snapshot.data?[1]![index])!.toStringAsFixed(2)}",
+                                                                  style: TextStyle(
+                                                                  color: Colors.red,
+                                                                  fontWeight: FontWeight.bold,
+                                                                  fontSize: isMobile ? 14 : 16
+                                                                  )),
+                                                            SizedBox(height: 5,),
+
+                                                           if (user?.uid == snapshot.data?[2][index])
+                                                             TextField(
+                                                              decoration: const InputDecoration(
+                                                                  hintText: "Paid",
+                                                                  border: OutlineInputBorder()),
+                                                              controller: enteredUserAmountController,
+                                                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                                              inputFormatters: [
+                                                                //Regex to insure invalid user inputs cant be entered
+                                                                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
+                                                              ],
+                                                            )
                                                           ],
                                                         ),
 
-                                                        //TextField only shows if the current user owes money
-                                                        subtitle: user?.uid == snapshot.data?[2][index]
-                                                            ? TextField(
-                                                          decoration: const InputDecoration(
-                                                              hintText: "Paid",
-                                                              border: OutlineInputBorder()),
-                                                          controller: enteredUserAmountController,
-                                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                                          inputFormatters: [
-                                                            //Regex to insure invalid user inputs cant be entered
-                                                            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
-                                                          ],
-                                                        ) : null,
-
-                                                          //Add Icon only shows if the current user owes money
+                                                          //Pay Icon only shows if the current user owes money
                                                         trailing: user?.uid == snapshot.data?[2][index]
-                                                            ? IconButton(
-                                                            onPressed: () {
-                                                              setState(() async {
-                                                                num? convertedAmount = num.tryParse(enteredUserAmountController.text);
+                                                            ? Padding(
+                                                              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                                              child: ElevatedButton(
+                                                              onPressed: () {
+                                                                setState(() async {
+                                                                  num? convertedAmount = num.tryParse(enteredUserAmountController.text);
 
-                                                                if (enteredUserAmountController.text.isNotEmpty && convertedAmount != 0 && convertedAmount != null) {
-                                                                  num? existingAmount = num.tryParse(snapshot.data?[1]![index]);
+                                                                  if (enteredUserAmountController.text.isNotEmpty && convertedAmount != 0 && convertedAmount != null) {
+                                                                    num? existingAmount = num.tryParse(snapshot.data?[1]![index]);
 
-                                                                  double convertedAmountRounded = double.parse(convertedAmount.toStringAsFixed(2));
-                                                                  double existingAmountRounded = double.parse(existingAmount!.toStringAsFixed(2));
+                                                                    double convertedAmountRounded = double.parse(convertedAmount.toStringAsFixed(2));
+                                                                    double existingAmountRounded = double.parse(existingAmount!.toStringAsFixed(2));
 
-                                                                  if (convertedAmountRounded <= existingAmountRounded) {
-                                                                    await viewModel.updateUserAmountPaid(
-                                                                        expenseId,
-                                                                        user!.uid,
-                                                                        convertedAmountRounded
-                                                                    );
+                                                                    if (convertedAmountRounded <= existingAmountRounded) {
+                                                                      await viewModel.updateUserAmountPaid(
+                                                                          expenseId,
+                                                                          user!.uid,
+                                                                          convertedAmountRounded
+                                                                      );
+                                                                    } else {
+                                                                      showToast(message: "Overpaid! Please enter a valid amount");
+                                                                    }
                                                                   } else {
-                                                                    showToast(message: "Overpaid! Please enter a valid amount");
+                                                                    showToast(message: "Invalid amount entered");
                                                                   }
-                                                                } else {
-                                                                  showToast(message: "Invalid amount entered");
-                                                                }
-                                                              });
+                                                                });
 
-                                              }, icon: const Icon(Icons.add))
+                                                                                                            }, style: ElevatedButton.styleFrom(
+                                                                                                                      foregroundColor: AppColours.colour1(brightness),
+                                                                                                                        backgroundColor: Colors.green,
+                                                                                                                        textStyle:
+                                                                                                                        const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                                                                                                        shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(20))),
+                                                                                                                  child: const Text("Pay"),),
+                                                            )
                                                             : null
                                                       ));
                                             });

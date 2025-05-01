@@ -327,7 +327,7 @@ class _MedicalPageState extends State<MedicalPage> {
                                                           AppColours.colour4(brightness),
                                                           fontWeight:
                                                           FontWeight.bold,
-                                                          fontSize: 20)),
+                                                          fontSize: isMobile ? 14 : 20)),
                                                 ],
                                               ),
                                             )));

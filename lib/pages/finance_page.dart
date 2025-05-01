@@ -321,7 +321,7 @@ class _FinancePageState extends State<FinancePage> {
                                                       style: TextStyle(
                                                           color: AppColours.colour4(brightness),
                                                           fontWeight: FontWeight.bold,
-                                                          fontSize: 20)),
+                                                          fontSize: isMobile ? 14 : 20)),
                                                 ],
                                               ),
                                             )));

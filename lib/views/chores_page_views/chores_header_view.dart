@@ -12,6 +12,10 @@ class ChoresHeaderView extends StatelessWidget {
     //Calculates if the theme is light/dark mode
     final brightness = Theme.of(context).brightness;
 
+    //Checks screen size to see if it is mobile or desktop
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 600;
+
     return Consumer<TaskViewModel>(builder: (context, viewModel, child) {
       return Row(
         children: [
@@ -59,12 +63,12 @@ class ChoresHeaderView extends StatelessWidget {
               )),
           // Delete Icon
           Container(
-            margin: const EdgeInsets.only(right: 100),
+            margin: EdgeInsets.only(right: isMobile ? 10 : 30),
             child: InkWell(
                 onTap: () {
                   viewModel.displayBottomSheet(const DeleteTaskBottomSheetView(), context);
                 },
-                child: const Icon(Icons.delete, size: 40)),
+                child: const Icon(Icons.delete, size: 60)),
           ),
         ],
       );

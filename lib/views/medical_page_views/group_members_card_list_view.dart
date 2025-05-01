@@ -101,23 +101,25 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Align(
+                      Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Medical Conditions",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
+                                fontSize: isMobile ? 14 : 24
                             ),
                           )),
                       Column(
                         children: [
-                          const Text(
+                          Text(
                             "Emergency Contact:",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
+                                fontSize: isMobile ? 12 : 24
                             ),
                           ),
-                          const Icon(Icons.warning),
+                          Icon(Icons.warning, size: isMobile ? 14 : 24,),
                           Align(
                             alignment: Alignment.centerRight,
                             child: FutureBuilder<String?>(
@@ -445,7 +447,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                 fontWeight: FontWeight.w700, fontSize: 16),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20))),
-                                        child: const Text("Add Emergency Contact"))
+                                        child: const Text("Add Emergency Contact", textAlign: TextAlign.center,))
                                     : null),
                           ],
                         ),

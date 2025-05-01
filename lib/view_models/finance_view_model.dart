@@ -327,7 +327,6 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  //THIS NEEDS CALLED
   Future<String?> returnExpenseCreatorId(String expenseId) async{
     try {
       final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
@@ -343,6 +342,56 @@ class FinanceViewModel extends ChangeNotifier {
       }
     } catch (e) {
       print("Error retrieving expense creator Id: $e");
+    }
+    return null;
+  }
+
+  Future<String?> returnExpenseCreatorName(String expenseId) async{
+    try {
+      final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
+      final docSnapshot = await expenseDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        String expenseCreator = data['expenseCreatorId'];
+
+        final userDoc = FirebaseFirestore.instance.collection('users').doc(expenseCreator);
+        final docSnapshot = await userDoc.get();
+        final userData = docSnapshot.data();
+
+        String expenseCreatorName = userData?['username'];
+
+        if (expenseCreatorName.isNotEmpty) {
+          return expenseCreatorName;
+        }
+      }
+    } catch (e) {
+      print("Error retrieving expense creator name: $e");
+    }
+    return null;
+  }
+
+  Future<String?> returnExpenseRecordCreatorName(String expenseId) async{
+    try {
+      final expenseDoc = FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId);
+      final docSnapshot = await expenseDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        String expenseCreator = data['expenseCreatorId'];
+
+        final userDoc = FirebaseFirestore.instance.collection('users').doc(expenseCreator);
+        final docSnapshot = await userDoc.get();
+        final userData = docSnapshot.data();
+
+        String expenseCreatorName = userData?['username'];
+
+        if (expenseCreatorName.isNotEmpty) {
+          return expenseCreatorName;
+        }
+      }
+    } catch (e) {
+      print("Error retrieving expense creator name: $e");
     }
     return null;
   }

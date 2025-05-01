@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/firebase_options.dart';
 import 'package:shared_accommodation_management_app/pages/home_page.dart';
@@ -18,9 +19,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    // name: "HouseSync-Firebase",
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  //Prevents landscape mode
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   final prefs = await SharedPreferences.getInstance();
   var isDarkMode = prefs.getBool('isDarkMode') ?? false;
 
