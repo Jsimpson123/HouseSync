@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_accommodation_management_app/global/common/toast.dart';
 import 'package:shared_accommodation_management_app/models/finance_model.dart';
 
 class FinanceViewModel extends ChangeNotifier {
@@ -108,8 +110,10 @@ class FinanceViewModel extends ChangeNotifier {
               'assignedExpenses': FieldValue.arrayRemove([expenseId])
             });
           }
-          
         }
+        //Prevents duplicate toast message
+        Fluttertoast.cancel();
+        showToast(message: "The whole expense has been paid off!");
       }
     }
     notifyListeners();
@@ -350,6 +354,8 @@ class FinanceViewModel extends ChangeNotifier {
       final docSnapshot = await expenseDoc.get();
       final data = docSnapshot.data();
 
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+
       final expenseRecordDoc = FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId);
       final docRecordSnapshot = await expenseRecordDoc.get();
       final recordData = docRecordSnapshot.data();
@@ -389,6 +395,14 @@ class FinanceViewModel extends ChangeNotifier {
                 'assignedUsers': FieldValue.arrayUnion(
                     [updatedUserExpenseDetails])
               });
+
+              showToast(message: "You paid off £$amountPaid!");
+            } else if (amountPaid == userAmount) {
+              await userDoc.update({
+                'assignedExpenses' : FieldValue.arrayRemove([expenseId])
+              });
+
+              showToast(message: "You paid off your expense!");
             }
             notifyListeners();
           }

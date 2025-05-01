@@ -86,10 +86,11 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                                   return const Text(
                                                       ""); //Due to a delay in the amount loading
                                                 } else if (num.parse("${snapshot.data}") <= 0) {
+                                                  viewModel.deleteExpense(expense.expenseId);
                                                   //FIX THIS
                                                   setState(() async {
-                                                    await viewModel.deleteExpense(expense.expenseId);
-                                                              
+
+                                                    SizedBox.shrink();
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
@@ -164,6 +165,7 @@ class _ExpenseCardListView extends State<ExpenseCardListView> {
                                               return ElevatedButton(
                                                   onPressed: () {
                                                       viewModel.deleteExpenseUponClick(index);
+                                                      showToast(message: "Expense Deleted!");
                                                   },
                                                   style: ElevatedButton
                                                       .styleFrom(

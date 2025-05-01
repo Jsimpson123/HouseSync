@@ -447,7 +447,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                             ),
                                                           )),
                                                     );
-                                                  }) : Center(
+                                                  }) : const Center(
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
@@ -468,6 +468,7 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             );
                                           }
                                         }))),
+                            SizedBox(height: 15,),
                             Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
                               return SizedBox(
                                 height: 60,
