@@ -8,7 +8,6 @@ import 'package:shared_accommodation_management_app/view_models/user_view_model.
 class HomeHeaderView extends StatelessWidget {
   const HomeHeaderView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     //Checks screen size to see if it is mobile or desktop
@@ -36,9 +35,16 @@ class HomeHeaderView extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(width: 25,),
-          const Icon(Icons.home, size: 45,),
-          const SizedBox(width: 5,),
+          const SizedBox(
+            width: 25,
+          ),
+          const Icon(
+            Icons.home,
+            size: 45,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
           Expanded(
               flex: 2,
               child: Column(
@@ -61,11 +67,9 @@ class HomeHeaderView extends StatelessWidget {
               )),
           FutureBuilder<String?>(
               future: groupViewModel.returnGroupCode(user!.uid),
-              builder: (BuildContext context,
-                  AsyncSnapshot<String?> snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                 if ("${snapshot.data}" == "null") {
-                  return const Text(
-                      ""); //Due to a delay in the group code loading
+                  return const Text(""); //Due to a delay in the group code loading
                 } else {
                   return Expanded(
                     flex: 1,

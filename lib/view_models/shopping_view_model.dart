@@ -7,57 +7,63 @@ class ShoppingViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<ShoppingList> _shoppingLists = <ShoppingList>[];
+
   List<ShoppingList> get shoppingLists => List.unmodifiable(_shoppingLists);
 
   int get numShoppingLists => _shoppingLists.length;
 
-  // final List<ShoppingItem> _items = <ShoppingItem>[];
-  // List<ShoppingItem> get shoppingItems => List.unmodifiable(_items);
-
   String shoppingListId = "";
 
-  Future <void> loadShoppingLists() async {
-    User? user = FirebaseAuth.instance.currentUser;
+  Future<void> loadShoppingLists() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-    if (groupId == null) {
-      return;
-    }
+      if (groupId == null) {
+        return;
+      }
 
-    final shoppingListGroupQuery = FirebaseFirestore.instance
-        .collection('shoppingLists')
-        .where('groupId', isEqualTo: groupId)
-        .get();
+      final shoppingListGroupQuery = FirebaseFirestore.instance
+          .collection('shoppingLists')
+          .where('groupId', isEqualTo: groupId)
+          .get();
 
-    final snapshot = await shoppingListGroupQuery;
-    _shoppingLists.clear();
+      final snapshot = await shoppingListGroupQuery;
+      _shoppingLists.clear();
 
-    for (var doc in snapshot.docs) {
-      _shoppingLists.add(ShoppingList.fromMap(doc.id, doc.data()));
+      for (var doc in snapshot.docs) {
+        _shoppingLists.add(ShoppingList.fromMap(doc.id, doc.data()));
+      }
+    } catch (e) {
+      print("Error loading shopping lists: $e");
     }
     notifyListeners();
   }
 
   Future<bool> createShoppingList(ShoppingList newShoppingList) async {
-    newShoppingList.generateId();
+    try {
+      newShoppingList.generateId();
 
-    User? user = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-    //Creates a shopping list
-    await _firestore.collection('shoppingLists').doc(newShoppingList.shoppingListId).set({
-      'name': newShoppingList.name,
-      'items': newShoppingList.items,
-      'allItemsPurchased': newShoppingList.allItemsPurchased,
-      'groupId': groupId
-    });
+      //Creates a shopping list
+      await _firestore.collection('shoppingLists').doc(newShoppingList.shoppingListId).set({
+        'name': newShoppingList.name,
+        'items': newShoppingList.items,
+        'allItemsPurchased': newShoppingList.allItemsPurchased,
+        'groupId': groupId
+      });
 
-    shoppingListId = newShoppingList.shoppingListId;
-    _shoppingLists.add(newShoppingList);
+      shoppingListId = newShoppingList.shoppingListId;
+      _shoppingLists.add(newShoppingList);
+    } catch (e) {
+      print("Error creating shopping list: $e");
+    }
     notifyListeners();
     return true;
   }
@@ -67,110 +73,113 @@ class ShoppingViewModel extends ChangeNotifier {
   }
 
   Future<void> setItemValue(ShoppingList shoppingList, String itemId, bool newValue) async {
-    final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingList.shoppingListId);
-    final docSnapshot = await shoppingDoc.get();
-    final data = docSnapshot.data();
+    try {
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingList.shoppingListId);
+      final docSnapshot = await shoppingDoc.get();
+      final data = docSnapshot.data();
 
-    if (data != null) {
-      List items = data['items'];
-      Map<String, dynamic>? currentItemsDetails;
+      if (data != null) {
+        List items = data['items'];
+        Map<String, dynamic>? currentItemsDetails;
 
-      for (int i = 0; i < items.length; i++) {
-        if (items[i]['itemId'] == itemId) {
-          currentItemsDetails = items[i];
+        for (int i = 0; i < items.length; i++) {
+          if (items[i]['itemId'] == itemId) {
+            currentItemsDetails = items[i];
 
-          //Remove the current item details (Firebase doesn't support directly updating specific items)
-          await shoppingDoc.update({
-            'items' : FieldValue.arrayRemove([currentItemsDetails])
-          });
+            //Remove the current item details (Firebase doesn't support directly updating specific items)
+            await shoppingDoc.update({
+              'items': FieldValue.arrayRemove([currentItemsDetails])
+            });
 
-          //New map with updated item details
-          Map<String, dynamic> updatedItemDetails = {
-            'isPurchased': newValue,
-            'quantity': currentItemsDetails?['quantity'],
-            'itemId': currentItemsDetails?['itemId'],
-            'itemName': currentItemsDetails?['itemName']
-          };
+            //New map with updated item details
+            Map<String, dynamic> updatedItemDetails = {
+              'isPurchased': newValue,
+              'quantity': currentItemsDetails?['quantity'],
+              'itemId': currentItemsDetails?['itemId'],
+              'itemName': currentItemsDetails?['itemName']
+            };
 
-          //Updates the array with the new details
-          await shoppingDoc.update({
-            'items': FieldValue.arrayUnion(
-                [updatedItemDetails])
-          });
+            //Updates the array with the new details
+            await shoppingDoc.update({
+              'items': FieldValue.arrayUnion([updatedItemDetails])
+            });
 
-          break;
+            break;
+          }
         }
       }
-      }
+    } catch (e) {
+      print("Error updating item: $e");
+    }
     notifyListeners();
   }
 
   Future<void> deleteShoppingList(int shoppingListIndex) async {
-    final shoppingList = _shoppingLists[shoppingListIndex];
+    try {
+      final shoppingList = _shoppingLists[shoppingListIndex];
 
-    await _firestore.collection('shoppingLists').doc(shoppingList.shoppingListId).delete();
-    _shoppingLists.removeAt(shoppingListIndex);
+      await _firestore.collection('shoppingLists').doc(shoppingList.shoppingListId).delete();
+      _shoppingLists.removeAt(shoppingListIndex);
+    } catch (e) {
+      print("Error deleting shopping list: $e");
+    }
 
     notifyListeners();
   }
 
   Future<void> deleteShoppingItem(ShoppingList shoppingList, String itemId) async {
-    final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingList.shoppingListId);
-    final docSnapshot = await shoppingDoc.get();
-    final data = docSnapshot.data();
+    try {
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingList.shoppingListId);
+      final docSnapshot = await shoppingDoc.get();
+      final data = docSnapshot.data();
 
-    if (data != null) {
-      List items = data['items'];
-      Map<String, dynamic>? currentItemsDetails;
+      if (data != null) {
+        List items = data['items'];
+        Map<String, dynamic>? currentItemsDetails;
 
-      for (int i = 0; i < items.length; i++) {
-        if (items[i]['itemId'] == itemId) {
-          currentItemsDetails = items[i];
+        for (int i = 0; i < items.length; i++) {
+          if (items[i]['itemId'] == itemId) {
+            currentItemsDetails = items[i];
 
-          //Remove the current item details (Firebase doesn't support directly updating specific items)
-          await shoppingDoc.update({
-            'items' : FieldValue.arrayRemove([currentItemsDetails])
-          });
-
-          //New map with updated item details
-          // Map<String, dynamic> updatedItemDetails = {
-          //   'isPurchased': newValue,
-          //   'itemId': currentItemsDetails?['itemId'],
-          //   'itemName': currentItemsDetails?['itemName']
-          // };
-          //
-          // //Updates the array with the new details
-          // await shoppingDoc.update({
-          //   'items': FieldValue.arrayUnion(
-          //       [updatedItemDetails])
-          // });
-
-          break;
+            //Remove the current item details (Firebase doesn't support directly updating specific items)
+            await shoppingDoc.update({
+              'items': FieldValue.arrayRemove([currentItemsDetails])
+            });
+            break;
+          }
         }
       }
+    } catch (e) {
+      print("Error deleting shopping item: $e");
     }
     notifyListeners();
   }
 
   Future<void> addNewShoppingItem(String shoppingListId, Map<String, dynamic> newItem) async {
-    final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
-    final docSnapshot = await shoppingDoc.get();
-    final data = docSnapshot.data();
+    try {
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final docSnapshot = await shoppingDoc.get();
+      final data = docSnapshot.data();
 
-    if (data != null) {
-      // List items = data['items'];
-
-      //Updates the array with the new details
-      await shoppingDoc.update({
-        'items': FieldValue.arrayUnion([newItem])
-      });
+      if (data != null) {
+        //Updates the array with the new details
+        await shoppingDoc.update({
+          'items': FieldValue.arrayUnion([newItem])
+        });
+      }
+    } catch (e) {
+      print("Error adding new shopping item: $e");
     }
     notifyListeners();
   }
 
-  Future <int?> returnShoppingListLength (String shoppingListId) async {
+  Future<int?> returnShoppingListLength(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 
@@ -179,14 +188,15 @@ class ShoppingViewModel extends ChangeNotifier {
         return items.length;
       }
     } catch (e) {
-      print("Error retrieving items length: $e");
+      print("Error retrieving shopping list length: $e");
     }
     return null;
   }
 
-  Future <List<String>> returnShoppingListItemsNamesList (String shoppingListId) async {
+  Future<List<String>> returnShoppingListItemsNamesList(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 
@@ -205,9 +215,10 @@ class ShoppingViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future <List<bool>> returnShoppingListItemsPurchaseStatusList (String shoppingListId) async {
+  Future<List<bool>> returnShoppingListItemsPurchaseStatusList(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 
@@ -226,9 +237,10 @@ class ShoppingViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future <List<String>> returnShoppingListItemsIdsList (String shoppingListId) async {
+  Future<List<String>> returnShoppingListItemsIdsList(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 
@@ -247,9 +259,10 @@ class ShoppingViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future <List<String>> returnShoppingListItemsQuantitiesList (String shoppingListId) async {
+  Future<List<String>> returnShoppingListItemsQuantitiesList(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 
@@ -268,9 +281,10 @@ class ShoppingViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future <int?> returnShoppingListItemsIdsListLength (String shoppingListId) async {
+  Future<int?> returnShoppingListItemsIdsListLength(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 
@@ -284,14 +298,15 @@ class ShoppingViewModel extends ChangeNotifier {
         return itemIds.length;
       }
     } catch (e) {
-      print("Error retrieving item ids: $e");
+      print("Error retrieving item ids length: $e");
     }
     return null;
   }
 
-  Future <int?> returnShoppingListNotPurchasedItemsLength (String shoppingListId) async {
+  Future<int?> returnShoppingListNotPurchasedItemsLength(String shoppingListId) async {
     try {
-      final shoppingDoc = FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
+      final shoppingDoc =
+          FirebaseFirestore.instance.collection('shoppingLists').doc(shoppingListId);
       final docSnapshot = await shoppingDoc.get();
       final data = docSnapshot.data();
 

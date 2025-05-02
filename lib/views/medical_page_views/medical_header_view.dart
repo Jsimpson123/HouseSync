@@ -27,9 +27,16 @@ class MedicalHeaderView extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(width: 25,),
-          const Icon(Icons.medical_services, size: 45,),
-          const SizedBox(width: 5,),
+          const SizedBox(
+            width: 25,
+          ),
+          const Icon(
+            Icons.medical_services,
+            size: 45,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
           Expanded(
               flex: 2,
               child: Column(

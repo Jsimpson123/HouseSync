@@ -106,20 +106,19 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                           child: Text(
                             "Medical Conditions",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                                fontSize: isMobile ? 14 : 24
-                            ),
+                                fontWeight: FontWeight.bold, fontSize: isMobile ? 14 : 24),
                           )),
                       Column(
                         children: [
                           Text(
                             "Emergency Contact:",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                                fontSize: isMobile ? 12 : 24
-                            ),
+                                fontWeight: FontWeight.bold, fontSize: isMobile ? 12 : 24),
                           ),
-                          Icon(Icons.warning, size: isMobile ? 14 : 24,),
+                          Icon(
+                            Icons.warning,
+                            size: isMobile ? 14 : 24,
+                          ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: FutureBuilder<String?>(
@@ -187,7 +186,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                           if ("${snapshot.data}" == "null") {
                                             return const Text("");
                                           } else {
-                                            return GridView.builder(
+                                            return snapshot.data?[0].length > 0 ? GridView.builder(
                                                 gridDelegate:
                                                     SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: isMobile ? 1 : 2,
@@ -316,10 +315,12 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                                                     brightness),
                                                                             backgroundColor:
                                                                                 Colors.red,
-                                                                            textStyle: const TextStyle(
-                                                                                fontWeight:
-                                                                                    FontWeight.w700,
-                                                                                fontSize: 16),
+                                                                            textStyle:
+                                                                                const TextStyle(
+                                                                                    fontWeight:
+                                                                                        FontWeight
+                                                                                            .w700,
+                                                                                    fontSize: 16),
                                                                             shape: RoundedRectangleBorder(
                                                                                 borderRadius:
                                                                                     BorderRadius
@@ -330,7 +331,25 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                           ],
                                                         ),
                                                       ));
-                                                });
+                                                }) : const Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.medical_services_rounded,
+                                                      size: 60, color: Colors.grey),
+                                                  SizedBox(height: 16),
+                                                  Text(
+                                                    "There are currently no added medical conditions.",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
                                           }
                                         }))),
                             const SizedBox(
@@ -348,7 +367,7 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                           MediaQuery.of(context).viewInsets.bottom),
                                                   //Ensures the keyboard doesn't cover the textfields
                                                   child: Container(
-                                                      height: 260,
+                                                      height: 300,
                                                       padding: const EdgeInsets.all(16.0),
                                                       child: Column(
                                                         mainAxisSize: MainAxisSize.min,
@@ -447,7 +466,10 @@ class _GroupMembersCardListView extends State<GroupMembersCardListView> {
                                                 fontWeight: FontWeight.w700, fontSize: 16),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20))),
-                                        child: const Text("Add Emergency Contact", textAlign: TextAlign.center,))
+                                        child: const Text(
+                                          "Add Emergency Contact",
+                                          textAlign: TextAlign.center,
+                                        ))
                                     : null),
                           ],
                         ),

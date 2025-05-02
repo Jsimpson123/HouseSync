@@ -86,14 +86,6 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             ),
                                           ],
                                         )),
-                                        //Separating line
-                                        // Container(
-                                        //   decoration: BoxDecoration(
-                                        //     border: Border(
-                                        //       bottom: BorderSide(color: Colors.black),
-                                        //     ),
-                                        //   ),
-                                        // ),
                                         const SizedBox(height: 30),
                                         Column(
                                           children: [
@@ -119,7 +111,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                             style: TextStyle(
                                                                 fontSize: isMobile ? 20 : 24,
                                                                 fontWeight: FontWeight.bold,
-                                                                color: AppColours.colour4(brightness))),
+                                                                color: AppColours.colour4(
+                                                                    brightness))),
                                                       );
                                                     }
                                                   }),
@@ -153,11 +146,13 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                             SizedBox(height: 16),
                             Text(
                               "There are currently no created shopping lists!",
+                              textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 8),
                             Text(
                               "Tap the + button to add your first shopping list.",
+                              textAlign: TextAlign.center,
                               style: TextStyle(fontSize: 14, color: Colors.grey),
                             ),
                           ],
@@ -242,7 +237,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     fontWeight: FontWeight.bold,
-                                                                    color: AppColours.colour4(brightness))),
+                                                                    color: AppColours.colour4(
+                                                                        brightness))),
                                                           ),
                                                         );
                                                       }
@@ -307,7 +303,8 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     fontWeight: FontWeight.bold,
-                                                                    color: AppColours.colour4(brightness))),
+                                                                    color: AppColours.colour4(
+                                                                        brightness))),
                                                           ),
                                                         );
                                                       }
@@ -357,119 +354,149 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                             return const Text("");
                                           } else {
                                             return Expanded(
-                                              child: snapshot.data?[0]!.length > 0
-                                                ? ListView.separated(
-                                                  padding: const EdgeInsets.all(15),
-                                                  shrinkWrap: true,
-                                                  separatorBuilder: (context, index) {
-                                                    return const SizedBox(height: 15);
-                                                  },
-                                                  itemCount: snapshot.data?[0]!.length,
-                                                  itemBuilder: (context, index) {
-                                                    bool isChecked = snapshot.data?[1][index];
-                                                    return Dismissible(
-                                                      //Makes items dismissible via swiping
-                                                      key: UniqueKey(),
-                                                      onDismissed: (direction) {
-                                                        viewModel.deleteShoppingItem(
-                                                            shoppingList, snapshot.data?[2][index]);
-                                                      },
-                                                      background: Container(
-                                                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.red,
-                                                            borderRadius:
-                                                                BorderRadius.circular(10)),
-                                                        child: const Center(child: Icon(Icons.delete)),
-                                                      ),
-                                                      child: Container(
-                                                          decoration: BoxDecoration(
-                                                              color: AppColours.colour1(brightness),
-                                                              borderRadius:
-                                                                  BorderRadius.circular(20)),
-                                                          child: ListTile(
-                                                            // contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                                                            leading: SizedBox(
-                                                              width: isMobile ? 30 : 40,
-                                                              child: Align(
-                                                                alignment: Alignment.centerLeft,
-                                                                child: Checkbox(
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                5)),
-                                                                    side: BorderSide(
-                                                                        width: 2,
-                                                                        color: AppColours.colour3(brightness)),
-                                                                    checkColor: AppColours.colour1(brightness),
-                                                                    activeColor: AppColours.colour3(brightness),
-                                                                    value: isChecked,
-                                                                    onChanged:
-                                                                        (bool? newValue) async {
-                                                                      setState(() {
-                                                                        snapshot.data?[1][index] =
-                                                                            newValue;
-                                                                      });
-                                                                      await viewModel.setItemValue(
-                                                                          shoppingList,
-                                                                          snapshot.data?[2][index],
-                                                                          newValue!);
-                                                                    }),
-                                                              ),
+                                                child: snapshot.data?[0]!.length > 0
+                                                    ? ListView.separated(
+                                                        padding: const EdgeInsets.all(15),
+                                                        shrinkWrap: true,
+                                                        separatorBuilder: (context, index) {
+                                                          return const SizedBox(height: 15);
+                                                        },
+                                                        itemCount: snapshot.data?[0]!.length,
+                                                        itemBuilder: (context, index) {
+                                                          bool isChecked = snapshot.data?[1][index];
+                                                          return Dismissible(
+                                                            //Makes items dismissible via swiping
+                                                            key: UniqueKey(),
+                                                            onDismissed: (direction) {
+                                                              viewModel.deleteShoppingItem(
+                                                                  shoppingList,
+                                                                  snapshot.data?[2][index]);
+                                                            },
+                                                            background: Container(
+                                                              margin: const EdgeInsets.symmetric(
+                                                                  horizontal: 5),
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors.red,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(10)),
+                                                              child: const Center(
+                                                                  child: Icon(Icons.delete)),
                                                             ),
-                                                            trailing: SizedBox(
-                                                              width: isMobile ? 40 : 60,
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment.end,
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons.shopping_bag,
-                                                                    size: isMobile ? 16 : 24,
+                                                            child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    color: AppColours.colour1(
+                                                                        brightness),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(20)),
+                                                                child: ListTile(
+                                                                  leading: SizedBox(
+                                                                    width: isMobile ? 30 : 40,
+                                                                    child: Align(
+                                                                      alignment:
+                                                                          Alignment.centerLeft,
+                                                                      child: Checkbox(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                                  borderRadius:
+                                                                                      BorderRadius
+                                                                                          .circular(
+                                                                                              5)),
+                                                                          side: BorderSide(
+                                                                              width: 2,
+                                                                              color: AppColours
+                                                                                  .colour3(
+                                                                                      brightness)),
+                                                                          checkColor: AppColours
+                                                                              .colour1(brightness),
+                                                                          activeColor:
+                                                                              AppColours.colour3(
+                                                                                  brightness),
+                                                                          value: isChecked,
+                                                                          onChanged: (bool?
+                                                                              newValue) async {
+                                                                            setState(() {
+                                                                              snapshot.data?[1]
+                                                                                      [index] =
+                                                                                  newValue;
+                                                                            });
+                                                                            await viewModel
+                                                                                .setItemValue(
+                                                                                    shoppingList,
+                                                                                    snapshot.data?[
+                                                                                        2][index],
+                                                                                    newValue!);
+                                                                          }),
+                                                                    ),
                                                                   ),
-                                                                  Text(snapshot.data?[3]![index],
+                                                                  trailing: SizedBox(
+                                                                    width: isMobile ? 40 : 60,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons.shopping_bag,
+                                                                          size: isMobile ? 16 : 24,
+                                                                        ),
+                                                                        Text(
+                                                                            snapshot
+                                                                                .data?[3]![index],
+                                                                            style: TextStyle(
+                                                                                color: AppColours
+                                                                                    .colour4(
+                                                                                        brightness),
+                                                                                fontSize: isMobile
+                                                                                    ? 14
+                                                                                    : 16)),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  title: SingleChildScrollView(
+                                                                    scrollDirection:
+                                                                        Axis.horizontal,
+                                                                    child: Text(
+                                                                      snapshot.data?[0]![index],
                                                                       style: TextStyle(
-                                                                          color: AppColours.colour4(brightness),
+                                                                          color: AppColours.colour4(
+                                                                              brightness),
                                                                           fontSize:
-                                                                              isMobile ? 14 : 16)),
-                                                                ],
-                                                              ),
+                                                                              isMobile ? 14 : 16),
+                                                                      softWrap: false,
+                                                                    ),
+                                                                  ),
+                                                                )),
+                                                          );
+                                                        })
+                                                    : const Center(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(Icons.shopping_basket_sharp,
+                                                                size: 60, color: Colors.grey),
+                                                            SizedBox(height: 16),
+                                                            Text(
+                                                              "There are currently no added items.",
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight: FontWeight.bold),
                                                             ),
-
-                                                            title: SingleChildScrollView(
-                                                              scrollDirection: Axis.horizontal,
-                                                              child: Text(
-                                                                snapshot.data?[0]![index],
-                                                                style: TextStyle(
-                                                                    color: AppColours.colour4(brightness),
-                                                                    fontSize: isMobile ? 14 : 16),
-                                                                softWrap: false,
-                                                              ),
+                                                            SizedBox(height: 8),
+                                                            Text(
+                                                              "Tap the + button if you wish to add an item.",
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                  fontSize: 14, color: Colors.grey),
                                                             ),
-                                                          )),
-                                                    );
-                                                  }) : const Center(
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(Icons.shopping_basket_sharp, size: 60, color: Colors.grey),
-                                                    SizedBox(height: 16),
-                                                    Text(
-                                                      "There are currently no added items.",
-                                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                                    ),
-                                                    SizedBox(height: 8),
-                                                    Text(
-                                                      "Tap the + button if you wish to add an item.",
-                                                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            );
+                                                          ],
+                                                        ),
+                                                      ));
                                           }
                                         }))),
-                            const SizedBox(height: 15,),
+                            const SizedBox(
+                              height: 15,
+                            ),
                             Consumer<ShoppingViewModel>(builder: (context, viewModel, child) {
                               return SizedBox(
                                 height: 60,
@@ -555,9 +582,6 @@ class _ShoppingListCardListView extends State<ShoppingListCardListView> {
                                       quantity++;
                                     });
                                   }
-                                  // else if (enteredItemNameController.text.isEmpty){
-                                  //   showToast(message: "Please enter the item name to change the quantity");
-                                  // }
                                 },
                               ),
                             ],

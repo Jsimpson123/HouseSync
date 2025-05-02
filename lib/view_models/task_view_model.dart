@@ -7,94 +7,110 @@ class TaskViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<Task> _tasks = <Task>[];
+
   List<Task> get tasks => List.unmodifiable(_tasks);
 
   int get numTasks => _tasks.length;
+
   int get numTasksRemaining => _tasks.where((task) => !task.isCompleted).length;
 
-  Future <void> loadTasks() async {
-    User? user = FirebaseAuth.instance.currentUser;
+  Future<void> loadTasks() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-    if (groupId == null) {
-      return;
-    }
+      if (groupId == null) {
+        return;
+      }
 
-    final taskGroupQuery = FirebaseFirestore.instance
-        .collection('tasks')
-        .where('groupId', isEqualTo: groupId)
-        .get();
+      final taskGroupQuery =
+          FirebaseFirestore.instance.collection('tasks').where('groupId', isEqualTo: groupId).get();
 
-    final snapshot = await taskGroupQuery;
-    _tasks.clear();
+      final snapshot = await taskGroupQuery;
+      _tasks.clear();
 
-    for (var doc in snapshot.docs) {
-      _tasks.add(Task.fromMap(doc.id, doc.data()));
+      for (var doc in snapshot.docs) {
+        _tasks.add(Task.fromMap(doc.id, doc.data()));
+      }
+    } catch (e) {
+      print("Error loading tasks: $e");
     }
     notifyListeners();
   }
 
   Future<void> addTask(Task newTask) async {
-    newTask.generateId();
+    try {
+      newTask.generateId();
 
-    User? user = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-        await _firestore.collection('tasks').doc(newTask.taskId).set({
-          'taskId': newTask.taskId,
-          'title': newTask.title,
-          'isCompleted': newTask.isCompleted,
-          'groupId': groupId
-        });
-
-        _tasks.add(newTask);
-        notifyListeners();
+      await _firestore.collection('tasks').doc(newTask.taskId).set({
+        'taskId': newTask.taskId,
+        'title': newTask.title,
+        'isCompleted': newTask.isCompleted,
+        'groupId': groupId
+      });
+    } catch (e) {
+      print("Error adding task: $e");
     }
+    _tasks.add(newTask);
+    notifyListeners();
+  }
 
   Future<void> deleteTask(int taskIndex) async {
-    final task = _tasks[taskIndex];
+    try {
+      final task = _tasks[taskIndex];
 
-    final userQuery = await _firestore
-        .collection('users')
-        .where('assignedTasks', arrayContains: task.taskId)
-        .get();
+      final userQuery = await _firestore
+          .collection('users')
+          .where('assignedTasks', arrayContains: task.taskId)
+          .get();
 
-    for (var doc in userQuery.docs) {
-      //Updates the assignedTasks field by removing the taskId
-      await doc.reference.update({
-        'assignedTasks': FieldValue.arrayRemove([task.taskId])
-      });
+      for (var doc in userQuery.docs) {
+        //Updates the assignedTasks field by removing the taskId
+        await doc.reference.update({
+          'assignedTasks': FieldValue.arrayRemove([task.taskId])
+        });
+      }
+      await _firestore.collection('tasks').doc(task.taskId).delete();
+      _tasks.removeAt(taskIndex);
+    } catch (e) {
+      print("Error deleting task: $e");
     }
-    await _firestore.collection('tasks').doc(task.taskId).delete();
-    _tasks.removeAt(taskIndex);
 
     notifyListeners();
   }
 
   Future<void> deleteAllTasks() async {
-    final snapshot = await _firestore.collection('tasks').get();
-    _tasks.clear();
-    for (var doc in snapshot.docs) {
-      await doc.reference.delete();
-    }
+    try {
+      final snapshot = await _firestore.collection('tasks').get();
+      _tasks.clear();
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
 
-    final userSnapshot = await _firestore.collection('users').get();
-    for (var doc in userSnapshot.docs) {
-      await doc.reference.update({'assignedTasks': FieldValue.delete()});
+      final userSnapshot = await _firestore.collection('users').get();
+      for (var doc in userSnapshot.docs) {
+        await doc.reference.update({'assignedTasks': FieldValue.delete()});
+      }
+    } catch (e) {
+      print("Error deleting all tasks: $e");
     }
 
     notifyListeners();
   }
 
   Future<void> deleteAllCompletedTasks() async {
-    final collection = _firestore.collection('tasks');
-    final snapshot = await collection.where('isCompleted', isEqualTo: true).get();
+    try {
+      final collection = _firestore.collection('tasks');
+      final snapshot = await collection.where('isCompleted', isEqualTo: true).get();
 
-    List<String> completedTasksIds = [];
+      List<String> completedTasksIds = [];
 
       _tasks.removeWhere((task) => task.isCompleted);
       for (var doc in snapshot.docs) {
@@ -109,20 +125,25 @@ class TaskViewModel extends ChangeNotifier {
           await doc.reference.update({'assignedTasks': FieldValue.arrayRemove(completedTasksIds)});
         }
       }
-      notifyListeners();
+    } catch (e) {
+      print("Error deleting all completed tasks: $e");
     }
+    notifyListeners();
+  }
 
   bool getTaskValue(int taskIndex) {
     return _tasks[taskIndex].isCompleted;
   }
 
   Future<void> setTaskValue(Task task) async {
-    final taskStatus = !task.isCompleted;
-    await _firestore.collection('tasks').doc(task.taskId).update({
-      'isCompleted': taskStatus
-    });
+    try {
+      final taskStatus = !task.isCompleted;
+      await _firestore.collection('tasks').doc(task.taskId).update({'isCompleted': taskStatus});
 
-    task.isCompleted = taskStatus;
+      task.isCompleted = taskStatus;
+    } catch (e) {
+      print("Error setting task value: $e");
+    }
     notifyListeners();
   }
 
@@ -130,89 +151,68 @@ class TaskViewModel extends ChangeNotifier {
     return _tasks[taskIndex].title;
   }
 
-  Future <String?> returnCurrentUsername () async {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<bool> assignCurrentUserToTask(String userId, String taskId) async {
+    try {
+      //Updates the tasks assigned user
+      await _firestore.collection('tasks').doc(taskId).update({'assignedUser': userId});
 
-    if (user != null) {
-      try {
-        final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
-        final docSnapshot = await userDoc.get();
-        final data = docSnapshot.data();
-
-        if (data != null) {
-          return data['username'] as String?;
-        }
-      } catch (e) {
-        print("Error retrieving username: $e");
-      }
-    }
-    return null;
-  }
-
-  Future <bool> assignCurrentUserToTask (String userId, String taskId) async {
-
-    //Updates the tasks assigned user
-    await _firestore
-        .collection('tasks')
-        .doc(taskId)
-        .update({'assignedUser': userId});
-
-    //Updates the assignedTasks field of the user with the new task
-    await _firestore.collection('users').doc(userId).update({
-      'assignedTasks': FieldValue.arrayUnion([taskId])
-    });
-
-      notifyListeners();
-      return true;
-  }
-
-  Future <bool> unAssignCurrentUserFromTask (String userId, String taskId, int taskIndex) async {
-
-    //Deletes the tasks assigned user
-    await _firestore
-        .collection('tasks')
-        .doc(taskId)
-        .update({'assignedUser': FieldValue.delete()});
-
-    final task = _tasks[taskIndex];
-
-    final userQuery = await _firestore
-        .collection('users')
-        .where('assignedTasks', arrayContains: task.taskId)
-        .get();
-
-    for (var doc in userQuery.docs) {
-      //Updates the assignedTasks field by removing the taskId
-      await doc.reference.update({
-        'assignedTasks': FieldValue.arrayRemove([task.taskId])
+      //Updates the assignedTasks field of the user with the new task
+      await _firestore.collection('users').doc(userId).update({
+        'assignedTasks': FieldValue.arrayUnion([taskId])
       });
+    } catch (e) {
+      print("Error assigning current user to task: $e");
     }
-
-    //Updates the assignedTasks field by removing the taskId
-    // await _firestore.collection('users').doc(userId).update({
-    //   'assignedTasks': FieldValue.arrayRemove([taskId])
-    // });
 
     notifyListeners();
     return true;
   }
 
-  Future <String?> returnAssignedTaskUserId (String taskId) async {
-      try {
-        final taskDoc = FirebaseFirestore.instance.collection('tasks').doc(taskId);
-        final docSnapshot = await taskDoc.get();
-        final data = docSnapshot.data();
+  Future<bool> unAssignCurrentUserFromTask(String userId, String taskId, int taskIndex) async {
+    try {
+      //Deletes the tasks assigned user
+      await _firestore
+          .collection('tasks')
+          .doc(taskId)
+          .update({'assignedUser': FieldValue.delete()});
 
-        if (data != null) {
-          return data['assignedUser'] as String?;
-        }
-      } catch (e) {
-        print("Error retrieving username: $e");
+      final task = _tasks[taskIndex];
+
+      final userQuery = await _firestore
+          .collection('users')
+          .where('assignedTasks', arrayContains: task.taskId)
+          .get();
+
+      for (var doc in userQuery.docs) {
+        //Updates the assignedTasks field by removing the taskId
+        await doc.reference.update({
+          'assignedTasks': FieldValue.arrayRemove([task.taskId])
+        });
       }
-      return null;
+    } catch (e) {
+      print("Error unassigning current user from task: $e");
     }
 
-  Future <String?> returnAssignedTaskUsername (String taskId) async {
+    notifyListeners();
+    return true;
+  }
+
+  Future<String?> returnAssignedTaskUserId(String taskId) async {
+    try {
+      final taskDoc = FirebaseFirestore.instance.collection('tasks').doc(taskId);
+      final docSnapshot = await taskDoc.get();
+      final data = docSnapshot.data();
+
+      if (data != null) {
+        return data['assignedUser'] as String?;
+      }
+    } catch (e) {
+      print("Error retrieving user Id: $e");
+    }
+    return null;
+  }
+
+  Future<String?> returnAssignedTaskUsername(String taskId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('tasks').doc(taskId);
       final docSnapshot = await taskDoc.get();
@@ -222,15 +222,11 @@ class TaskViewModel extends ChangeNotifier {
         String? userId = data['assignedUser'] as String?;
 
         if (userId!.isNotEmpty) {
-          final query = await _firestore
-              .collection('users')
-              .where('userId', isEqualTo: userId)
-              .get();
+          final query =
+              await _firestore.collection('users').where('userId', isEqualTo: userId).get();
 
-          // if (query.docs.isNotEmpty) {
-            final userDoc = query.docs.first;
-            return userDoc.data()['username'] as String?;
-          // }
+          final userDoc = query.docs.first;
+          return userDoc.data()['username'] as String?;
         }
       }
     } catch (e) {

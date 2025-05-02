@@ -8,8 +8,10 @@ import 'package:shared_accommodation_management_app/views/finance_page_views/add
 import 'package:shared_accommodation_management_app/views/finance_page_views/expense_card_list_view.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/finance_header_view.dart';
 import 'package:shared_accommodation_management_app/views/finance_page_views/finance_info_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../global/common/AppColours.dart';
+import '../global/common/toast.dart';
 import '../main.dart';
 import '../view_models/user_view_model.dart';
 import '../views/home_page_views/settings_view.dart';
@@ -129,7 +131,7 @@ class _FinancePageState extends State<FinancePage> {
                   MyApp.notifier.value = ThemeMode.light;
                 }),
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
             const Divider(),
             const Row(
@@ -151,11 +153,21 @@ class _FinancePageState extends State<FinancePage> {
             const SizedBox(
               height: 5,
             ),
-            Center(
-              child: Text(
-                "Email: HouseSync@gmail.com",
-                style: TextStyle(color: AppColours.colour4(brightness), fontSize: 14),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Email:",
+                ),
+                TextButton(
+                    onPressed: () {
+                      launchEmail("HouseSync@gmail.com");
+                    },
+                    child: Text(
+                      "HouseSync@gmail.com",
+                      style: TextStyle(color: Colors.lightBlue[800], fontSize: 14),
+                    )),
+              ],
             ),
             const SizedBox(
               height: 10,
@@ -358,5 +370,18 @@ class _FinancePageState extends State<FinancePage> {
             );
           });
         });
+  }
+
+  void launchEmail(String email) async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {
+      showToast(message: "Could not launch email client");
+    }
   }
 }

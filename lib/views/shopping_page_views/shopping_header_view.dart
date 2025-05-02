@@ -27,9 +27,16 @@ class ShoppingHeaderView extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(width: 25,),
-          const Icon(Icons.shopping_cart, size: 45,),
-          const SizedBox(width: 5,),
+          const SizedBox(
+            width: 25,
+          ),
+          const Icon(
+            Icons.shopping_cart,
+            size: 45,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
           Expanded(
               flex: 2,
               child: Column(

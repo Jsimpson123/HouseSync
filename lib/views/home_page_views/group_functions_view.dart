@@ -24,8 +24,7 @@ class GroupFunctionsView extends StatelessWidget {
                 child: InkWell(
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(10)),
+                        color: Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
                     child: Column(children: [
                       Expanded(
                         flex: 2,
@@ -58,8 +57,7 @@ class GroupFunctionsView extends StatelessWidget {
                 child: InkWell(
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(10)),
+                          color: Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
                       child: Column(children: [
                         Expanded(
                           flex: 2,

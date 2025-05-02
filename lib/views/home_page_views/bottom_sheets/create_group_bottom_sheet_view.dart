@@ -20,7 +20,6 @@ class CreateGroupBottomSheetView extends StatefulWidget {
 class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
   @override
   Widget build(BuildContext context) {
-
     final TextEditingController enteredGroupNameController = TextEditingController();
 
     return Consumer<GroupViewModel>(builder: (context, viewModel, child) {
@@ -36,27 +35,23 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    key: const Key("groupNameTextField"),
+                      key: const Key("groupNameTextField"),
                       decoration: const InputDecoration(
                           hintText: "Group Name", border: OutlineInputBorder()),
-                      controller: enteredGroupNameController
-                  ),
+                      controller: enteredGroupNameController),
                   const SizedBox(height: 15),
-
                   ElevatedButton(
-                    key: const Key("submitGroupNameButton"),
+                      key: const Key("submitGroupNameButton"),
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey.shade800,
                           foregroundColor: Colors.grey.shade50,
                           fixedSize: const Size(100, 50)),
                       onPressed: () async {
                         if (enteredGroupNameController.text.isNotEmpty) {
-                          Group newGroup = Group.newGroup(
-                              enteredGroupNameController.text);
+                          Group newGroup = Group.newGroup(enteredGroupNameController.text);
                           User? user = FirebaseAuth.instance.currentUser;
                           bool groupCreated = await viewModel.createGroup(
-                              user!.uid, newGroup.name,
-                              viewModel.generateRandomGroupJoinCode());
+                              user!.uid, newGroup.name, viewModel.generateRandomGroupJoinCode());
                           enteredGroupNameController.clear();
 
                           setState(() async {
@@ -78,8 +73,7 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
                             }
                           });
                         }
-                        Navigator.of(context)
-                            .pop(); //Makes bottom task bar disappear
+                        Navigator.of(context).pop(); //Makes bottom task bar disappear
                       },
                       child: const Text("Submit"))
                 ],
@@ -88,9 +82,6 @@ class _CreateGroupBottomSheetView extends State<CreateGroupBottomSheetView> {
   }
 
   void navigateToHome(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const HomePage()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
   }
 }

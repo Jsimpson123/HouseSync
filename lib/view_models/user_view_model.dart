@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class UserViewModel extends ChangeNotifier {
-
-  Future <String?> returnCurrentUsername () async {
+  Future<String?> returnCurrentUsername() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -18,13 +16,13 @@ class UserViewModel extends ChangeNotifier {
           return data['username'] as String?;
         }
       } catch (e) {
-        print("Error retrieving username: $e");
+        print("Error retrieving current username: $e");
       }
     }
     return null;
   }
 
-  Future <String?> returnCurrentEmail () async {
+  Future<String?> returnCurrentEmail() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -37,7 +35,7 @@ class UserViewModel extends ChangeNotifier {
           return data['email'] as String?;
         }
       } catch (e) {
-        print("Error retrieving username: $e");
+        print("Error retrieving current email: $e");
       }
     }
     return null;
@@ -53,6 +51,4 @@ class UserViewModel extends ChangeNotifier {
           return bottomSheetView;
         }));
   }
-
-
 }

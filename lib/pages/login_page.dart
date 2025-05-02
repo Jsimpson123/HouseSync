@@ -63,13 +63,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        // const SizedBox(
-        //   height: 10,
-        // ),
         const Center(child: Text("Welcome", style: TextStyle(fontSize: 50))),
-        const Center(
-            child:
-                Text("Sign into your account", style: TextStyle(fontSize: 25))),
+        const Center(child: Text("Sign into your account", style: TextStyle(fontSize: 25))),
         //Spacing between the logo and TextFields
         const SizedBox(
           height: 10,
@@ -77,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-            key: const Key('emailField'),
+              key: const Key('emailField'),
               controller: _emailController,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.email_rounded),
@@ -85,8 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                 filled: true,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
-                    borderSide:
-                        const BorderSide(color: Colors.green, width: 2.0)),
+                    borderSide: const BorderSide(color: Colors.green, width: 2.0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
@@ -98,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: isMobile ? 300 : 400,
           child: TextField(
-            key: const Key('passwordField'),
+              key: const Key('passwordField'),
               controller: _passwordController,
               obscureText: _isHidden,
               decoration: InputDecoration(
@@ -107,8 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                 filled: true,
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
-                    borderSide:
-                        const BorderSide(color: Colors.green, width: 2.0)),
+                    borderSide: const BorderSide(color: Colors.green, width: 2.0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(width: 2.0),
@@ -121,14 +114,13 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     icon: _isHidden
                         ? const Icon(
-                      Icons.visibility_off,
-                      color: Colors.grey,
-                    )
+                            Icons.visibility_off,
+                            color: Colors.grey,
+                          )
                         : const Icon(
-                      Icons.visibility,
-                      color: Colors.black,
-                    )
-                ),
+                            Icons.visibility,
+                            color: Colors.black,
+                          )),
               )),
         ),
         const SizedBox(height: 3),
@@ -145,39 +137,33 @@ class _LoginPageState extends State<LoginPage> {
                     showToast(message: "Please enter an email address");
                   }
                 },
-                child: const Text("Forgot Password?", style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold))),
+                child: const Text("Forgot Password?",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
           ),
         ),
 
         //Spacing between the TextFields
         const SizedBox(height: 3),
         ElevatedButton(
-          key: const Key("loginButton"),
+            key: const Key("loginButton"),
             onPressed: () {
               _signIn();
             },
             style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateProperty.all<Color>(Colors.blue[800]!),
-                foregroundColor:
-                    WidgetStateProperty.resolveWith((state) => Colors.white),
-                textStyle:
-                    WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 30)),
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue[800]!),
+                foregroundColor: WidgetStateProperty.resolveWith((state) => Colors.white),
+                textStyle: WidgetStateProperty.all<TextStyle>(const TextStyle(fontSize: 30)),
                 minimumSize: WidgetStateProperty.all<Size>(const Size(200, 90))),
             child: const Text("Login")),
         //Spacing between the login button and create account text
         const SizedBox(height: 15),
 
-        const Center(
-            child:
-                Text("Don't have an account?", style: TextStyle(fontSize: 25))),
+        const Center(child: Text("Don't have an account?", style: TextStyle(fontSize: 25))),
         TextButton(
-          key: const Key("registerButton"),
+            key: const Key("registerButton"),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CreateAccountPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const CreateAccountPage()));
             },
             child: const Text("Create Account", style: TextStyle(fontSize: 25)))
       ],
@@ -192,24 +178,22 @@ class _LoginPageState extends State<LoginPage> {
 
     User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-    final userDoc = await firestore.collection('users').doc(user?.uid).get(); //Gets the userId from the users collection
+    final userDoc = await firestore
+        .collection('users')
+        .doc(user?.uid)
+        .get(); //Gets the userId from the users collection
     //Checks if the current user is already in a group and displays the Home page if they are
     if (userDoc.exists && userDoc.data()?['groupId'] != null) {
       print("User was successfully signed in");
 
       //Checks firebase for the users darkMode setting
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user?.uid)
-          .get();
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
 
       final isDark = doc.data()?['darkMode'] ?? false;
       MyApp.notifier.value = isDark ? ThemeMode.dark : ThemeMode.light;
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const HomePage()));
-    }
-    else if (user != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+    } else if (user != null) {
       print("User was successfully signed in");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const CreateOrJoinGroupPage()));
@@ -217,11 +201,11 @@ class _LoginPageState extends State<LoginPage> {
       print("An error occurred");
     }
   }
+
   void sendForgotPasswordEmail(String email) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       showToast(message: "Reset password email sent");
-
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showToast(message: "Invalid email");

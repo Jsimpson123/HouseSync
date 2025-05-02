@@ -36,8 +36,7 @@ bool isAddButtonEnabled() {
 }
 
 bool isSubmitButtonEnabled() {
-  return enteredShoppingListNameController.text.isNotEmpty &&
-      addedItems.isNotEmpty;
+  return enteredShoppingListNameController.text.isNotEmpty && addedItems.isNotEmpty;
 }
 
 FinanceViewModel financeViewModel = FinanceViewModel();
@@ -68,8 +67,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                     //ExpenseName
                     TextField(
                         decoration: const InputDecoration(
-                            hintText: "Shopping List Name",
-                            border: OutlineInputBorder()),
+                            hintText: "Shopping List Name", border: OutlineInputBorder()),
                         controller: enteredShoppingListNameController,
                         onChanged: (_) => setState(() {})),
 
@@ -95,15 +93,13 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                             ? null
                             : () async {
                                 //If the required fields have data then create the expense
-                                if (enteredShoppingListNameController
-                                        .text.isNotEmpty &&
+                                if (enteredShoppingListNameController.text.isNotEmpty &&
                                     addedItems.isNotEmpty) {
-                                  ShoppingList newShoppingList =
-                                      ShoppingList.newShoppingList(enteredShoppingListNameController.text, addedItems);
+                                  ShoppingList newShoppingList = ShoppingList.newShoppingList(
+                                      enteredShoppingListNameController.text, addedItems);
 
                                   //Sending data to the db
-                                  await viewModel
-                                      .createShoppingList(newShoppingList);
+                                  await viewModel.createShoppingList(newShoppingList);
 
                                   addedItems.clear();
 
@@ -116,10 +112,8 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                 }
 
                                 //Refreshes the page to allow users to be visible again when assigning
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const ShoppingPage()));
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(builder: (context) => const ShoppingPage()));
                               },
                         child: const Text("Submit"))
                   ],
@@ -138,8 +132,7 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<FinanceViewModel>(
-              builder: (context, viewModel, child) {
+          return Consumer<FinanceViewModel>(builder: (context, viewModel, child) {
             return StatefulBuilder(builder: (context, setStates) {
               return AlertDialog(
                 scrollable: true,
@@ -156,11 +149,9 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                         children: [
                           TextField(
                               decoration: const InputDecoration(
-                                  hintText: "Item Name",
-                                  border: OutlineInputBorder()),
+                                  hintText: "Item Name", border: OutlineInputBorder()),
                               controller: enteredItemNameController,
-                              onSubmitted: (value) {
-                              }),
+                              onSubmitted: (value) {}),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -169,41 +160,38 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                 icon: const Icon(Icons.minimize),
                                 iconSize: 60,
                                 onPressed: () {
-                                    if (enteredItemNameController.text.isNotEmpty && quantity < 21 && quantity > 1) {
-                                      setStates(() {
-                                        quantity--;
-                                      });
-                                    }
+                                  if (enteredItemNameController.text.isNotEmpty &&
+                                      quantity < 21 &&
+                                      quantity > 1) {
+                                    setStates(() {
+                                      quantity--;
+                                    });
+                                  }
                                 },
                               ),
-
-                              Text(quantity.toString(),
-                                style: const TextStyle(
-                                    fontSize: 40
-                                )
-                              ),
-
+                              Text(quantity.toString(), style: const TextStyle(fontSize: 40)),
                               IconButton(
                                 icon: const Icon(Icons.add),
                                 iconSize: 60,
                                 onPressed: () {
-                                    if (enteredItemNameController.text.isNotEmpty && quantity > 0 && quantity < 20) {
-                                      setStates(() {
-                                        quantity++;
-                                      });
-                                    }
-                                    // else if (enteredItemNameController.text.isEmpty){
-                                    //   showToast(message: "Please enter the item name to change the quantity");
-                                    // }
+                                  if (enteredItemNameController.text.isNotEmpty &&
+                                      quantity > 0 &&
+                                      quantity < 20) {
+                                    setStates(() {
+                                      quantity++;
+                                    });
+                                  }
                                 },
                               ),
                             ],
                           ),
                           IconButton(
-                            color: Colors.green,
+                              color: Colors.green,
                               iconSize: isMobile ? 50 : 60,
                               onPressed: () {
-                                if (enteredItemNameController.text.isNotEmpty && quantity > 0 && quantity < 21) {
+                                if (enteredItemNameController.text.isNotEmpty &&
+                                    quantity > 0 &&
+                                    quantity < 21) {
                                   setState(() {
                                     addedItems.add({
                                       'itemName': enteredItemNameController.text,
@@ -212,7 +200,8 @@ class _AddShoppingListBottomSheetView extends State<AddShoppingListBottomSheetVi
                                       'itemId': const Uuid().v4()
                                     });
                                     showToast(
-                                        message: "Added: $quantity ${enteredItemNameController.text}");
+                                        message:
+                                            "Added: $quantity ${enteredItemNameController.text}");
                                     enteredItemNameController.clear();
                                     setStates(() {
                                       quantity == 1;

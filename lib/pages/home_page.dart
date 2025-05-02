@@ -9,6 +9,7 @@ import 'package:shared_accommodation_management_app/pages/login_page.dart';
 import 'package:shared_accommodation_management_app/pages/shopping_page.dart';
 import 'package:shared_accommodation_management_app/view_models/home_view_model.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 import '../models/event_model.dart';
@@ -169,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                   MyApp.notifier.value = ThemeMode.light;
                 }),
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
             const Divider(),
             const Row(
@@ -191,11 +192,21 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 5,
             ),
-            Center(
-              child: Text(
-                "Email: HouseSync@gmail.com",
-                style: TextStyle(color: AppColours.colour4(brightness), fontSize: 14),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Email:",
+                ),
+                TextButton(
+                    onPressed: () {
+                      launchEmail("HouseSync@gmail.com");
+                    },
+                    child: Text(
+                      "HouseSync@gmail.com",
+                      style: TextStyle(color: Colors.lightBlue[800], fontSize: 14),
+                    )),
+              ],
             ),
             const SizedBox(
               height: 10,
@@ -819,5 +830,18 @@ class _HomePageState extends State<HomePage> {
             );
           });
         });
+  }
+
+  void launchEmail(String email) async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {
+      showToast(message: "Could not launch email client");
+    }
   }
 }

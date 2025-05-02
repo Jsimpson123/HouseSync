@@ -19,14 +19,11 @@ class AddMedicalConditionView extends StatelessWidget {
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColours.colour3(brightness),
-                foregroundColor: AppColours.colour1(brightness)
-            ),
+                foregroundColor: AppColours.colour1(brightness)),
             onPressed: () {
-              viewModel.displayBottomSheet(
-                  const AddMedicalConditionBottomSheetView(), context);
+              viewModel.displayBottomSheet(const AddMedicalConditionBottomSheetView(), context);
             },
-            child: const Icon(
-                Icons.add)),
+            child: const Icon(Icons.add)),
       );
     });
   }

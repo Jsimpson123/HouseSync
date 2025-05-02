@@ -16,17 +16,14 @@ class AddTaskView extends StatelessWidget {
       return SizedBox(
         height: 60,
         child: ElevatedButton(
-          key: const Key("createChoreButton"),
+            key: const Key("createChoreButton"),
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColours.colour3(brightness),
-                foregroundColor: AppColours.colour1(brightness)
-            ),
+                foregroundColor: AppColours.colour1(brightness)),
             onPressed: () {
-              viewModel.displayBottomSheet(
-                  const AddTaskBottomSheetView(), context);
+              viewModel.displayBottomSheet(const AddTaskBottomSheetView(), context);
             },
-            child: const Icon(
-                Icons.add)),
+            child: const Icon(Icons.add)),
       );
     });
   }

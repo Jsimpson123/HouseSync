@@ -18,14 +18,11 @@ class AddExpenseView extends StatelessWidget {
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColours.colour3(brightness),
-                foregroundColor: AppColours.colour1(brightness)
-            ),
+                foregroundColor: AppColours.colour1(brightness)),
             onPressed: () {
-              viewModel.displayBottomSheet(
-                  const AddExpenseBottomSheetView(), context);
+              viewModel.displayBottomSheet(const AddExpenseBottomSheetView(), context);
             },
-            child: const Icon(
-                Icons.add)),
+            child: const Icon(Icons.add)),
       );
     });
   }

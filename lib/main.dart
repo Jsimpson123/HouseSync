@@ -32,37 +32,19 @@ void main() async {
 
   User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
 
     isDarkMode = userDoc.data()?['darkMode'] ?? false;
   }
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (context) => TaskViewModel()
-    ),
-    ChangeNotifierProvider(
-        create: (context) => UserViewModel()
-    ),
-    ChangeNotifierProvider(
-        create: (context) => GroupViewModel()
-    ),
-    ChangeNotifierProvider(
-        create: (context) => FinanceViewModel()
-    ),
-    ChangeNotifierProvider(
-        create: (context) => ShoppingViewModel()
-    ),
-    ChangeNotifierProvider(
-        create: (context) => MedicalViewModel()
-    ),
-    ChangeNotifierProvider(
-        create: (context) => HomeViewModel()
-    ),
-  ],
-      child: MyApp(isDarkMode: isDarkMode)));
+    ChangeNotifierProvider(create: (context) => TaskViewModel()),
+    ChangeNotifierProvider(create: (context) => UserViewModel()),
+    ChangeNotifierProvider(create: (context) => GroupViewModel()),
+    ChangeNotifierProvider(create: (context) => FinanceViewModel()),
+    ChangeNotifierProvider(create: (context) => ShoppingViewModel()),
+    ChangeNotifierProvider(create: (context) => MedicalViewModel()),
+    ChangeNotifierProvider(create: (context) => HomeViewModel()),
+  ], child: MyApp(isDarkMode: isDarkMode)));
 }
 
 class MyApp extends StatelessWidget {
@@ -79,13 +61,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
-      valueListenable: notifier,
+        valueListenable: notifier,
         builder: (_, mode, __) {
           return MaterialApp(
             title: "Shared Accommodation Management Tool",
             theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)),
+                useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)),
             darkTheme: ThemeData(
               brightness: Brightness.dark,
               colorScheme: ColorScheme.dark(
@@ -99,7 +80,6 @@ class MyApp extends StatelessWidget {
             home: user == null ? const LoginPage() : const HomePage(),
             debugShowCheckedModeBanner: false,
           );
-        }
-    );
+        });
   }
 }

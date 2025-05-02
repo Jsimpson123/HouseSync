@@ -23,10 +23,8 @@ GroupViewModel groupViewModel = GroupViewModel();
 
 User? user = FirebaseAuth.instance.currentUser;
 
-final TextEditingController enteredExpenseNameController =
-    TextEditingController();
-final TextEditingController enteredExpenseAmountController =
-    TextEditingController();
+final TextEditingController enteredExpenseNameController = TextEditingController();
+final TextEditingController enteredExpenseAmountController = TextEditingController();
 
 List<TextEditingController> controllers = [];
 
@@ -45,8 +43,7 @@ bool isAddButtonEnabled() {
 }
 
 bool isSubmitButtonEnabled() {
-  return enteredExpenseNameController.text.isNotEmpty &&
-      assignedUserIds.isNotEmpty;
+  return enteredExpenseNameController.text.isNotEmpty && assignedUserIds.isNotEmpty;
 }
 
 FinanceViewModel financeViewModel = FinanceViewModel();
@@ -72,36 +69,31 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                   //ExpenseName
                   TextField(
                       decoration: const InputDecoration(
-                          hintText: "Expense Name",
-                          border: OutlineInputBorder()),
+                          hintText: "Expense Name", border: OutlineInputBorder()),
                       controller: enteredExpenseNameController,
                       onChanged: (_) => setState(() {})),
 
                   const SizedBox(height: 15),
 
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: FittedBox(
-                        child: Text(
-                          ("£$remainingExpenseAmount"),
-                          style: TextStyle(
-                              fontSize: 28,
-                              color: AppColours.colour3(brightness),
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-
                   //Assign Users Button
                   IconButton(
                       icon: const Icon(Icons.group_add),
-                      iconSize: 30,
-                      onPressed: !isAddButtonEnabled()
-                          ? null
-                          : () => assignUsersToExpensePopup(context)),
+                      iconSize: 32,
+                      onPressed:
+                      !isAddButtonEnabled() ? null : () => assignUsersToExpensePopup(context)),
+
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        ("£$remainingExpenseAmount"),
+                        style: TextStyle(
+                            fontSize: 28,
+                            color: AppColours.colour3(brightness),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(height: 10),
 
@@ -115,8 +107,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                           ? null
                           : () async {
                               //If the required fields have data then create the expense
-                              if (enteredExpenseNameController
-                                      .text.isNotEmpty &&
+                              if (enteredExpenseNameController.text.isNotEmpty &&
                                   initialExpenseAmount > 0 &&
                                   assignedUserIds.isNotEmpty) {
                                 Expense newExpense = Expense.newExpense(
@@ -144,10 +135,8 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                               }
 
                               //Refreshes the page to allow users to be visible again when assigning
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const FinancePage()));
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(builder: (context) => const FinancePage()));
                             },
                       child: const Text("Submit"))
                 ],
@@ -173,7 +162,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                 content: SingleChildScrollView(
                   child: SizedBox(
                     width: double.maxFinite,
-                    height: 200,
+                    height: isMobile ? 500 : 300,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
@@ -184,8 +173,7 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                 decoration: BoxDecoration(
                                     color: AppColours.colour2(brightness),
                                     borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(30),
-                                        bottom: Radius.circular(30))),
+                                        top: Radius.circular(30), bottom: Radius.circular(30))),
                                 child: ListView.separated(
                                     padding: const EdgeInsets.all(15),
                                     shrinkWrap: true,
@@ -195,17 +183,14 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                     itemCount: viewModel.members.length,
                                     itemBuilder: (context, index) {
                                       String member = viewModel.memberIds[index];
-                                      TextEditingController
-                                          enteredUserAmountController =
+                                      TextEditingController enteredUserAmountController =
                                           TextEditingController();
                                       return GestureDetector(
                                           key: UniqueKey(),
                                           child: Container(
                                               decoration: BoxDecoration(
                                                   color: AppColours.colour1(brightness),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
+                                                  borderRadius: BorderRadius.circular(20)),
                                               child: user?.uid != member
                                                   ? ListTile(
                                                       title: Row(
@@ -215,10 +200,11 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                           const SizedBox(width: 2),
                                                           Expanded(
                                                             child: Text(
-                                                                viewModel.members[index],
-                                                                style: TextStyle(
-                                                                    color: AppColours.colour4(brightness),
-                                                                    fontSize: isMobile? 14 : 16),
+                                                              viewModel.members[index],
+                                                              style: TextStyle(
+                                                                  color: AppColours.colour4(
+                                                                      brightness),
+                                                                  fontSize: isMobile ? 14 : 16),
                                                               maxLines: 1,
                                                               softWrap: false,
                                                             ),
@@ -231,77 +217,84 @@ class _AddExpenseBottomSheetView extends State<AddExpenseBottomSheetView> {
                                                           mainAxisSize: MainAxisSize.min,
                                                           mainAxisAlignment: MainAxisAlignment.end,
                                                           children: [
-                                                             IconButton(
-                                                                    //If user is assigned
-                                                                    onPressed:
-                                                                        () {
-                                                                      if (enteredUserAmountController
-                                                                              .text
-                                                                              .isEmpty ||
-                                                                          enteredUserAmountController.text ==
-                                                                              "0") {
-                                                                        showToast(
-                                                                            message:
-                                                                                "Please enter the amount owed");
-                                                                      } else {
-                                                                        showToast(
-                                                                            message:
-                                                                                "Assigned: ${viewModel.members[index]}");
+                                                            IconButton(
+                                                              //If user is assigned
+                                                              onPressed: () {
+                                                                if (enteredUserAmountController
+                                                                        .text.isEmpty ||
+                                                                    enteredUserAmountController
+                                                                            .text ==
+                                                                        "0") {
+                                                                  showToast(
+                                                                      message:
+                                                                          "Please enter the amount owed");
+                                                                } else {
+                                                                  showToast(
+                                                                      message:
+                                                                          "Assigned: ${viewModel.members[index]}");
 
-                                                                        setState(
-                                                                            () {
-                                                                          if (num.parse(enteredUserAmountController.text) >
-                                                                              0) {
-                                                                            assignedUserIds.add({
-                                                                              'userId': viewModel.memberIds[index],
-                                                                              'amount': num.tryParse(enteredUserAmountController.text)
-                                                                            });
+                                                                  setState(() {
+                                                                    if (num.parse(
+                                                                            enteredUserAmountController
+                                                                                .text) >
+                                                                        0) {
+                                                                      assignedUserIds.add({
+                                                                        'userId': viewModel
+                                                                            .memberIds[index],
+                                                                        'amount': num.tryParse(
+                                                                            enteredUserAmountController
+                                                                                .text)
+                                                                      });
 
-                                                                            assignedUsersRecord.add({
-                                                                              'userId': viewModel.memberIds[index],
-                                                                              'userName': viewModel.members[index],
-                                                                              'initialAmountOwed': num.parse(enteredUserAmountController.text),
-                                                                              'remainingAmountOwed': num.parse(enteredUserAmountController.text),
-                                                                              'paidOff': false,
-                                                                              'payments': userPayments
-                                                                            });
-                                                                          }
-                                                                          viewModel
-                                                                              .removeMember(index);
-                                                                          initialExpenseAmount =
-                                                                              initialExpenseAmount + num.parse(enteredUserAmountController.text);
-                                                                          remainingExpenseAmount =
-                                                                              initialExpenseAmount;
-                                                                        });
-                                                                      }
-                                                                    },
-                                                                    icon: Icon(Icons.check,
-                                                                      size: isMobile ? 18 :24
-                                                                    ),
-                                                              padding: EdgeInsets.zero,
-                                                                constraints: const BoxConstraints.tightFor(width: 16, height: 16)
-                                                                  )
+                                                                      assignedUsersRecord.add({
+                                                                        'userId': viewModel
+                                                                            .memberIds[index],
+                                                                        'userName': viewModel
+                                                                            .members[index],
+                                                                        'initialAmountOwed': num.parse(
+                                                                            enteredUserAmountController
+                                                                                .text),
+                                                                        'remainingAmountOwed':
+                                                                            num.parse(
+                                                                                enteredUserAmountController
+                                                                                    .text),
+                                                                        'paidOff': false,
+                                                                        'payments': userPayments
+                                                                      });
+                                                                    }
+                                                                    viewModel.removeMember(index);
+                                                                    initialExpenseAmount =
+                                                                        initialExpenseAmount +
+                                                                            num.parse(
+                                                                                enteredUserAmountController
+                                                                                    .text);
+                                                                    remainingExpenseAmount =
+                                                                        initialExpenseAmount;
+                                                                  });
+                                                                }
+                                                              },
+                                                              icon: Icon(
+                                                                Icons.check,
+                                                                size: isMobile ? 18 : 24,
+                                                                color: Colors.green,
+                                                              ),
+                                                            )
                                                           ]),
-
                                                       subtitle: TextField(
-                                                            decoration: const InputDecoration(
-                                                                hintText: "Owed",
-                                                                border: OutlineInputBorder(),
-                                                            ),
-                                                            controller: enteredUserAmountController,
-                                                            keyboardType: const TextInputType
-                                                                .numberWithOptions(
-                                                                    decimal:
-                                                                        true),
-                                                            inputFormatters: [
-                                                              //Regex to insure invalid user inputs cant be entered
-                                                              FilteringTextInputFormatter
-                                                                  .allow(RegExp(
-                                                                      r'^\d*\.?\d{0,2}$')),
-                                                            ],
-                                                          )
-                                                          // : null,
-                                                    )
+                                                        decoration: const InputDecoration(
+                                                          hintText: "Owed",
+                                                          border: OutlineInputBorder(),
+                                                        ),
+                                                        controller: enteredUserAmountController,
+                                                        keyboardType:
+                                                            const TextInputType.numberWithOptions(
+                                                                decimal: true),
+                                                        inputFormatters: [
+                                                          //Regex to insure invalid user inputs cant be entered
+                                                          FilteringTextInputFormatter.allow(
+                                                              RegExp(r'^\d*\.?\d{0,2}$')),
+                                                        ],
+                                                      ))
                                                   : null));
                                     }),
                               ),

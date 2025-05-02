@@ -44,9 +44,11 @@ class TaskInfoView extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: FittedBox(
-                        child: Text("Total Tasks", style: TextStyle(
-                          color: AppColours.colour4(brightness), fontWeight: FontWeight.w600
-                        ),),
+                        child: Text(
+                          "Total Tasks",
+                          style: TextStyle(
+                              color: AppColours.colour4(brightness), fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   )
@@ -83,9 +85,11 @@ class TaskInfoView extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: FittedBox(
-                        child: Text("Remaining Tasks", style: TextStyle(
-                            color: AppColours.colour4(brightness), fontWeight: FontWeight.w600
-                        ),),
+                        child: Text(
+                          "Remaining Tasks",
+                          style: TextStyle(
+                              color: AppColours.colour4(brightness), fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   )

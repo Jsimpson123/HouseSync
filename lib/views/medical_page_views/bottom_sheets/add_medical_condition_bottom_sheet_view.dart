@@ -24,8 +24,7 @@ List<TextEditingController> controllers = [];
 User? user = FirebaseAuth.instance.currentUser;
 
 bool isSubmitButtonEnabled() {
-  return enteredMedicalConditionNameController.text.isNotEmpty
-      &&
+  return enteredMedicalConditionNameController.text.isNotEmpty &&
       enteredMedicalConditionDescController.text.isNotEmpty;
 }
 
@@ -49,24 +48,20 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                 children: [
                   TextField(
                       decoration: const InputDecoration(
-                          hintText: "Condition",
-                          border: OutlineInputBorder()),
+                          hintText: "Condition", border: OutlineInputBorder()),
                       controller: enteredMedicalConditionNameController,
-                      onChanged: (_) => setState(() {})
-                  ),
+                      onChanged: (_) => setState(() {})),
 
                   const SizedBox(height: 10),
 
                   TextField(
-                    decoration: const InputDecoration(
-                      hintText: "Description",
-                      border: OutlineInputBorder()),
-                    controller: enteredMedicalConditionDescController,
-                    maxLines: 4,
-                    minLines: 3,
-                    keyboardType: TextInputType.multiline,
-                      onChanged: (_) => setState(() {})
-                  ),
+                      decoration: const InputDecoration(
+                          hintText: "Description", border: OutlineInputBorder()),
+                      controller: enteredMedicalConditionDescController,
+                      maxLines: 4,
+                      minLines: 3,
+                      keyboardType: TextInputType.multiline,
+                      onChanged: (_) => setState(() {})),
                   const SizedBox(height: 10),
 
                   //Submit Button
@@ -77,28 +72,30 @@ class _AddMedicalConditionBottomSheetView extends State<AddMedicalConditionBotto
                           fixedSize: const Size(150, 100)),
                       onPressed: !isSubmitButtonEnabled()
                           ? null
-                          : ()  async {
-                        //If the required fields have data then create the medical condition
-                        if (enteredMedicalConditionNameController.text.isNotEmpty && enteredMedicalConditionDescController.text.isNotEmpty) {
-                          MedicalCondition newMedicalCondition = MedicalCondition.newMedicalCondition(user!.uid, enteredMedicalConditionNameController.text, enteredMedicalConditionDescController.text);
+                          : () async {
+                              //If the required fields have data then create the medical condition
+                              if (enteredMedicalConditionNameController.text.isNotEmpty &&
+                                  enteredMedicalConditionDescController.text.isNotEmpty) {
+                                MedicalCondition newMedicalCondition =
+                                    MedicalCondition.newMedicalCondition(
+                                        user!.uid,
+                                        enteredMedicalConditionNameController.text,
+                                        enteredMedicalConditionDescController.text);
 
-                          await viewModel.createMedicalCondition(newMedicalCondition);
+                                await viewModel.createMedicalCondition(newMedicalCondition);
 
-                          setState(() {
-                            //Resets everything to ensure values don't remain when creating a new condition
-                            Navigator.of(context).pop();
-                            enteredMedicalConditionNameController.clear();
-                            enteredMedicalConditionDescController.clear();
-                          });
-                        }
+                                setState(() {
+                                  //Resets everything to ensure values don't remain when creating a new condition
+                                  Navigator.of(context).pop();
+                                  enteredMedicalConditionNameController.clear();
+                                  enteredMedicalConditionDescController.clear();
+                                });
+                              }
 
-                        //Refreshes the page to allow users to be visible again when assigning
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const MedicalPage()));
-                      },
+                              //Refreshes the page to allow users to be visible again when assigning
+                              Navigator.pushReplacement(context,
+                                  MaterialPageRoute(builder: (context) => const MedicalPage()));
+                            },
                       child: const Text("Submit"))
                 ],
               )));

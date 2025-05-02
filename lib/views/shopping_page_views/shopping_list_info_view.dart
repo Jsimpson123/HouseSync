@@ -44,9 +44,11 @@ class ShoppingListInfoView extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: FittedBox(
-                        child: Text("Total Shopping Lists", style: TextStyle(
-                            color: AppColours.colour4(brightness), fontWeight: FontWeight.w600
-                        ),),
+                        child: Text(
+                          "Total Shopping Lists",
+                          style: TextStyle(
+                              color: AppColours.colour4(brightness), fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   )

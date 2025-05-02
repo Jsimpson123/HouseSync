@@ -16,9 +16,7 @@ class _CreateOrJoinGroupPageState extends State<CreateOrJoinGroupPage> {
     //Theme is always light as user hasn't had the ability to change it yet
     return Theme(
       data: ThemeData.light(),
-      child: const Scaffold(
-        body: Center(child: GroupFunctionsView())
-      ),
+      child: const Scaffold(body: Center(child: GroupFunctionsView())),
     );
   }
 }

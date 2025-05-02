@@ -31,8 +31,7 @@ class _GroupDetailsBottomSheetView extends State<GroupDetailsBottomSheetView> {
             child: Container(
               decoration: BoxDecoration(
                   color: AppColours.colour2(brightness),
-                  borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(30))),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30))),
               padding: const EdgeInsets.all(20),
               child: ListView.separated(
                   padding: const EdgeInsets.all(15),

@@ -32,9 +32,16 @@ class FinanceHeaderView extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(width: 25,),
-          const Icon(Icons.monetization_on, size: 45,),
-          const SizedBox(width: 5,),
+          const SizedBox(
+            width: 25,
+          ),
+          const Icon(
+            Icons.monetization_on,
+            size: 45,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
           Expanded(
               flex: 2,
               child: Column(
@@ -57,9 +64,10 @@ class FinanceHeaderView extends StatelessWidget {
               )),
           Container(
             margin: EdgeInsets.only(right: isMobile ? 10 : 30),
-            child: InkWell( onTap: () {
-              ExpenseRecordsView.expenseRecordsPopup(context, ExpenseRecordsView());
-            },
+            child: InkWell(
+                onTap: () {
+                  ExpenseRecordsView.expenseRecordsPopup(context, ExpenseRecordsView());
+                },
                 child: const Icon(Icons.calendar_month, size: 60)),
           ),
         ],

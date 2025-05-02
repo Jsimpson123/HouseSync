@@ -9,126 +9,139 @@ class FinanceViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<Expense> _expenses = <Expense>[];
+
   List<Expense> get expenses => List.unmodifiable(_expenses);
 
   final List<Expense> _expenseRecords = <Expense>[];
+
   List<Expense> get expenseRecords => List.unmodifiable(_expenseRecords);
 
   int get numExpenses => _expenses.length;
 
-  Future <void> loadExpenses() async {
-    User? user = FirebaseAuth.instance.currentUser;
+  Future<void> loadExpenses() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-    if (groupId == null) {
-      return;
+      if (groupId == null) {
+        return;
+      }
+
+      final expenseGroupQuery = FirebaseFirestore.instance
+          .collection('expenses')
+          .where('groupId', isEqualTo: groupId)
+          .get();
+
+      final snapshot = await expenseGroupQuery;
+      _expenses.clear();
+
+      for (var doc in snapshot.docs) {
+        _expenses.add(Expense.fromMap(doc.id, doc.data()));
+      }
+    } catch (e) {
+      print("Error loading expenses: $e");
     }
-
-    final expenseGroupQuery = FirebaseFirestore.instance
-        .collection('expenses')
-        .where('groupId', isEqualTo: groupId)
-        .get();
-
-    final snapshot = await expenseGroupQuery;
-    _expenses.clear();
-
-    for (var doc in snapshot.docs) {
-      _expenses.add(Expense.fromMap(doc.id, doc.data()));
-    }
-
     notifyListeners();
   }
 
   Future<bool> createExpense(Expense newExpense) async {
-    newExpense.generateId();
+    try {
+      newExpense.generateId();
 
-    User? user = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-    //Creates an expense
-    await _firestore.collection('expenses').doc(newExpense.expenseId).set({
-      'expenseCreatorId': newExpense.expenseCreatorId,
-      'name': newExpense.name,
-      'initialExpenseAmount': newExpense.initialExpenseAmount,
-      'remainingExpenseAmount': newExpense.remainingExpenseAmount,
-      'assignedUsers': newExpense.assignedUsers,
-      'groupId': groupId
-    });
-
-    //Creates an expense record
-    await _firestore.collection('expenseRecords').doc(newExpense.expenseId).set({
-      'expenseCreatorId': newExpense.expenseCreatorId,
-      'name': newExpense.name,
-      'initialExpenseAmount': newExpense.initialExpenseAmount,
-      'assignedUsersRecords': newExpense.assignedUsersRecords,
-      'dateCreated': Timestamp.now(),
-      'groupId': groupId
-    });
-
-    for (int i = 0; i < newExpense.assignedUsers.length; i++) {
-      //Updates the assignedTasks field of the assigned users with the new expense
-      await _firestore.collection('users').doc(newExpense.assignedUsers[i]['userId']).update({
-        'assignedExpenses': FieldValue.arrayUnion([newExpense.expenseId])
+      //Creates an expense
+      await _firestore.collection('expenses').doc(newExpense.expenseId).set({
+        'expenseCreatorId': newExpense.expenseCreatorId,
+        'name': newExpense.name,
+        'initialExpenseAmount': newExpense.initialExpenseAmount,
+        'remainingExpenseAmount': newExpense.remainingExpenseAmount,
+        'assignedUsers': newExpense.assignedUsers,
+        'groupId': groupId
       });
-    }
 
-    _expenses.add(newExpense);
+      //Creates an expense record
+      await _firestore.collection('expenseRecords').doc(newExpense.expenseId).set({
+        'expenseCreatorId': newExpense.expenseCreatorId,
+        'name': newExpense.name,
+        'initialExpenseAmount': newExpense.initialExpenseAmount,
+        'assignedUsersRecords': newExpense.assignedUsersRecords,
+        'dateCreated': Timestamp.now(),
+        'groupId': groupId
+      });
+
+      for (int i = 0; i < newExpense.assignedUsers.length; i++) {
+        //Updates the assignedTasks field of the assigned users with the new expense
+        await _firestore.collection('users').doc(newExpense.assignedUsers[i]['userId']).update({
+          'assignedExpenses': FieldValue.arrayUnion([newExpense.expenseId])
+        });
+      }
+      _expenses.add(newExpense);
+    } catch (e) {
+      print("Error creating expense: $e");
+    }
     notifyListeners();
     return true;
   }
 
   Future<bool> deleteExpense(String expenseId) async {
-    //Retrieves an expense
-    final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();
+    try {
+      //Retrieves an expense
+      final expenseDoc =
+          await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();
 
-    final data = expenseDoc.data();
+      final data = expenseDoc.data();
 
-    if (expenseDoc.exists) {
-      final expenseAmount = await expenseDoc.data()?['remainingExpenseAmount'];
+      if (expenseDoc.exists) {
+        final expenseAmount = await expenseDoc.data()?['remainingExpenseAmount'];
 
-      if (expenseAmount <= 0) {
-        await FirebaseFirestore.instance.collection('expenses').doc(expenseId).delete();
+        if (expenseAmount <= 0) {
+          await FirebaseFirestore.instance.collection('expenses').doc(expenseId).delete();
 
-        List assignedUsers = data?['assignedUsers'];
-        List<dynamic> userIds = [];
+          List assignedUsers = data?['assignedUsers'];
+          List<dynamic> userIds = [];
 
-        for (int i = 0; i < assignedUsers.length; i++) {
-          userIds.add(data?['assignedUsers'][i]['userId']);
+          for (int i = 0; i < assignedUsers.length; i++) {
+            userIds.add(data?['assignedUsers'][i]['userId']);
 
-          final expenseUserDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userIds[i])
-              .get();
+            final expenseUserDoc =
+                await FirebaseFirestore.instance.collection('users').doc(userIds[i]).get();
 
-          List assignedExpenses = await expenseUserDoc.data()?['assignedExpenses'];
-          if (assignedExpenses.contains(expenseId)) {
-            await _firestore.collection('users').doc(userIds[i]).update({
-              'assignedExpenses': FieldValue.arrayRemove([expenseId])
-            });
+            List assignedExpenses = await expenseUserDoc.data()?['assignedExpenses'];
+            if (assignedExpenses.contains(expenseId)) {
+              await _firestore.collection('users').doc(userIds[i]).update({
+                'assignedExpenses': FieldValue.arrayRemove([expenseId])
+              });
+            }
           }
+          //Prevents duplicate toast message
+          Fluttertoast.cancel();
+          showToast(message: "The whole expense has been paid off!");
         }
-        //Prevents duplicate toast message
-        Fluttertoast.cancel();
-        showToast(message: "The whole expense has been paid off!");
       }
+    } catch (e) {
+      print("Error deleting expense: $e");
     }
     notifyListeners();
     return true;
   }
 
   Future<void> deleteExpenseUponClick(int expenseIndex) async {
-    final expense = _expenses[expenseIndex];
+    try {
+      final expense = _expenses[expenseIndex];
 
-    //Retrieves an expense
-    final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expense.expenseId).get();
+      //Retrieves an expense
+      final expenseDoc =
+          await FirebaseFirestore.instance.collection('expenses').doc(expense.expenseId).get();
 
-    final data = expenseDoc.data();
+      final data = expenseDoc.data();
 
-    if (expenseDoc.exists) {
+      if (expenseDoc.exists) {
         await FirebaseFirestore.instance.collection('expenses').doc(expense.expenseId).delete();
 
         List assignedUsers = data?['assignedUsers'];
@@ -137,10 +150,8 @@ class FinanceViewModel extends ChangeNotifier {
         for (int i = 0; i < assignedUsers.length; i++) {
           userIds.add(data?['assignedUsers'][i]['userId']);
 
-          final expenseUserDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userIds[i])
-              .get();
+          final expenseUserDoc =
+              await FirebaseFirestore.instance.collection('users').doc(userIds[i]).get();
 
           List assignedExpenses = await expenseUserDoc.data()?['assignedExpenses'];
           if (assignedExpenses.contains(expense.expenseId)) {
@@ -148,9 +159,12 @@ class FinanceViewModel extends ChangeNotifier {
               'assignedExpenses': FieldValue.arrayRemove([expense.expenseId])
             });
           }
+        }
       }
+      _expenses.removeAt(expenseIndex);
+    } catch (e) {
+      print("Error deleting expense: $e");
     }
-    _expenses.removeAt(expenseIndex);
 
     notifyListeners();
   }
@@ -159,85 +173,7 @@ class FinanceViewModel extends ChangeNotifier {
     return _expenses[expenseIndex].name;
   }
 
-  //This and the following methods will be used to display expense data in some sort of card
-  Future<String?> returnExpenseName(String expenseId) async {
-    //Retrieves an expense
-    final expenseDoc = await FirebaseFirestore.instance.collection('expenses').doc(expenseId).get();
-
-    if (expenseDoc.exists) {
-      try {
-        final expenseName = await expenseDoc.data()?['name'];
-        final data = expenseName.data();
-
-        if (data != null) {
-          return data['name'] as String?;
-        }
-      } catch (e) {
-        print("Error retrieving expense name: $e");
-      }
-      notifyListeners();
-    }
-    return null;
-  }
-
-  //Modify and finish this method
-  Future<List?> returnGroupExpensesIds(String userId) async {
-    List<dynamic> currentUserExpenses = [];
-
-    final expenseDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    final expenseIds = await expenseDoc.data()?['assignedExpenses'];
-
-      try {
-          currentUserExpenses = expenseIds;
-          return currentUserExpenses;
-      } catch (e) {
-        print("Error retrieving expense name: $e");
-      }
-      notifyListeners();
-    return null;
-  }
-
-  Future <String?> returnAssignedExpenseUsernames (String expenseId) async {
-    try {
-      final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
-      final docSnapshot = await expenseDoc.get();
-      final data = docSnapshot.data();
-
-      String expenseMembersNamesFormatted = "";
-
-      if (data != null) {
-        List assignedUsers = data['assignedUsers'];
-        List<dynamic> userIds = [];
-        List<String> assignedUserNames = [];
-
-        for (int i = 0; i < assignedUsers.length; i++) {
-          userIds.add(data['assignedUsers'][i]['userId']);
-
-          final expenseUserDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userIds[i])
-              .get();
-
-          final expenseMemberName = await expenseUserDoc.data()?['username'];
-
-          assignedUserNames.add(expenseMemberName);
-
-          // _assignedUsers.add(expenseMemberName);
-
-          expenseMembersNamesFormatted = assignedUserNames
-              .toString()
-              .replaceAll("[", "")
-              .replaceAll("]", "\n");
-        }
-        return expenseMembersNamesFormatted.toString();
-      }
-    } catch (e) {
-      print("Error retrieving username: $e");
-    }
-    return null;
-  }
-
-  Future <List<String>> returnAssignedExpenseUsernamesList (String expenseId) async {
+  Future<List<String>> returnAssignedExpenseUsernamesList(String expenseId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await taskDoc.get();
@@ -251,10 +187,8 @@ class FinanceViewModel extends ChangeNotifier {
         for (int i = 0; i < assignedUsers.length; i++) {
           userIds.add(data['assignedUsers'][i]['userId']);
 
-          final expenseUserDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userIds[i])
-              .get();
+          final expenseUserDoc =
+              await FirebaseFirestore.instance.collection('users').doc(userIds[i]).get();
 
           final expenseMemberName = await expenseUserDoc.data()?['username'];
 
@@ -263,12 +197,12 @@ class FinanceViewModel extends ChangeNotifier {
         return assignedUserNames;
       }
     } catch (e) {
-      print("Error retrieving username: $e");
+      print("Error retrieving usernames: $e");
     }
-     return [];
+    return [];
   }
 
-  Future<List> returnAssignedExpenseUserIdsList (String expenseId) async {
+  Future<List> returnAssignedExpenseUserIdsList(String expenseId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await taskDoc.get();
@@ -284,12 +218,12 @@ class FinanceViewModel extends ChangeNotifier {
         return userIds;
       }
     } catch (e) {
-      print("Error retrieving UserId: $e");
+      print("Error retrieving UserIds: $e");
     }
     return [];
   }
 
-  Future<List> returnAssignedUsersAmountOwedList (String expenseId) async {
+  Future<List> returnAssignedUsersAmountOwedList(String expenseId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await taskDoc.get();
@@ -310,7 +244,7 @@ class FinanceViewModel extends ChangeNotifier {
     return [];
   }
 
-  Future<num?> returnAssignedExpenseAmount (String expenseId) async {
+  Future<num?> returnAssignedExpenseAmount(String expenseId) async {
     try {
       final taskDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await taskDoc.get();
@@ -327,7 +261,7 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  Future<String?> returnExpenseCreatorId(String expenseId) async{
+  Future<String?> returnExpenseCreatorId(String expenseId) async {
     try {
       final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await expenseDoc.get();
@@ -346,7 +280,7 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  Future<String?> returnExpenseCreatorName(String expenseId) async{
+  Future<String?> returnExpenseCreatorName(String expenseId) async {
     try {
       final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
       final docSnapshot = await expenseDoc.get();
@@ -371,7 +305,7 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  Future<String?> returnExpenseRecordCreatorName(String expenseId) async{
+  Future<String?> returnExpenseRecordCreatorName(String expenseId) async {
     try {
       final expenseDoc = FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId);
       final docSnapshot = await expenseDoc.get();
@@ -396,7 +330,6 @@ class FinanceViewModel extends ChangeNotifier {
     return null;
   }
 
-  //find the userid inside map to minus amount owed
   Future<void> updateUserAmountPaid(String expenseId, String userId, num amountPaid) async {
     try {
       final expenseDoc = FirebaseFirestore.instance.collection('expenses').doc(expenseId);
@@ -405,7 +338,8 @@ class FinanceViewModel extends ChangeNotifier {
 
       final userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
 
-      final expenseRecordDoc = FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId);
+      final expenseRecordDoc =
+          FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId);
       final docRecordSnapshot = await expenseRecordDoc.get();
       final recordData = docRecordSnapshot.data();
 
@@ -419,17 +353,15 @@ class FinanceViewModel extends ChangeNotifier {
           if (assignedUsers[i]['userId'] == userId) {
             //Retrieves the users expense details and assigns it to a map
             currentUserExpenseDetails = assignedUsers[i];
-            
+
             num? userAmount = assignedUsers[i]['amount'];
 
             //Updates the total expense amount
-            await expenseDoc.update({
-              'remainingExpenseAmount' :  totalAmount - amountPaid
-            });
+            await expenseDoc.update({'remainingExpenseAmount': totalAmount - amountPaid});
 
             //Remove the current user expense details (Firebase doesn't support directly updating specific items)
             await expenseDoc.update({
-              'assignedUsers' : FieldValue.arrayRemove([currentUserExpenseDetails])
+              'assignedUsers': FieldValue.arrayRemove([currentUserExpenseDetails])
             });
 
             if (amountPaid != userAmount && amountPaid < userAmount!) {
@@ -441,14 +373,13 @@ class FinanceViewModel extends ChangeNotifier {
 
               //Updates the array with the new details
               await expenseDoc.update({
-                'assignedUsers': FieldValue.arrayUnion(
-                    [updatedUserExpenseDetails])
+                'assignedUsers': FieldValue.arrayUnion([updatedUserExpenseDetails])
               });
 
               showToast(message: "You paid off £$amountPaid!");
             } else if (amountPaid == userAmount) {
               await userDoc.update({
-                'assignedExpenses' : FieldValue.arrayRemove([expenseId])
+                'assignedExpenses': FieldValue.arrayRemove([expenseId])
               });
 
               showToast(message: "You paid off your expense!");
@@ -473,14 +404,11 @@ class FinanceViewModel extends ChangeNotifier {
             num initialAmount = currentUserRecord['initialAmountOwed'];
             String userName = currentUserRecord['userName'];
 
-            Map<String, dynamic> entry = {
-              'amountPaid': amountPaid,
-              'datePaid': Timestamp.now()
-            };
+            Map<String, dynamic> entry = {'amountPaid': amountPaid, 'datePaid': Timestamp.now()};
 
             //Remove the current user expense details (Firebase doesn't support directly updating specific items)
             await expenseRecordDoc.update({
-              'assignedUsersRecords' : FieldValue.arrayRemove([currentUserRecord])
+              'assignedUsersRecords': FieldValue.arrayRemove([currentUserRecord])
             });
 
             payments.add(entry);
@@ -500,8 +428,7 @@ class FinanceViewModel extends ChangeNotifier {
 
               //Updates the array with the new details
               await expenseRecordDoc.update({
-                'assignedUsersRecords': FieldValue.arrayUnion(
-                    [updatedUserExpenseRecordDetails])
+                'assignedUsersRecords': FieldValue.arrayUnion([updatedUserExpenseRecordDetails])
               });
             } else {
               updatedUserExpenseRecordDetails = {
@@ -514,8 +441,7 @@ class FinanceViewModel extends ChangeNotifier {
               };
               //Updates the array with the new details
               await expenseRecordDoc.update({
-                'assignedUsersRecords': FieldValue.arrayUnion(
-                    [updatedUserExpenseRecordDetails])
+                'assignedUsersRecords': FieldValue.arrayUnion([updatedUserExpenseRecordDetails])
               });
             }
             notifyListeners();
@@ -523,52 +449,35 @@ class FinanceViewModel extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print("Error retrieving Amount: $e");
+      print("Error updating user amount: $e");
     }
   }
 
-  // Future<String?> returnExpenseRecordName(String expenseId) async {
-  //   //Retrieves an expense
-  //   final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
-  //
-  //   if (expenseDoc.exists) {
-  //     try {
-  //       final expenseName = await expenseDoc.data()?['name'];
-  //       final data = expenseName.data();
-  //
-  //       if (data != null) {
-  //         return data['name'] as String?;
-  //       }
-  //     } catch (e) {
-  //       print("Error retrieving expense Record name: $e");
-  //     }
-  //     notifyListeners();
-  //   }
-  //   return null;
-  // }
-
   Future<List> returnExpenseRecordPayments(String expenseId, String userId) async {
+    try {
+      final expenseDoc =
+          await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
 
-    final expenseDoc = await FirebaseFirestore.instance.collection('expenseRecords').doc(expenseId).get();
+      final data = expenseDoc.data();
+      List assignedUsersRecords = data?['assignedUsersRecords'];
 
-    final data = expenseDoc.data();
-    List assignedUsersRecords = data?['assignedUsersRecords'];
+      List<Map<String, dynamic>> allPayments = [];
 
-    List<Map<String, dynamic>> allPayments = [];
+      for (int i = 0; i < assignedUsersRecords.length; i++) {
+        if (assignedUsersRecords[i]['userId'] == userId) {
+          List payments = await assignedUsersRecords[i]['payments'];
 
-    for (int i = 0; i < assignedUsersRecords.length; i++) {
-      if (assignedUsersRecords[i]['userId'] == userId) {
-        List payments = await assignedUsersRecords[i]['payments'];
-
-        //Gets payments from each users records
-        for (int j = 0; j < payments.length; j++) {
-          allPayments.add(
-            payments[j]
-          );
+          //Gets payments from each users records
+          for (int j = 0; j < payments.length; j++) {
+            allPayments.add(payments[j]);
+          }
         }
       }
+      return allPayments;
+    } catch (e) {
+      print("Error returning record payments: $e");
     }
-    return allPayments;
+    return [];
   }
 
   //Bottom sheet builder

@@ -8,92 +8,101 @@ class HomeViewModel extends ChangeNotifier {
 
   //Stores the created calendar events
   final Map<DateTime, List<Event>> _events = {};
-  Map <DateTime, List<Event>> get events => Map.unmodifiable(_events);
+
+  Map<DateTime, List<Event>> get events => Map.unmodifiable(_events);
 
   Future<void> addCalendarEvent(Event newEvent, String userId, TimeOfDay selectedTime) async {
-    newEvent.generateId();
+    try {
+      newEvent.generateId();
 
-    User? user = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
 
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
 
-    DateTime dateTime = DateTime(
-      newEvent.date.year,
-      newEvent.date.month,
-      newEvent.date.day,
-      selectedTime.hour,
-      selectedTime.minute
-    );
+      DateTime dateTime = DateTime(newEvent.date.year, newEvent.date.month, newEvent.date.day,
+          selectedTime.hour, selectedTime.minute);
 
-    TimeOfDay time = TimeOfDay(hour: selectedTime.hour, minute: selectedTime.minute);
+      TimeOfDay time = TimeOfDay(hour: selectedTime.hour, minute: selectedTime.minute);
 
-    await _firestore.collection('calendarEvents').doc(newEvent.eventId).set({
-      'eventId': newEvent.eventId,
-      'title': newEvent.title,
-      'date': Timestamp.fromDate(dateTime),
-      'time': time.toString().replaceAll("TimeOfDay(", "").replaceAll(")", ""),
-      'eventCreatorId': userId,
-      'groupId': groupId
-    });
+      await _firestore.collection('calendarEvents').doc(newEvent.eventId).set({
+        'eventId': newEvent.eventId,
+        'title': newEvent.title,
+        'date': Timestamp.fromDate(dateTime),
+        'time': time.toString().replaceAll("TimeOfDay(", "").replaceAll(")", ""),
+        'eventCreatorId': userId,
+        'groupId': groupId
+      });
+    } catch (e) {
+      print("Error adding event: $e");
+    }
 
     notifyListeners();
   }
 
   Future<List<Event>> getEventsForDay(DateTime day) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
-    final groupId = await userDoc.data()?['groupId'];
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    if (groupId == null) {
-      return [];
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user?.uid).get();
+      final groupId = await userDoc.data()?['groupId'];
+
+      if (groupId == null) {
+        return [];
+      }
+
+      DateTime dayStart = DateTime(day.year, day.month, day.day, 0, 0, 0);
+      DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
+
+      final dateSnapshot = await _firestore
+          .collection('calendarEvents')
+          .where('groupId', isEqualTo: groupId)
+          .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(dayStart))
+          .where('date', isLessThanOrEqualTo: Timestamp.fromDate(dayEnd))
+          .get();
+
+      List<Event> events = dateSnapshot.docs.map((doc) {
+        final data = doc.data();
+
+        return Event(
+            eventId: data['eventId'],
+            title: data['title'],
+            eventCreatorId: data['eventCreatorId'],
+            date: data['date'] is Timestamp
+                ? (data['date'] as Timestamp).toDate() //If its a timestamp, convert to date
+                : (data['date'] as DateTime),
+            //if its a DateTime, use it
+            time: (data['time']));
+      }).toList();
+
+      return events;
+    } catch (e) {
+      print("Error retrieving events: $e");
     }
-    
-    DateTime dayStart = DateTime(day.year, day.month, day.day, 0, 0, 0);
-    DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
-    
-    final dateSnapshot = await _firestore.collection('calendarEvents')
-        .where('groupId', isEqualTo: groupId)
-        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(dayStart))
-        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(dayEnd))
-        .get();
-    
-    List<Event> events = dateSnapshot.docs.map((doc) {
-      final data = doc.data();
-
-      return Event(
-          eventId: data['eventId'],
-          title: data['title'],
-          eventCreatorId: data['eventCreatorId'],
-          date: data['date'] is Timestamp
-              ? (data['date'] as Timestamp).toDate() //If its a timestamp, convert to date
-              : (data['date'] as DateTime), //if its a DateTime, use it
-          time: (data['time'])
-      );
-
-    }).toList();
-
-    return events;
+    return [];
   }
 
   Future<void> updateEvent(String eventId, String newTitle, DateTime newTime) async {
-    await FirebaseFirestore.instance
-        .collection('calendarEvents')
-        .doc(eventId)
-        .update({
-      'title': newTitle,
-      'time': '${newTime.hour}:${newTime.minute.toString()}',
-    });
+    try {
+      await FirebaseFirestore.instance.collection('calendarEvents').doc(eventId).update({
+        'title': newTitle,
+        'time': '${newTime.hour}:${newTime.minute.toString()}',
+      });
+    } catch (e) {
+      print("Error updating event: $e");
+    }
   }
 
   Future<void> deleteEvent(String eventId) async {
-    await FirebaseFirestore.instance.collection('calendarEvents').doc(eventId).delete();
-
+    try {
+      await FirebaseFirestore.instance.collection('calendarEvents').doc(eventId).delete();
+    } catch (e) {
+      print("Error delete event: $e");
+    }
     notifyListeners();
   }
 
-  Future<String?> returnEventCreatorUsername (String eventId) async {
+  Future<String?> returnEventCreatorUsername(String eventId) async {
     try {
       final eventDoc = FirebaseFirestore.instance.collection('calendarEvents').doc(eventId);
       final docSnapshot = await eventDoc.get();
@@ -102,10 +111,7 @@ class HomeViewModel extends ChangeNotifier {
       if (data != null) {
         String creatorId = data['eventCreatorId'];
 
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(creatorId)
-            .get();
+        final userDoc = await FirebaseFirestore.instance.collection('users').doc(creatorId).get();
 
         final userName = await userDoc.data()?['username'];
 
