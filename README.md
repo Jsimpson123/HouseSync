@@ -1,3 +1,4 @@
 # shared_accommodation_management_app
 
-A new Flutter project.
+HouseSync
+Helping housemates live better together — streamlining daily tasks for people living together.
