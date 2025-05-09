@@ -228,6 +228,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               //Header
               const Expanded(flex: 2, child: HomeHeaderView()),
+              SizedBox(height: 5,),
               Container(
                 decoration: const BoxDecoration(
                   border: Border(
@@ -241,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                   flex: 5,
                   child: SingleChildScrollView(
                     child: TableCalendar(
-                        rowHeight: isMobile ? 40 : 35,
+                        rowHeight: isMobile ? 40 : 33,
                         daysOfWeekHeight: isMobile ? 28 : 30,
                         focusedDay: _focusedDay,
                         firstDay: DateTime.utc(2010, 10, 16),

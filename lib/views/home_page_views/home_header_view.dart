@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_accommodation_management_app/global/common/AppColours.dart';
 import 'package:shared_accommodation_management_app/view_models/group_view_model.dart';
 import 'package:shared_accommodation_management_app/view_models/user_view_model.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HomeHeaderView extends StatelessWidget {
   const HomeHeaderView({super.key});
@@ -86,12 +87,26 @@ class HomeHeaderView extends StatelessWidget {
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                       color: AppColours.colour4(brightness))),
-                              Text("${snapshot.data}",
-                                  key: const Key("groupCodeText"),
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColours.colour4(brightness))),
+                              InkWell(
+                                onTap: () {
+                                  SharePlus.instance.share(ShareParams(
+                                      text: "Join my HouseSync group!\nGroupCode: ${snapshot.data}"));
+                                },
+                                child: Chip(
+                                  label: Text("${snapshot.data}",
+                                      key: const Key("groupCodeText"),
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent)),
+                                  backgroundColor: AppColours.colour1(brightness),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(color: AppColours.colour4(brightness)),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
